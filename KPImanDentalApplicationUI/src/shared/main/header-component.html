@@ -1,0 +1,13 @@
+<nav id="MainHeader" class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/kpIman">KP Iman</a>
+    <a class="navbar-brand">{{moduleName}}</a>
+    <a class="navbar-brand">{{pageName}}</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+      <form #logoutForm="ngForm" class="d-flex" (ngSubmit)="logout()">
+        <p style="margin: 5px 20px 5px 5px;">Welcome {{userLogin}}</p>
+        <button class="btn btn-danger" type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</nav>

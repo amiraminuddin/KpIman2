@@ -1,0 +1,60 @@
+<!-- Modal -->
+<div #moduleModal class="modal fade" id="moduleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"> {{_appConsts.getModeForm(currentMode)}} Module</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form #moduleModalForm="ngForm" (ngSubmit)="save()" autocomplete="off">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="moduleDesc">Module Description</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="moduleDescId"
+                       name="moduleDescId"
+                       type="text"
+                       [(ngModel)]="module.moduleDescription"
+                       [ngModelOptions]="{ standalone: true }" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="moduleIcon">Module Icon</label>
+              </div>
+              <div class="col-md-8">
+                <p-fileUpload mode="basic"
+                              chooseLabel="Choose"
+                              chooseIcon="pi pi-upload"
+                              name="icon[]"
+                              accept="image/*"
+                              (onSelect)="onSelect($event)">
+                </p-fileUpload>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="moduleActive">Is Active</label>
+              </div>
+              <div class="col-md-8">
+                <p-checkbox [(ngModel)]="module.isActive"
+                            [binary]="true"
+                            inputId="binary" [ngModelOptions]="{ standalone: true }">
+
+                </p-checkbox>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="moduleModalForm.invalid">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

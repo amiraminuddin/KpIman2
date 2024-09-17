@@ -1,0 +1,45 @@
+<style>
+  :host ::ng-deep .p-datatable .p-datatable-tbody > tr:focus {
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-3 col-md-4 left-menu">
+      <user-menu-component></user-menu-component>
+    </div>
+    <div id="departmentListId" class="col-lg-4 col-md-4 content">
+      <div class="table-user" style="min-height: 590px">
+        <p-table [value]="departmentList"
+                 selectionMode="single"
+                 dataKey="code"
+                 [(selection)]="selectedDepartment" 
+                 styleClass="p-datatable-striped p-datatable-sm"
+                 [tableStyle]="{'min-width': '100%'}"
+                 (onRowSelect)="onRowSelect($event)"
+                 [rows]="10" [scrollable]="true" scrollHeight="100%"
+                 [paginator]="true">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="min-width: 100px;">Code</th>
+              <th style="min-width: 100px;">Name</th>
+              <th style="min-width: 100px;">Description</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-department>
+            <tr [pSelectableRow]="department">
+              <td style="min-width: 100px;">{{ department.code }}</td>
+              <td style="min-width: 100px;">{{ department.name }}</td>
+              <td style="min-width: 100px;">{{ department.description }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <div class="col-lg-5 col-md-4 content">
+      <app-position-list-component [position]="position"></app-position-list-component>
+    </div>
+  </div>
+</div>

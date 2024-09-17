@@ -1,0 +1,21 @@
+a {
+  text-decoration: none; /* Removes the underline */
+  color: inherit; /* Inherits the color from the parent element */
+}
+
+  a:hover h5 {
+    color: inherit; /* Ensures that no blue color appears on hover */
+  }
+
+h5 {
+  margin: 0; /* Optional: Removes any extra margin from the <h5> */
+}
+
+.custom-card {
+  width: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 16px;
+  background-color: #fff;
+  text-align: center
+}

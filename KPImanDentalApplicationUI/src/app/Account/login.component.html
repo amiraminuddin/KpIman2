@@ -1,0 +1,51 @@
+<div>
+  <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
+</div>
+<div class="wrapper">
+  <div class="login-container">
+    <div class="header">
+      <h2>KP Iman</h2>
+    </div>
+    <form #loginForm="ngForm" (ngSubmit)="login()">
+      <!-- User Name input -->
+      <div>
+        <label class="form-label" for="form2Example1">User Name</label>
+      </div>
+      <div data-mdb-input-init class="form-outline mb-4">
+        <input id="form2Example1" class="form-control" [(ngModel)]="user.userName" [ngModelOptions]="{standalone: true}"/>
+        <!--<input pInputText type="text" formControlName="form-control"/>-->
+      </div>
+
+      <!-- Password input -->
+      <div>
+        <label class="form-label" for="form2Example2">Password</label>
+      </div>
+      <div data-mdb-input-init class="form-outline mb-4">
+        <input type="password" id="form2Example2" class="form-control" [(ngModel)]="user.password" [ngModelOptions]="{standalone: true}"/>        
+      </div>
+
+      <!-- 2 column grid layout for inline styling -->
+      <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+          <!-- Checkbox -->
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+            <label class="form-check-label" for="form2Example31"> Remember me </label>
+          </div>
+        </div>
+
+        <div class="col">
+          <!-- Simple link -->
+          <a href="#!">Forgot password?</a>
+        </div>
+      </div>
+
+      <!-- Submit button -->
+      <div class="submit-button">
+        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">
+          Sign in
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

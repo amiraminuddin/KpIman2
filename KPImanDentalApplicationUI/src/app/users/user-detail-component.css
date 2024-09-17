@@ -1,0 +1,54 @@
+:host ::ng-deep .p-fieldset legend {
+  float: none !important; /* Ensure no float */
+  width: auto !important; /* Allow width to adjust based on content */
+  padding-left: 0 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: large !important;
+  line-height: inherit !important;
+  margin-left: 1% !important; /* Optional: Adjust margin as needed */
+}
+
+:host ::ng-deep .p-fieldset legend a {
+  text-decoration: none !important; /* Remove underline from links */
+  color: inherit; /* Optional: inherit color from parent */
+}
+
+.row-custom{
+    padding-top: 15px;
+}
+
+.container-custom{
+    width:99%
+}
+
+.dropdown-custom{
+    padding:inherit;
+}
+
+/* Adjust the size of the calendar popup */
+.p-datepicker {
+  width: 250px; /* Adjust this width as needed */
+}
+
+.custom-calendar {
+  width: 100%; /* Make calendar take full width of the column */
+  max-width: 250px; /* Set a maximum width to keep it smaller */
+}
+
+.left-menu {
+  background-color: #f8f9fa;
+  height: inherit; 
+  padding: 20px; 
+  border-right: 1px solid #dee2e6; 
+  width: fit-content;
+}
+
+.content {
+  flex: 1
+}
+
+.container-fluid-custom {
+  height: 100%; /* Make it take the full height of the parent */
+  display: flex; /* Use Flexbox to allow children to fill space */
+  flex-direction: column; /* Stack children vertically */
+}

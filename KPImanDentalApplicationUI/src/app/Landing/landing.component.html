@@ -1,0 +1,71 @@
+<div>
+  <h3>Welcome to KP Iman Application</h3>
+  <h5>Click on the application thumbnail you want to navigate.</h5>
+  <div class="row" style="padding-top: 3%">
+    <div class="col-sm-2">
+      <div class="custom-card">
+        <div class="card-body">
+          <a routerLink="/kpIman/UserManagement/user" target="_blank" rel="noopener noreferrer">
+            <app-icon-component [width]="100" [height]="100"
+                                [imgSource]="getModuleIcon('User Management').imageSource"
+                                [imgDesc]="'User Management'">
+            </app-icon-component>
+            <h5>{{getModuleIcon('User Management').moduleDescription}}</h5>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="custom-card">
+        <div class="card-body">
+          <a routerLink="/kpIman/maintenance">
+            <app-icon-component [width]="100" [height]="100"
+                                [imgSource]="getModuleIcon('Timesheet').imageSource"
+                                [imgDesc]="'Timesheet'">
+            </app-icon-component>
+            <h5>{{getModuleIcon('Timesheet').moduleDescription}}</h5>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="custom-card">
+        <div class="card-body">
+          <a routerLink="/kpIman/maintenance">
+            <app-icon-component [width]="100" [height]="100"
+                                [imgSource]="getModuleIcon('Leave Management').imageSource"
+                                [imgDesc]="'Leave Management'">
+            </app-icon-component>
+            <h5>{{getModuleIcon('Leave Management').moduleDescription}}</h5>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="custom-card">
+        <div class="card-body">
+          <a routerLink="/kpIman/maintenance">
+            <app-icon-component [width]="100" [height]="100"
+                                [imgSource]="getModuleIcon('Customer Management').imageSource"
+                                [imgDesc]="'Customer Management'">
+            </app-icon-component>
+            <h5>{{getModuleIcon('Customer Management').moduleDescription}}</h5>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="custom-card">
+        <div class="card-body">
+          <a routerLink="/kpIman/Admin">
+            <app-icon-component [width]="100" [height]="100"
+                                [imgSource]="getModuleIcon('Configuration').imageSource"
+                                [imgDesc]="'Configuration'">
+            </app-icon-component>
+            <h5>{{getModuleIcon('Configuration').moduleDescription}}</h5>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

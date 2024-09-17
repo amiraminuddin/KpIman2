@@ -1,0 +1,39 @@
+<div>
+  <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
+</div>
+<div class="table-user">
+  <table class="table table-hover table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Module Image</th>
+        <th scope="col">Module Name</th>
+        <th scope="col">Module Description</th>
+        <th scope="col">Active?</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let module of modules">
+        <td scope="row">{{module.rowNumber}}</td>
+        <td scope="row">
+          <div *ngIf="module.moduleIcon">
+              <img style="width:50px;height:50px;" [src]="module.imageSource" alt="Image Source">
+           </div>
+        </td>
+        <td>{{module.moduleName}}</td>
+        <td>{{module.moduleDescription}}</td>
+        <td>
+          <input *ngIf="module.isActive" class="form-check-input" type="checkbox" value="" id="'isActive'+module.id" checked disabled>
+          <input *ngIf="!module.isActive" class="form-check-input" type="checkbox" value="module.isActive" id="'isActive'+module.id" disabled>
+        </td>
+        <td>
+          <button style="margin: 0px 5px 0px 0px" class="btn btn-info" (click)="editModule(module)">Edit</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<module-modal-component #moduleModal
+                (callbackRecordCreate)="handleUpdateModule($event)">
+</module-modal-component>

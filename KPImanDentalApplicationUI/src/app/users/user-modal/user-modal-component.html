@@ -1,0 +1,99 @@
+<!-- Modal -->
+<div  #userModal class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"> {{_appConsts.getModeForm(currentMode)}} User</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form #userModalForm="ngForm" (ngSubmit)="save()" autocomplete="off">
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="UserName">User Name</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="userNameId"
+                       name="userNameId"
+                       type="text"
+                       [(ngModel)]="user.userName"
+                       [ngModelOptions]="{ standalone: true }" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="email">Email address</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="emailId"
+                       name="emailId"
+                       type="email"
+                       [(ngModel)]="user.email"
+                       placeholder="name@example.com" required>
+              </div>
+            </div>
+            <div *ngIf="currentMode == _appConsts.getActionCreateMode()" class="row mb-3">
+              <div class="col-md-4">
+                <label for="Password">Password</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="passwordId"
+                       name="passwordId"
+                       type="password"
+                       [(ngModel)]="user.password"
+                       [ngModelOptions]="{ standalone: true }"
+                       [required]="currentMode == _appConsts.getActionCreateMode()">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="department">Department</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="departmentId"
+                       name="departmentId"
+                       type="text"
+                       [(ngModel)]="user.department"
+                       [ngModelOptions]="{ standalone: true }">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="position">Position</label>
+              </div>
+              <div class="col-md-8">
+                <input class="form-control"
+                       id="PositionId"
+                       name="PositionId"
+                       type="text"
+                       [(ngModel)]="user.position"
+                       [ngModelOptions]="{ standalone: true }">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="icondisplay">Date of Birth</label>
+              </div>
+              <div class="col-md-8">
+                <p-calendar inputId="basic"
+                            dateFormat="dd-mm-yy"
+                            [(ngModel)]="user.birthDate"
+                            [showButtonBar]="true"
+                            [ngModelOptions]="{ standalone: true }"></p-calendar>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="userModalForm.invalid">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

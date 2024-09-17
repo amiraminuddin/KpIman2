@@ -1,0 +1,102 @@
+<div class="container-fluid-custom">
+  <div class="row">
+    <div class="col-lg-3 col-md-4 left-menu">
+      <user-menu-component></user-menu-component>
+    </div>
+    <div class="col-lg-9 col-md-8 content">
+      <p-toast position="bottom-right" life="100"></p-toast>
+      <form id="userForm" #userForm="ngForm" (ngSubmit)="save()" autocomplete="off">
+        <div class="container-custom">
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Save</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <p-fieldset legend="User Information" [toggleable]="true">
+              <div class="row row-custom">
+                <div class="col-lg-8 col-md-12">
+                  <p-image src="{{user.userPhoto}}" alt="Image" width="100" height="100">
+                  </p-image>
+                  <p-fileUpload mode="basic"
+                                chooseLabel="Choose"
+                                chooseIcon="pi pi-upload"
+                                name="icon[]"
+                                accept="image/*"
+                                [auto]="true"
+                                (onSelect)="onSelect($event)">
+                  </p-fileUpload>
+                </div>
+              </div>
+              <div class="row row-custom">
+                <div class="col-lg-6 col-md-12">
+                  <label for="userNameId">User Name</label>
+                  <input pInputText class="form-control"
+                         id="usernameId"
+                         name="usernameId"
+                         type="text"
+                         [(ngModel)]="user.userName" required>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <label for="emailId">Email address</label>
+                  <input pInputText class="form-control"
+                         id="emailId"
+                         name="emailId"
+                         type="email"
+                         [(ngModel)]="user.email"
+                         placeholder="name@example.com" required>
+                </div>
+              </div>
+              <div class="row row-custom">
+                <div class="col-lg-6 col-md-12">
+                  <label for="departmentId">Department</label>
+                  <p-dropdown class="row dropdown-custom" id="departmentId"
+                              [options]="departments"
+                              [(ngModel)]="user.department"
+                              optionLabel="name"
+                              optionValue="code"
+                              (onChange)="onDepartmentChange($event)"
+                              [ngModelOptions]="{ standalone: true }"
+                              placeholder="Select a deparment">
+                  </p-dropdown>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <label for="PositionId">Position</label>
+                  <p-dropdown class="row dropdown-custom" id="positionId"
+                              [options]="positions"
+                              [(ngModel)]="user.position"
+                              optionLabel="name"
+                              optionValue="code"
+                              [ngModelOptions]="{ standalone: true }"
+                              placeholder="Select a position">
+                  </p-dropdown>
+                </div>
+              </div>
+              <div class="row row-custom">
+                <div class="col-lg-6 col-md-12">
+                  <label for="birthDateId">Date of Birth</label>
+                  <p-calendar class="row" inputId="basic" id="birthDateId"
+                              dateFormat="dd-mm-yy"
+                              [(ngModel)]="user.birthDate"
+                              [showButtonBar]="true"
+                              [ngModelOptions]="{ standalone: true }"></p-calendar>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <label for="genderId">Gender</label>
+                  <p-dropdown class="row dropdown-custom" id="genderId"
+                              [options]="genders"
+                              [(ngModel)]="user.gender"
+                              optionLabel="name"
+                              optionValue="code"
+                              [ngModelOptions]="{ standalone: true }"
+                              placeholder="Select a Gender">
+                  </p-dropdown>
+                </div>
+              </div>
+            </p-fieldset>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

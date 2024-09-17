@@ -1,0 +1,34 @@
+/* styles.css */
+html, body {
+  height: 100%; /* Ensure html and body take full height */
+  margin: 0; /* Remove default margin */
+}
+
+.flex-container {
+  display: flex; /* Use Flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  min-height: 100vh; /* Ensure it takes full viewport height */
+}
+
+/* Reset styles */
+* {
+  box-sizing: border-box; /* Include padding and border in element's total width and height */
+  border: none; /* Remove all borders */
+  outline: none; /* Remove any outlines */
+}
+
+app-header-component {
+  height: 60px; /* Set a fixed height for the header */
+  background-color: #f8f9fa; /* Optional: background color */
+}
+
+.content {
+  flex: 1; /* Allow the content to grow and fill the remaining space */
+  margin: 1%; /* Optional: margin around the content */
+}
+
+app-footer-component {
+  height: 50px; /* Set a fixed height for the footer */
+  background-color: #f8f9fa; /* Optional: background color */
+  margin: 0; /* Remove any margin */
+}

@@ -1,0 +1,23 @@
+.button-user {
+    padding: 10px 0px 10px 0px !important
+}
+
+.left-menu {
+  background-color: #f8f9fa;
+  height: inherit;
+  padding: 20px;
+  border-right: 1px solid #dee2e6;
+  width: fit-content;
+}
+
+.content {
+  flex: 1
+}
+
+.custom-button {
+  border-radius: 5px;
+}
+
+.full-height-table-container {
+  height: 550px !important;
+}

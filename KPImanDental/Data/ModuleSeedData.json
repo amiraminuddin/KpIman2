@@ -1,0 +1,67 @@
+[
+  {
+    "Id":  1,
+    "ModuleCode": "Config",
+    "ModuleName": "Configuration",
+    "ModuleDescription": "Configuration",
+    "IsActive": true,
+    "ModuleIcon": "",
+    "CompressedModuleIcon": "",
+    "CreatedBy": "System",
+    "CreatedOn": "2024-08-06",
+    "UpdatedBy": "",
+    "UpdatedOn": ""
+  },
+  {
+    "Id": 2,
+    "ModuleCode": "UserMngmt",
+    "ModuleName": "User Management",
+    "ModuleDescription": "User Management",
+    "IsActive": true,
+    "ModuleIcon": "",
+    "CompressedModuleIcon": "",
+    "CreatedBy": "System",
+    "CreatedOn": "2024-08-06",
+    "UpdatedBy": "",
+    "UpdatedOn": ""
+  },
+  {
+    "Id": 3,
+    "ModuleCode": "LeaveMngmt",
+    "ModuleName": "Leave Management",
+    "ModuleDescription": "Leave Management",
+    "IsActive": true,
+    "ModuleIcon": "",
+    "CompressedModuleIcon": "",
+    "CreatedBy": "System",
+    "CreatedOn": "2024-08-06",
+    "UpdatedBy": "",
+    "UpdatedOn": ""
+  },
+  {
+    "Id": 4,
+    "ModuleCode": "CustomerMngmt",
+    "ModuleName": "Customer Management",
+    "ModuleDescription": "Customer Management",
+    "IsActive": true,
+    "ModuleIcon": "",
+    "CompressedModuleIcon": "",
+    "CreatedBy": "System",
+    "CreatedOn": "2024-08-06",
+    "UpdatedBy": "",
+    "UpdatedOn": ""
+  },
+  {
+    "Id": 5,
+    "ModuleCode": "Timesheet",
+    "ModuleName": "Timesheet",
+    "ModuleDescription": "Timesheet",
+    "IsActive": true,
+    "ModuleIcon": "",
+    "CompressedModuleIcon": "",
+    "CreatedBy": "System",
+    "CreatedOn": "2024-08-06",
+    "UpdatedBy": "",
+    "UpdatedOn": ""
+  }
+]

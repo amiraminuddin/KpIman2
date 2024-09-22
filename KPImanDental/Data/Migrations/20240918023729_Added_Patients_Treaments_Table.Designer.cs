@@ -4,6 +4,7 @@ using KPImanDental.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KPImanDental.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240918023729_Added_Patients_Treaments_Table")]
+    partial class Added_Patients_Treaments_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,10 +327,10 @@ namespace KPImanDental.Data.Migrations
                     b.Property<long>("DrID")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("FollowUpDate")
+                    b.Property<DateTime>("FollowUpDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("FollowUpReq")
+                    b.Property<bool>("FollowUpReq")
                         .HasColumnType("bit");
 
                     b.Property<long>("PatientId")

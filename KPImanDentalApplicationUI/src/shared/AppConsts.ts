@@ -50,4 +50,20 @@ export class AppConsts {
     }
     return x;
   }
+
+  //START : Gender List
+  static readonly MaleCode: string = 'M';
+  static readonly MaleDisplay: string = 'Male';
+  static readonly FemaleCode: string = 'F';
+  static readonly FemaleDisplay: string = 'Female';
+
+  Gender: any = [
+    { code: AppConsts.MaleCode, display: AppConsts.MaleDisplay },
+    { code: AppConsts.FemaleCode, display: AppConsts.FemaleDisplay }
+  ];
+
+  getGenderList(): any[] {
+    return this.Gender;
+  }
+  //END
 }

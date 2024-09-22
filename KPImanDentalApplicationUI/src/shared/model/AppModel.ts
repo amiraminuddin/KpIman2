@@ -56,3 +56,55 @@ export class PositionDto {
   name: string = '';
   description: string = '';
 }
+
+
+
+//START : Patient Model
+export class PatientDto {
+  id: number | undefined;
+  firstName : string = '';
+  lastName : string = '';
+  email : string  = '';
+  dateOfBirth: Date = new Date;
+  gender : string  = '';
+  contactNo : string  = '';
+  address: string  = '';
+  isActive: boolean = true;
+  createdBy : string  = '';
+  updatedBy : string  = '';
+}
+
+export class PatientTreamentFormDto {
+  id: number | undefined;
+  patient: any | undefined;
+  dr: any | undefined; // Doctor in charge
+  dsa: any | undefined; // DSA in charge
+  treatmentNo: string | undefined;
+  condition: string | undefined;
+  description: string | undefined;
+  treatmentType: number | undefined; // Treatment Lookup
+  treatmentCost: number | undefined; // Get from Treatment Lookup by default
+  treatmentDate: Date | undefined;
+  prescribedMedical: string | undefined;
+  treatmentNotes: string | undefined;
+  followUpReq?: boolean; // Nullable
+  followUpDate?: Date; // Nullable
+  createdBy: string = "System"; // Default
+  createdOn: Date | undefined;
+  updatedBy: string | undefined;
+  updatedOn: Date | undefined;
+}
+
+//END : Patient Model
+
+export class TreatmeantLookupDto {
+
+  id: number | undefined; 
+  treatmentCode: string | undefined;
+  treatmentName: string | undefined;
+  treatmentDesc: string | undefined;
+  isActive?: boolean;
+  treatmentPrice: number | undefined;
+  createdBy: string | undefined;
+  updatedBy: string | undefined;
+}

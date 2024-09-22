@@ -1,0 +1,142 @@
+<div>
+  <div class="header-container">
+    <span class="p-buttonset">
+      <button pButton pRipple label="Save" icon="pi pi-check"></button>
+      <button pButton pRipple label="Cancel" icon="pi pi-times"></button>
+    </span>
+  </div>
+  <form [formGroup]="patientTreatmentForm" (ngSubmit)="register()" autocomplete="off">
+    <div>
+      <h5>Patient Detail</h5>
+      <div formGroupName="patient" class="panel">
+        <div class="horizontal-layout">
+          <div class="input-container">
+            <label>Name</label>
+            <input id="disabled-input" type="text" formControlName="firstName" pInputText />
+          </div>
+
+          <div class="input-container">
+            <label>Email</label>
+            <input id="disabled-input" type="text" pInputText formControlName="email" />
+          </div>
+
+          <div class="input-container">
+            <label>Date Of Birth</label>
+            <p-calendar id="disabled-input" formControlName="dateOfBirth" dateFormat="dd/mm/yy">
+            </p-calendar>
+          </div>
+
+          <div class="input-container">
+            <label>Gender</label>
+            <p-dropdown  id="disabled-input" [options]="genderList" optionLabel="display" optionValue="code" formControlName="gender">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="horizontal-layout">
+          <div class="input-container">
+            <label>Contact No</label>
+            <input id="disabled-input" type="text" pInputText formControlName="contactNo" />
+          </div>
+
+          <div class="input-container">
+            <label>Address</label>
+            <input id="disabled-input" type="text" pInputText formControlName="address" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <div>
+      <h5>Staff Detail</h5>
+      <div class="panel">
+        <div formGroupName="dr" class="horizontal-layout">
+          <div class="input-container">
+            <label>Doctor Name</label>
+            <input id="disabled-input" type="text" formControlName="userName" pInputText/>
+          </div>
+
+          <div class="input-container">
+            <label>Doctor Email</label>
+            <input id="disabled-input" type="text" formControlName="email" pInputText />
+          </div>
+        </div>
+
+        <div formGroupName="dsa" class="horizontal-layout">
+          <div class="input-container">
+            <label>DSA Name</label>
+            <input id="disabled-input" type="text" formControlName="userName" pInputText />
+          </div>
+
+          <div class="input-container">
+            <label>DSA Email</label>
+            <input id="disabled-input" type="text" formControlName="email" pInputText/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <div>
+      <h5>Treatment Detail</h5>
+      <div class="panel">
+        <div class="horizontal-layout">
+          <div class="input-container">
+            <label>Treatment No</label>
+            <input id="disabled-input" type="text" formControlName="treatmentNo" pInputText [disabled]="true" />
+          </div>
+
+          <div class="input-container">
+            <label>Treatment Date</label>
+            <p-calendar id="disabled-input" formControlName="treatmentDate" dateFormat="dd/mm/yy"></p-calendar>
+          </div>
+
+          <div class="input-container">
+            <label>Treatment Type</label>
+            <input id="disabled-input" type="text" formControlName="treatmentType" pInputText [disabled]="true" />
+          </div>
+
+          <div class="input-container">
+            <label>Treatment Cost</label>
+            <input id="disabled-input" type="text" formControlName="treatmentCost" pInputText [disabled]="true" />
+          </div>
+
+        </div>
+
+        <div class="horizontal-layout">
+          <div class="input-container">
+            <label>Condition</label>
+            <textarea [rows]="5" [cols]="5" pInputTextarea formControlName="condition" [autoResize]="true"></textarea>
+          </div>
+
+          <div class="input-container">
+            <label>Description</label>
+            <textarea [rows]="5" [cols]="5" pInputTextarea formControlName="description" [autoResize]="true"></textarea>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="vertical-layout">
+          <div class="input-container">
+            <label>Follow Up ?</label>
+            <p-checkbox [binary]="true"
+                        inputId="binary">
+            </p-checkbox>
+          </div>
+
+          <div class="input-container">
+            <label>Follow Up Date</label>
+            <p-calendar></p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+

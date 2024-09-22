@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using KPImanDental.Authorization;
 using KPImanDental.Dto;
+using KPImanDental.Dto.LookupDto;
+using KPImanDental.Dto.PatientDto;
 using KPImanDental.Model;
+using KPImanDental.Model.Lookup;
+using KPImanDental.Model.Patient;
 
 namespace KPImanDental.Helpers
 {
@@ -42,6 +46,24 @@ namespace KPImanDental.Helpers
             CreateMap<Position, PositionDto>(); // Map Position to PositionDto
             CreateMap<Position, PositionDto>()
             .ForMember(dest => dest.DepartmentCode, opt => opt.MapFrom(src => src.Department.Code)); // Mapping DepartmentCode
+            #endregion
+
+            #region Patient
+            CreateMap<PatientDto, Patient>(); //Register
+            CreateMap<Patient, PatientDto>(); //ToList
+
+            CreateMap<PatientDocumentDto, PatientDocuments>();
+            CreateMap<PatientDocuments, PatientDocumentDto>();
+
+            CreateMap<PatientTreatmentDto, PatientTreatment>();
+            CreateMap<PatientTreatment, PatientTreatmentDto>();
+            CreateMap<PatientTreatment, PatientTreamentFormDto>();
+            CreateMap<PatientTreamentFormDto, PatientTreatment>();
+            #endregion
+
+            #region Lookup
+            CreateMap<TreatmentLookupDto, TreatmentLookup>();
+            CreateMap<TreatmentLookup, TreatmentLookupDto>();
             #endregion
         }
     }

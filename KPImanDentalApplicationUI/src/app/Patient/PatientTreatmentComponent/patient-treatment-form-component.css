@@ -1,0 +1,62 @@
+:host ::ng-deep .p-dropdown {
+  width: 100% !important;
+}
+
+:host ::ng-deep .p-calendar {
+  width: 100% !important;
+}
+
+.header-container {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the left (can change to 'center' or 'right' as needed) */
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* Optional border to visually separate button section */
+  background-color: #f9f9f9; /* Optional background color */
+  margin-bottom: 5px; /* Add some space below the button section */
+}
+
+.panel {
+  border: 1px solid #f5f5f5; /* Panel border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the panel */
+  /*box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);*/ /* Soft shadow for panel */
+  background-color: #fdfdfd; /* Light background for the panel */
+  margin: 20px 0; /* Spacing above and below the panel */
+}
+
+.horizontal-layout {
+  display: flex;
+  gap: 20px; /* Space between each input-container */
+  padding-bottom: 5px;
+}
+
+.vertical-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between each input-container */
+  padding-bottom: 5px;
+}
+
+.input-container {
+  flex: 1; /* Makes each input container take up an equal share of the space */
+  display: flex;
+  flex-direction: column; /* Label on top */
+}
+
+input {
+  width: 100%; /* Makes the input take up 100% of the available width inside its container */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+.p-buttonset {
+  display: flex; /* Ensure buttons are displayed inline */
+}
+.p-button {
+  font-size: 10px !important;
+}
+
+.p-button-sm {
+  font-size: 5px; /* Smaller font size */
+  padding: 4px 8px; /* Smaller padding */
+  margin-left: 5px; /* Space between buttons */
+}

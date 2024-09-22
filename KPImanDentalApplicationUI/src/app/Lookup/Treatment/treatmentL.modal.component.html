@@ -1,0 +1,37 @@
+<form [formGroup]="treatmentForm" (ngSubmit)="save()" autocomplete="off">
+  <div>
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Treatment Code</label>
+        <input id="disabled-input" type="text" formControlName="treatmentCode" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>Treatment Name</label>
+        <input id="disabled-input" type="text" pInputText formControlName="treatmentName" />
+      </div>
+
+      <div class="input-container">
+        <label>Treatment Desc</label>
+        <input id="disabled-input" type="text" pInputText formControlName="treatmentDesc" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Is Active?</label>
+        <input id="disabled-input" type="text" pInputText formControlName="isActive" />
+      </div>
+
+      <div class="input-container">
+        <label>Treatment Price</label>
+        <input id="disabled-input" type="text" pInputText formControlName="treatmentPrice" />
+      </div>
+    </div>
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+
+

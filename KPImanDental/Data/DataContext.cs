@@ -1,6 +1,7 @@
 ﻿using KPImanDental.Model;
+using KPImanDental.Model.Lookup;
+using KPImanDental.Model.Patient;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace KPImanDental.Data
 {
@@ -18,6 +19,18 @@ namespace KPImanDental.Data
 
         public DbSet<Department> Departments { get; set; } //Department and Position
         public DbSet<Position> Posititon { get; set; }
+
+
+        #region Patient
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<PatientTreatment> PatientTreatments { get; set; }
+        public DbSet<PatientDocuments> PatientDocuments { get; set; }
+        #endregion
+
+
+        #region Lookup
+        public DbSet<TreatmentLookup> TreatmentLookup { get; set; }
+        #endregion
     }
-    #pragma warning restore CS1591
+#pragma warning restore CS1591
 }

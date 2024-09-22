@@ -34,6 +34,9 @@ import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DividerModule } from "primeng/divider";
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { DialogModule } from 'primeng/dialog';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -41,6 +44,12 @@ import { UserDetailComponent } from './users/user-detail-component';
 import { UserMenu } from './users/User-Menu/user-menu-component';
 import { DepartmentListComponent } from './users/Department/department-list-component';
 import { positionComponent } from './users/Department/position-list-component';
+import { PatientListComponent } from './Patient/PatientComponent/patient-list-component';
+import { PatientTreatmentFormComponent } from './Patient/PatientTreatmentComponent/patient-treatment-form-component';
+import { TreatmentListComponent } from './Lookup/Treatment/treamentL.list.component';
+import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.modal.component';
+
+
 
 @NgModule({
   declarations: [
@@ -57,7 +66,14 @@ import { positionComponent } from './users/Department/position-list-component';
     ModuleModalComponent,
     DepartmentListComponent,
     positionComponent,
-    
+
+    //patient Component
+    PatientListComponent,
+    PatientTreatmentFormComponent,
+
+    //lookup Component
+    TreatmentListComponent,
+    TreatmentLookupModalComponent,
 
     //Shared Component
     IconComponent,
@@ -85,6 +101,9 @@ import { positionComponent } from './users/Department/position-list-component';
     MenuModule,
     TableModule,
     ToastModule,
+    DividerModule,
+    InputTextareaModule,
+    DialogModule,
 
     ReactiveFormsModule,
   ],

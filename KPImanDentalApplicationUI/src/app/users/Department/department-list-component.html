@@ -3,19 +3,44 @@
     outline: none !important;
     outline-offset: 0 !important;
   }
+
+  .div-border {
+    border: 1px solid #D3D3D3;
+    border-radius: 8px;
+    padding: 5px;
+  }
+  .right-panel {
+    margin-left: 3px
+  }
+
+  .left-panel {
+    margin-right: 3px
+  }
+
+  .action-button {
+    border: 2px solid grey;
+    border-radius: 25px;
+    padding: 5px;
+  }
 </style>
 
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-lg-3 col-md-4 left-menu">
-      <user-menu-component></user-menu-component>
-    </div>
-    <div id="departmentListId" class="col-lg-4 col-md-4 content">
-      <div class="table-user" style="min-height: 590px">
+  <p-toast position="bottom-right" life="100"></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+  <div class="row div-border">
+    <div id="departmentListId" class="col-lg-4 col-md-4 content div-border left-panel">
+      <div>
+        Department List
+        <p-badge value="{{departmentCount}}" styleClass="p-mr-2"></p-badge>
+      </div>
+      <div class="button-user" style="margin-bottom : 5px">
+        <input class="btn btn-primary" type="button" value="Add Department" (click)="showModal()" style="border-radius: 5px">
+      </div>
+      <div class="table-user">
         <p-table [value]="departmentList"
                  selectionMode="single"
                  dataKey="code"
-                 [(selection)]="selectedDepartment" 
+                 [(selection)]="selectedDepartment"
                  styleClass="p-datatable-striped p-datatable-sm"
                  [tableStyle]="{'min-width': '100%'}"
                  (onRowSelect)="onRowSelect($event)"
@@ -23,6 +48,7 @@
                  [paginator]="true">
           <ng-template pTemplate="header">
             <tr>
+              <th style="max-width: 100px;">Action</th>
               <th style="min-width: 100px;">Code</th>
               <th style="min-width: 100px;">Name</th>
               <th style="min-width: 100px;">Description</th>
@@ -30,6 +56,10 @@
           </ng-template>
           <ng-template pTemplate="body" let-department>
             <tr [pSelectableRow]="department">
+              <td style="max-width: 100px;">
+                <p-menu #menu [model]="getAction(department)" [popup]="true" appendTo="body"></p-menu>
+                <i (click)="menu.toggle($event); $event.stopPropagation()" class="pi pi-ellipsis-h action-button"></i>
+              </td>
               <td style="min-width: 100px;">{{ department.code }}</td>
               <td style="min-width: 100px;">{{ department.name }}</td>
               <td style="min-width: 100px;">{{ department.description }}</td>
@@ -38,8 +68,23 @@
         </p-table>
       </div>
     </div>
-    <div class="col-lg-5 col-md-4 content">
-      <app-position-list-component [position]="position"></app-position-list-component>
+    <div class="col-lg-5 col-md-4 content div-border right-panel">
+      <app-position-list-component [departmentId]="departmentId"></app-position-list-component>
     </div>
   </div>
 </div>
+
+<p-dialog header="{{formState}} Department" [modal]="true" [(visible)]="modalVisible" [maximizable]="true">
+  <department-modal-component [modalState]="formState"
+                          [departmentId]="departmentId"
+                          [modalVisible]="modalVisible"
+                          (refreshAfterSaved)="refresh($event)">
+  </department-modal-component>
+</p-dialog>
+
+<p-dialog header="Error" [(visible)]="showErrorDialog" [modal]="true" [closable]="true" [dismissableMask]="true" [draggable]="true" [resizable]="false">
+  <p>{{errorMessage}}</p>
+  <p-footer>
+    <button pButton type="button" label="OK" icon="pi pi-check" (click)="showErrorDialog = false"></button>
+  </p-footer>
+</p-dialog>

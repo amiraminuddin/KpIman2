@@ -37,6 +37,12 @@ import { MessageService } from 'primeng/api';
 import { DividerModule } from "primeng/divider";
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+import { BadgeModule } from 'primeng/badge';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -48,6 +54,9 @@ import { PatientListComponent } from './Patient/PatientComponent/patient-list-co
 import { PatientTreatmentFormComponent } from './Patient/PatientTreatmentComponent/patient-treatment-form-component';
 import { TreatmentListComponent } from './Lookup/Treatment/treamentL.list.component';
 import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.modal.component';
+import { DepartmentModal } from './users/Department/department-modal.component';
+import { PositionModalComponent } from './users/Department/position-modal-component';
+import { PatientModalComponent } from './Patient/PatientComponent/patient-modal-component';
 
 
 
@@ -66,10 +75,13 @@ import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.mod
     ModuleModalComponent,
     DepartmentListComponent,
     positionComponent,
+    DepartmentModal,
+    PositionModalComponent,
 
     //patient Component
     PatientListComponent,
     PatientTreatmentFormComponent,
+    PatientModalComponent,
 
     //lookup Component
     TreatmentListComponent,
@@ -104,6 +116,11 @@ import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.mod
     DividerModule,
     InputTextareaModule,
     DialogModule,
+    InputNumberModule,
+    ConfirmDialogModule,
+    ProgressSpinnerModule,
+    TagModule,
+    BadgeModule,
 
     ReactiveFormsModule,
   ],
@@ -113,6 +130,7 @@ import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.mod
     RouterModule,
     AppConsts,
     MessageService,
+    ConfirmationService,
   ],
   bootstrap: [AppComponent]
 })

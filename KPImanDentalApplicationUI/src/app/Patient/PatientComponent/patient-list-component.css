@@ -1,11 +1,3 @@
-/*p-table {
-  overflow: hidden;
-}
-
-p-menu {
-  z-index: 1000;*/ /* Ensure the menu appears on top */
-/*}*/
-
 :host ::ng-deep .p-button.p-button-icon-only {
   width: 1.5rem !important;
   padding: 0 0 !important;

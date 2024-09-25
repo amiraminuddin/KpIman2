@@ -1,12 +1,10 @@
 ﻿using KPImanDental.Model;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using KPImanDental.Authorization;
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using Microsoft.EntityFrameworkCore;
 using KPImanDental.Interfaces;
-using KPImanDental.Services;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 

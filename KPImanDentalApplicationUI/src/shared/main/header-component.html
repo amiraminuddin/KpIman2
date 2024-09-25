@@ -1,8 +1,23 @@
+<style>
+  .menu-button{
+      padding-left: 25%;
+  }
+</style>
+
+
 <nav id="MainHeader" class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/kpIman">KP Iman</a>
-    <a class="navbar-brand">{{moduleName}}</a>
-    <a class="navbar-brand">{{pageName}}</a>
+  <div class="container-fluid d-flex justify-content-between">
+    <div class="d-flex">
+      <a class="navbar-brand" routerLink="/kpIman">KP Iman</a>
+      <a class="navbar-brand">{{moduleName}}</a>
+      <a class="navbar-brand">{{pageName}}</a>
+    </div>
+
+    <!-- Align the icon properly without padding-left -->
+    <div  class="menu-button">
+      <i *ngIf="showMenu" class="navbar-brand pi pi-objects-column" (click)="menu.toggle($event); $event.stopPropagation()"></i>
+    </div>
+
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <form #logoutForm="ngForm" class="d-flex" (ngSubmit)="logout()">
         <p style="margin: 5px 20px 5px 5px;">Welcome {{userLogin}}</p>
@@ -11,3 +26,6 @@
     </div>
   </div>
 </nav>
+
+
+<p-menu #menu [model]="getAction(moduleName)" [popup]="true" appendTo="body"></p-menu>

@@ -1,5 +1,6 @@
 import { Byte } from "@angular/compiler/src/util";
 import { Injectable } from "@angular/core";
+import { Message } from "primeng/api";
 
 @Injectable()
 export class UserConst {
@@ -45,13 +46,12 @@ export class DepartmentDto {
   code: string = '';
   name: string = '';
   description: string = '';
-  position: PositionDto = new PositionDto;
 }
 
 export class PositionDto {
   id: number | undefined;
   departmentId: number | undefined;
-  departmentCode: string = '';
+  departmentName: string = '';
   code: string = '';
   name: string = '';
   description: string = '';
@@ -70,8 +70,6 @@ export class PatientDto {
   contactNo : string  = '';
   address: string  = '';
   isActive: boolean = true;
-  createdBy : string  = '';
-  updatedBy : string  = '';
 }
 
 export class PatientTreamentFormDto {
@@ -107,4 +105,20 @@ export class TreatmeantLookupDto {
   treatmentPrice: number | undefined;
   createdBy: string | undefined;
   updatedBy: string | undefined;
+}
+
+
+export class DeletionCondition<T> {
+  entity: T | undefined;
+  dependenciesCount: number | undefined;
+  hasDependencies: boolean | undefined;
+  message: string = "";
+  messageType: MessageType | undefined;
+  canDelete: boolean | undefined;
+}
+
+export enum MessageType {
+  Error,
+  Warning,
+  Information
 }

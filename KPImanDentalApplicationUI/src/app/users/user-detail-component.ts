@@ -74,7 +74,7 @@ export class UserDetailComponent implements OnInit {
         if (this.user) {
           this.user.birthDate = new Date(this.user.birthDate);
           this.getDepartmentList();
-          this.getPositionList(this.user.department)
+          this.getPositionList(1);
         }
       })
     }
@@ -90,8 +90,8 @@ export class UserDetailComponent implements OnInit {
     });    
   }
 
-  getPositionList(departmentCode: string) {
-    this.userService.getPositionByDepartment(departmentCode).subscribe(result => {
+  getPositionList(departmentId: number) {
+    this.userService.getPositionByDeprtmId(departmentId).subscribe(result => {
       this.positions = result;
     });
     this.changeDetector.detectChanges();

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuModule } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { PatientDto } from "../../../shared/model/AppModel";
 import { PatientService } from "../../../shared/_services/patient.service";
 import { Router } from "@angular/router";
@@ -14,9 +14,15 @@ export class PatientListComponent implements OnInit {
 
   patients : PatientDto[] = [];
   actions: MenuItem[] = [] ;
-  patient: any
+  patient: any;
+  patientId: number | null = null;
+  modalVisible: boolean = false;
+  formState: string | undefined;
 
-  constructor(private patientService: PatientService, private router: Router) {
+  constructor(
+    private patientService: PatientService,
+    private router: Router,
+    private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -65,7 +71,9 @@ export class PatientListComponent implements OnInit {
   }
 
   editData(id: any) {
-    console.log(id);
+    this.formState = 'Edit';
+    this.patientId = id;
+    this.modalVisible = true;
   }
 
   deleteData(id: any) {
@@ -78,6 +86,22 @@ export class PatientListComponent implements OnInit {
 
   viewMedicalTreatment(id: any) {
     //TODO: View treatment Form
+  }
+
+  addPatient() {
+    this.formState = 'Create';
+    this.patientId = null;
+    this.modalVisible = true;
+  }
+
+  refresh(data: any) {
+    this.modalVisible = false;
+    this.getData();
+    if (data == 'Create') {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
+    } else {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
+    }
   }
 
 }

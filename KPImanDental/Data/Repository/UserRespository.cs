@@ -38,5 +38,18 @@ namespace KPImanDental.Data.Repository
             var user = await _context.Users.FindAsync(id);
             return _mapper.Map<UserDto>(user);
         }
+
+        public async Task<Department> GetDepartmentByIdAsync(long id)
+        {
+            return await _context.Departments.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<DepartmentDto>> GetAllDepartmentAsync()
+        {
+            var departmentList = await _context.Departments.ToListAsync();
+            var departmentListDto = _mapper.Map<IEnumerable<DepartmentDto>>(departmentList);
+
+            return departmentListDto;
+        }
     }
 }

@@ -40,12 +40,11 @@ namespace KPImanDental.Helpers
             #endregion
 
             #region Department and Position
-            CreateMap<Department, DepartmentDto>()
-                .ForMember(dest => dest.Position, opt => opt.MapFrom(src => src.Position)); // Map positions
+            CreateMap<Department, DepartmentDto>();
             CreateMap<DepartmentDto, Department>();
-            CreateMap<Position, PositionDto>(); // Map Position to PositionDto
-            CreateMap<Position, PositionDto>()
-            .ForMember(dest => dest.DepartmentCode, opt => opt.MapFrom(src => src.Department.Code)); // Mapping DepartmentCode
+            CreateMap<Position, PositionDto>(); // Mapping DepartmentCode
+            CreateMap<PositionDto, Position>();
+            CreateMap<Position, PositionDtoExt>();
             #endregion
 
             #region Patient

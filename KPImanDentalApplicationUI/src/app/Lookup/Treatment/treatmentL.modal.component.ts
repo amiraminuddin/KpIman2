@@ -13,8 +13,9 @@ export class TreatmentLookupModalComponent implements OnInit {
 
   @Input() treatmentId: number | null | undefined;
   @Input() modalVisible: boolean | undefined;
+  @Input() modalState: string | undefined;
 
-  @Output() refreshAfterSaved = new EventEmitter<void>();
+  @Output() refreshAfterSaved = new EventEmitter<any>();
 
   treatmentForm = new FormGroup({});
   treatment: TreatmeantLookupDto = new TreatmeantLookupDto
@@ -26,9 +27,16 @@ export class TreatmentLookupModalComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Only run this logic if the modal becomes visible and a treatmentId exists
-    if (changes["modalVisible"] && this.modalVisible && this.treatmentId != null) {
-      this.getData();
+    if (changes["modalVisible"] && this.modalVisible) {
+      // When the modal becomes visible, check treatmentId
+      if (this.treatmentId != null) {
+        this.getData();
+      } else {
+        this.resetForm(); // Reset the form if no treatmentId
+        //this.treatmentForm.get('treatmentCode')?.enable(); // Enable treatmentCode
+      }
+    } else if (changes["modalVisible"] && !this.modalVisible) {
+      this.resetForm(); // Reset when modal is hidden
     }
   }
 
@@ -38,9 +46,14 @@ export class TreatmentLookupModalComponent implements OnInit {
       treatmentCode: new FormControl(),
       treatmentName: new FormControl(),
       treatmentDesc: new FormControl(),
-      isActive: new FormControl(false),
+      isActive: new FormControl(),
       treatmentPrice: new FormControl(),
     });
+  }
+
+  private resetForm(): void {
+    this.treatmentForm.reset(); // Reset the form values
+    this.treatmentForm.get('treatmentCode')?.enable(); // Enable treatmentCode after reset
   }
 
   getData(): void {
@@ -69,7 +82,8 @@ export class TreatmentLookupModalComponent implements OnInit {
     formData.isActive = formData.isActive === 'true' || formData.isActive === true;
     this.service.createOrUpdateTreatmentLookup(formData).subscribe({
       next: (result) => {
-        this.refreshAfterSaved.emit();
+        console.log(result)
+        this.refreshAfterSaved.emit(this.modalState);
       },
       error: (error) => { console.log(error) }
     });

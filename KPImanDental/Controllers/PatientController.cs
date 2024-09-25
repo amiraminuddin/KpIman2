@@ -2,13 +2,10 @@
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Dto.PatientDto;
-using KPImanDental.Helpers;
-using KPImanDental.Model.Lookup;
 using KPImanDental.Model.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
 namespace KPImanDental.Controllers
 {
@@ -47,30 +44,19 @@ namespace KPImanDental.Controllers
             return Ok(patientDto);
         }
 
-        [HttpPost("RegisterPatient")]
-        public async Task<ActionResult<Patient>> RegisterPatient(PatientDto patientDto)
+        [HttpPost("CreateOrUpdatePatient")]
+        public async Task<ActionResult> CreateOrUpdatePatient(PatientDto patientDto)
         {
-            //Check Patient Exist
-            var patient = await _dataContext.Patients.AnyAsync(x =>  x.FirstName.ToUpper() == patientDto.FirstName.ToUpper() && x.LastName.ToUpper() == patientDto.LastName.ToUpper());
-
-            if (patient) return BadRequest("Patient already exist");
-
-            var NewPatient = _mapper.Map<Patient>(patientDto);
-
-            _dataContext.Patients.Add(NewPatient);
-            await _dataContext.SaveChangesAsync();
-            return Ok("Patient Created");
-        }
-
-        [HttpPut("UpdatePatient")]
-        public async Task<ActionResult<Patient>> UpdatePatient(PatientDto patientDto)
-        {
-            var patient = await _dataContext.Patients.FindAsync(patientDto.Id);
-            if (patient == null) return BadRequest("Patient Not Found");
-
-            var UpdatedPatient = _mapper.Map<Patient>(patientDto);
-            await _dataContext.SaveChangesAsync();
-            return Ok("Patient Saved");
+            if (patientDto.Id.HasValue)
+            {
+                var updatedPatient = await UpdatePatient(patientDto);
+                return Ok(updatedPatient);
+            }
+            else
+            {
+                var createPatient = await CreatePatient(patientDto);
+                return Ok(createPatient);
+            }
         }
 
         [HttpDelete("DeletePatient")]
@@ -195,7 +181,7 @@ namespace KPImanDental.Controllers
         }
         #endregion
 
-        #region Helper
+        #region Private Method
         private async Task<string> GetLookupUser(long Id)
         {
             var result = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == Id);
@@ -233,6 +219,34 @@ namespace KPImanDental.Controllers
             var result = await _dataContext.Patients.FirstOrDefaultAsync(p => p.Id == Id);
             if (result == null) return "";
             return result.FirstName.ToString() + ' ' + result.LastName.ToString();
+        }
+
+        private async Task<long> CreatePatient(PatientDto patientDto)
+        {
+            var patient = _mapper.Map<Patient>(patientDto);
+
+            patient.CreatedBy = "System";
+            patient.CreatedOn = DateTime.Now;
+            patient.UpdatedBy = "System";
+            patient.UpdatedOn = DateTime.Now;
+
+            _dataContext.Patients.Add(patient);
+            await _dataContext.SaveChangesAsync();
+            return patient.Id;
+        }
+
+        private async Task<long> UpdatePatient(PatientDto patientDto)
+        {
+            var patient = await _dataContext.Patients.FindAsync(patientDto.Id);
+            if (patient == null) return -1;
+
+            patient.UpdatedBy = "System";
+            patient.UpdatedOn = DateTime.Now;
+
+            _mapper.Map(patientDto, patient);
+            await _dataContext.SaveChangesAsync();
+
+            return patient.Id;
         }
         #endregion
     }

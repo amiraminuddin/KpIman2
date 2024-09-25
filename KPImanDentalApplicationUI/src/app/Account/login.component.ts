@@ -3,11 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from "@angular/router";
 import { AccountServices } from "../../shared/_services/account.service";
 import Swal from 'sweetalert2';
-
-
-//@Injectable({
-//  providedIn: 'root'
-//})
+import { timeout } from "rxjs";
 
 @Component({
   selector: "app-login-component",
@@ -30,20 +26,22 @@ export class LoginComponent {
 
   login() {
     this.isLoad = true;
-    this.service.login(this.user).subscribe(
-      (response: any) => {
-        this.service.storeToken(response);
-        this.router.navigate(['kpIman/main']);
-      },
-      (error) => {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: error.error
-        });
-        this.isLoad = false;
-      }
-    )
-    
+    setTimeout(() => {
+      this.service.login(this.user).subscribe(
+        (response: any) => {
+          this.service.storeToken(response);
+          this.router.navigate(['kpIman/main']);
+        },
+        (error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error.error
+          });
+          this.isLoad = false;
+        }
+      )   
+    }, 3000)
+       
   }
 }

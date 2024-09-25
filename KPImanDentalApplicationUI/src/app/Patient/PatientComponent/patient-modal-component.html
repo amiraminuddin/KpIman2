@@ -1,0 +1,83 @@
+<style>
+  :host ::ng-deep .p-dropdown {
+    width: 100% !important;
+  }
+
+  :host ::ng-deep .p-calendar {
+    width: 100% !important;
+  }
+
+  .horizontal-layout {
+    display: flex;
+    gap: 20px; /* Space between each input-container */
+    padding-bottom: 5px;
+  }
+
+  .input-container {
+    flex: 1; /* Makes each input container take up an equal share of the space */
+    display: flex;
+    flex-direction: column; /* Label on top */
+  }
+</style>
+
+<form [formGroup]="patientForm" (ngSubmit)="save()" autocomplete="off">
+  <div>
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>First Name</label>
+        <input id="disabled-input" type="text" formControlName="firstName" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>Last Name</label>
+        <input id="disabled-input" type="text" pInputText formControlName="lastName" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Email</label>
+        <input id="disabled-input" type="text" formControlName="email" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>Date Of Birth</label>
+        <input style="height: 100%;"
+               id="requestdate"
+               type="date"
+               class="form-control"
+               formControlName="dateOfBirth" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Gender</label>
+        <p-dropdown [options]="genderList" optionLabel="display" optionValue="code"  formControlName="gender"></p-dropdown>
+      </div>
+
+      <div class="input-container">
+        <label>Contact No</label>
+        <input id="disabled-input" type="text" pInputText formControlName="contactNo" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Address</label>
+        <input id="disabled-input" type="text" formControlName="address" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label for="isActive">Is Active?</label>
+        <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+      </div>
+    </div>
+
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+
+

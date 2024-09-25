@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MenuItem } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import Swal from "sweetalert2";
 import { TreatmeantLookupDto } from "../../../shared/model/AppModel";
 import { LookupService } from "../../../shared/_services/lookup.service";
@@ -18,8 +18,9 @@ export class TreatmentListComponent implements OnInit {
   actions: MenuItem[] = [];
   modalVisible: boolean = false;
   treatmentId: number | null = null;
+  formState: string | undefined;
 
-  constructor(private service: LookupService) { }
+  constructor(private service: LookupService, private messageService: MessageService) { }
 
 
   ngOnInit(): void {
@@ -67,29 +68,37 @@ export class TreatmentListComponent implements OnInit {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         this.service.deleteTreatment(id).subscribe({
-          next: _ => { this.getData(); },
+          next: _ => {
+            this.getData();
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Deleted!!' });
+          },
           error: _ => { },
         });
       }
     });
-
-
-
   }
 
   showModal() {
+    this.formState = 'Create';
     this.treatmentId = null;
     this.modalVisible = true;
   }
 
   showEditModal(Id: number) {
+    this.formState = 'Edit';
     this.treatmentId = Id
     this.modalVisible = true;
   }
 
-  refresh() {
+  refresh(data: any) {
     this.modalVisible = false;
     this.getData();
+    if (data == 'Create') {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
+    } else {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
+    }
+    
   }
 
 }

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { DepartmentDto, PositionDto, UserDto } from "../model/AppModel";
+import { DeletionCondition, DepartmentDto, PositionDto, UserDto } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -22,7 +22,7 @@ export class userServices {
 
 
   updateUser(user: any) {
-    return this.http.put(this.apiUrl + "Users/updateUser", user);
+    return this.http.put(this.apiUrl + "Users/updateUser", user).pipe();
   }
 
   saveUserPhoto(file: any): Observable<string> {
@@ -38,29 +38,59 @@ export class userServices {
   }
 
   //START : Department
+  createOrUpdateDepartment(departmentDto: DepartmentDto) {
+    return this.http.post(`${this.apiUrl}Users/CreateOrUpdateDepartment`, departmentDto).pipe();
+  }
+
   getAllDepartment(): Observable<DepartmentDto[]> {
-    return this.http.get<DepartmentDto[]>(this.apiUrl + "Users/getAllDepartment") 
+    return this.http.get<DepartmentDto[]>(this.apiUrl + "Users/GetAllDepartment").pipe();
   }
 
-  adddepartment(departmentDto: any) {
-    return this.http.post(`${this.apiUrl}Users/registerDeparment`, departmentDto).pipe(
-      map(department => {
-        if (department) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      })
-    );
+  getDepartmentById(id: number): Observable<DepartmentDto> {
+    const params = `id=${id}`;
+    return this.http.get<DepartmentDto>(`${this.apiUrl}Users/GetDepartmentById?${params}`).pipe();
+    //return this.http.get<TreatmeantLookupDto>(`${this.apiUrl}Lookup/GetTreatmentById?Id=${id}`).pipe();
   }
 
+  deleteDepartment(id: number) {
+    const params = `id=${id}`;
+    return this.http.delete(`${this.apiUrl}/DeleteDepartment?${params}`).pipe();
+  }
+
+  checkPositionExistByDepartment(id: number) {
+    const params = `id=${id}`;
+    return this.http.get(`${this.apiUrl}/CheckPositionExistByDepartment?${params}`).pipe();
+  }
+
+  canDeleteDepartment<T>(id: number): Observable<DeletionCondition<T>> {
+    const params = `DepartmentId=${id}`;
+    return this.http.get<DeletionCondition<T>>(`${this.apiUrl}Users/CanDeleteDepartment?${params}`).pipe();
+  }
   //END : Department
 
   //START : Position
-  getPositionByDepartment(department: string): Observable<PositionDto[]> {
-    const params = `departmentCode=${department}`;
-    return this.http.get<PositionDto[]>(`${this.apiUrl}Users/getPositionByDeprtmId?${params}`);
+  getPositionByDeprtmId(department: number): Observable<PositionDto[]> {
+    const params = `departmentId=${department}`;
+    return this.http.get<PositionDto[]>(`${this.apiUrl}Users/GetPositionByDeprtmId?${params}`).pipe();
+  }
+
+  createOrUpdatePosition(positionDto: PositionDto) {
+    return this.http.post(`${this.apiUrl}Users/CreateOrUpdatePosition`, positionDto).pipe();
+  }
+
+  getPositionById(id: number): Observable<PositionDto> {
+    const params = `id=${id}`;
+    return this.http.get<PositionDto>(`${this.apiUrl}Users/GetPositionById?${params}`).pipe();
+  }
+
+  deletePosition(id: number) {
+    const params = `id=${id}`;
+    return this.http.delete(`${this.apiUrl}DeletePosition?${params}`).pipe();
+  }
+
+  canDeletePosition<T>(id: number): Observable<DeletionCondition<T>> {
+    const params = `id=${id}`;
+    return this.http.get<DeletionCondition<T>>(`${this.apiUrl}Users/CanDeletePosition?${params}`).pipe();
   }
   //END : Position
 }

@@ -19,13 +19,14 @@
 
     <div class="horizontal-layout">
       <div class="input-container">
-        <label>Is Active?</label>
-        <input id="disabled-input" type="text" pInputText formControlName="isActive" />
+        <label>Treatment Price</label>
+        <!--<input id="disabled-input" type="text" pInputText formControlName="treatmentPrice" />-->
+        <p-inputNumber inputId="treatmentPrice" formControlName="treatmentPrice" [minFractionDigits]="2" prefix="RM "  [showButtons]="true"></p-inputNumber>
       </div>
 
       <div class="input-container">
-        <label>Treatment Price</label>
-        <input id="disabled-input" type="text" pInputText formControlName="treatmentPrice" />
+        <label for="isActive">Is Active?</label>
+        <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
       </div>
     </div>
   </div>

@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
-using KPImanDental.Data.Repository;
 using KPImanDental.Dto;
 using KPImanDental.Interfaces;
 using KPImanDental.Model;
-using KPImanDental.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,24 +26,16 @@ namespace KPImanDental.Controllers
         }
 
         #region CRUD For User Management Module - User
-        //<snippet_GetAll>
         [HttpGet("getAllUser")]
         public async Task<ActionResult<IEnumerable<UserListDto>>> GetUsers()
         {
-            //var users = await _context.Users.ToListAsync();
-            //var usersListDto = _mapper.Map<IEnumerable<UserListDto>>(users).Select((user, index) =>
-            //{
-            //    user.RowNumber = index + 1;
-            //    return user;
-            //}).ToList();
             var usersListDto = await _userRepo.GetAllUsersAsync();
 
             return Ok(usersListDto);
         }
 
-        // <snippet_GetById>
         [HttpGet("getUserById")]
-        public async Task<ActionResult<UserDto>> GetUserFromId(long Id)//[FromQuery] fo passing parameter
+        public async Task<ActionResult<UserDto>> GetUserFromId(long Id)
         {
             try
             {
@@ -119,76 +109,251 @@ namespace KPImanDental.Controllers
         #endregion CRUD For User Management Module - User
 
         #region CRUD For User Management Module - Department
-        [HttpGet("getAllDepartment")]
+        [HttpPost("CreateOrUpdateDepartment")]
+        public async Task<ActionResult> CreateOrUpdateDepartment(DepartmentDto departmentDto)
+        {
+            if (departmentDto.Id.HasValue)
+            {
+                var updateDepartment = await UpdateDepartment(departmentDto);
+                return Ok(updateDepartment);
+            }
+            else
+            {
+                if (await CheckDepartment(departmentDto.Code) == true)
+                {
+                    return BadRequest("Department Code already exist");
+                }
+                var createDepartment = await CreateDepartment(departmentDto);
+                return Ok(createDepartment);
+            }
+        }
+
+        [HttpGet("GetAllDepartment")]
         public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
         {
-            var Departments = await _context.Departments.Include(d => d.Position).ToListAsync();
+            var Departments = await _userRepo.GetAllDepartmentAsync();
 
-            var DepartmentList = _mapper.Map<IEnumerable<DepartmentDto>>(Departments);
-
-            return Ok(DepartmentList);
+            return Ok(Departments);
         }
 
-        [HttpPost("registerDeparment")]
-        public async Task<ActionResult<Department>> RegisterDepartment(DepartmentDto departmentDto)
+        [HttpGet("GetDepartmentById")]
+        public async Task<ActionResult<DepartmentDto>> GetDepartmentById(long Id)
         {
-            if (await CheckDepartment(departmentDto.Code))
-            { return BadRequest("Department Already Exists"); }
+            var department = await _userRepo.GetDepartmentByIdAsync(Id);
+            if (department == null) { return BadRequest("No Record Found"); }
 
-            var deparment = _mapper.Map<Department>(departmentDto);
-
-            _context.Departments.Add(deparment);
-            await _context.SaveChangesAsync();
-            return deparment;
+            var departmentDto = _mapper.Map<DepartmentDto>(department);
+            
+            return Ok(departmentDto);
         }
 
-        [HttpPut("updateDepartment")]
-        public async Task<ActionResult<Department>> UpdateDepartment(DepartmentDto departmentDto)
+        [HttpDelete("DeleteDepartment")]
+        public async Task<ActionResult<string>> DeleteDepartment(long Id)
         {
-            var department = await _context.Departments.FirstOrDefaultAsync(x => x.Id == departmentDto.Id);
-
-            if(department == null) { return BadRequest("Department not Found!!"); }
-
-            var updatedDepartment = _mapper.Map<Department>(departmentDto);
-
+            var department = await _userRepo.GetDepartmentByIdAsync(Id);
+            _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
+            return Ok("Data Deleted");
+        }
 
-            return Ok(updatedDepartment);
+        [HttpGet("CanDeleteDepartment")]
+        public async Task<ActionResult<DeletionCondition<DepartmentDto>>> CanDeleteDepartment(long DepartmentId)
+        {
+            var department = await _userRepo.GetDepartmentByIdAsync(DepartmentId);
+
+            var position = _context.Posititon.Where(x => x.DepartmentId == DepartmentId);
+            var postionCount = await position.CountAsync();
+            var userCount = await _context.Users.CountAsync(x => x.Department == department.Code && x.IsActive == true);
+
+
+            var departmentDeletionCondition = new DeletionCondition<DepartmentDto>
+            {
+                Entity = _mapper.Map<DepartmentDto>(department)
+            };
+
+            if (userCount > 0)
+            {
+                departmentDeletionCondition.DependenciesCount = userCount;
+                departmentDeletionCondition.MessageType = Enums.MessageType.Error;
+                departmentDeletionCondition.Message = $"There are {userCount} active user with position under {department.Name} department";
+            }
+            else if (postionCount > 0) 
+            {
+                var positionList = await position.ToListAsync();
+                var message = "";
+                foreach(var x in positionList)
+                {
+                    message += $"{x.Name}\n";
+                }
+                departmentDeletionCondition.DependenciesCount = postionCount;
+                departmentDeletionCondition.MessageType = Enums.MessageType.Warning;
+                departmentDeletionCondition.Message = $"Below Position(s) will be deleted:\n {message}";
+            }
+            else
+            {
+                departmentDeletionCondition.DependenciesCount = 0;
+                departmentDeletionCondition.MessageType = Enums.MessageType.Information;
+                departmentDeletionCondition.Message = "";
+            }
+
+            return Ok(departmentDeletionCondition);
         }
 
         #endregion CRUD For User Management Module - Department
 
         #region CRUD For User Management Module - Position
 
-        [HttpGet("getPositionRegister")]
-        public async Task<ActionResult<IEnumerable<PositionDto>>> GetAllPositions()
+        [HttpPost("CreateOrUpdatePosition")]
+        public async Task<ActionResult> CreateOrUpdatePosition(PositionDto positionDto)
+        {
+            if(positionDto.Id.HasValue)
+            {
+                var updatePosition = await UpdatePosition(positionDto);
+                return Ok(updatePosition);
+            }
+            else
+            {
+                var createPosition = await CreatePosition(positionDto);
+                return Ok(createPosition);
+            }
+        }
+
+        [HttpGet("GetAllPosition")]
+        public async Task<ActionResult<IEnumerable<PositionDtoExt>>> GetAllPositions()
         {
             var positions = await _context.Posititon.ToListAsync();
-            var positionList = _mapper.Map<IEnumerable<PositionDto>>(positions);
+            var positionList = _mapper.Map<IEnumerable<PositionDtoExt>>(positions);
+            foreach (var item in positionList)
+            {
+                item.DepartmentName = await GetDepartmentName(item.DepartmentId);
+            }
 
             return Ok(positionList);
         }
-        [HttpGet("getPositionByDeprtmId")]
-        public async Task<ActionResult<IEnumerable<PositionDto>>> GetPositionByDepartment(string departmentCode)
+
+        [HttpGet("GetPositionById")]
+        public async Task<ActionResult<PositionDtoExt>> GetPositionById(long id)
+        {
+            var position = await _context.Posititon.FindAsync(id);
+            var positiondto = _mapper.Map<PositionDtoExt>(position);
+
+            return Ok(positiondto);
+        }
+
+        [HttpGet("GetPositionByDeprtmId")]
+        public async Task<ActionResult<IEnumerable<PositionDtoExt>>> GetPositionByDepartment(long departmentId)
         {
             var positions = await _context.Posititon
-                .Where(p => p.Department.Code == departmentCode)
-                .Include(d => d.Department)
+                .Where(p => p.DepartmentId == departmentId)
                 .ToListAsync();
 
             if (positions == null) { return NotFound(); }
 
-            var positionList = _mapper.Map<IEnumerable<PositionDto>>(positions);
+            var positionList = _mapper.Map<IEnumerable<PositionDtoExt>>(positions);
 
             return Ok(positionList);
+        }
+
+        [HttpDelete("DeletePosition")]
+        public async Task<ActionResult<string>> DeletePosition(long id)
+        {
+            var position = await _context.Posititon.FindAsync(id);
+            _context.Posititon.Remove(position);
+            await _context.SaveChangesAsync();
+            return Ok("Data Deleted");
+        }
+
+        [HttpGet("CanDeletePosition")]
+        public async Task<ActionResult<DeletionCondition<Position>>> CanDeletePosition(long id)
+        {
+            //Check If Position already assign at user
+            var position = await _context.Posititon.FirstOrDefaultAsync(x => x.Id == id);
+            var userCount = await _context.Users.CountAsync(x => x.Position == position.Code && x.IsActive == true);
+
+            var userDeletionCondition = new DeletionCondition<Position>
+            {
+                Entity = _mapper.Map<Position>(position),
+                DependenciesCount = userCount,
+                Message = ""
+            };
+
+            if (!userDeletionCondition.DeleteCondition())
+            {
+                userDeletionCondition.MessageType = Enums.MessageType.Error;
+                userDeletionCondition.Message = $"There are {userCount} active user with {position.Name} position";
+            }
+
+            return Ok(userDeletionCondition);
         }
         #endregion CRUD For User Management Module - Position
 
 
-        #region Method
+        #region Private Method
         private async Task<bool> CheckDepartment(string departmentCode)
         {
             return await _context.Departments.AnyAsync(x => x.Code.ToLower() == departmentCode.ToLower());
+        }
+
+        private async Task<long> CreateDepartment(DepartmentDto departmentDto)
+        {
+            var department = _mapper.Map<Department>(departmentDto);
+
+            department.CreatedBy = "System";
+            department.CreatedOn = DateTime.Now;
+            department.UpdatedBy = "System";
+            department.UpdatedOn = DateTime.Now;
+
+            _context.Departments.Add(department);
+            await _context.SaveChangesAsync();
+            return department.Id;
+        }
+
+        private async Task<long> UpdateDepartment(DepartmentDto departmentDto)
+        {
+            var department = await _userRepo.GetDepartmentByIdAsync((long)departmentDto.Id);
+            if (department == null) return -1;
+
+            department.UpdatedBy = "Don";
+            department.UpdatedOn = DateTime.Now;
+
+            _mapper.Map(departmentDto, department);
+            await _context.SaveChangesAsync();
+
+            return department.Id;
+        }
+
+        private async Task<long> CreatePosition(PositionDto positionDto)
+        {
+            var position = _mapper.Map<Position>(positionDto);
+
+            position.CreatedBy = "System";
+            position.CreatedOn = DateTime.Now;
+            position.UpdatedBy = "System";
+            position.UpdatedOn = DateTime.Now;
+
+            _context.Posititon.Add(position);
+            await _context.SaveChangesAsync();
+            return position.Id;
+        }
+
+        private async Task<long> UpdatePosition(PositionDto positionDto)
+        {
+            var position = await _context.Posititon.FindAsync(positionDto.Id);
+            if (position == null) return -1;
+
+            position.UpdatedBy = "Don";
+            position.UpdatedOn = DateTime.Now;
+
+            _mapper.Map(positionDto, position);
+            await _context.SaveChangesAsync();
+
+            return position.Id;
+        }
+
+        private async Task<string> GetDepartmentName(long Id)
+        {
+            var department = await _userRepo.GetDepartmentByIdAsync(Id);
+            return department.Name;
         }
         #endregion
     }

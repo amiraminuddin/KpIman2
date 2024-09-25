@@ -3,16 +3,13 @@
     <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
   </div>-->
   <div class="container-fluid">
+    <p-toast position="bottom-right" life="100"></p-toast>
     <div class="row">
-      <!--<div class="col-lg-3 col-md-4 left-menu">
-        <user-menu-component></user-menu-component>
-      </div>-->
       <div id="userListId">
         <div class="button-user" style="margin-bottom : 5px">
-          <input class="btn btn-primary" type="button" value="Register Patient" style="border-radius: 5px">
+          <input class="btn btn-primary" type="button" value="Register Patient" (click)="addPatient()" style="border-radius: 5px">
         </div>
         <div class="full-height-table-container">
-          <!--[tableStyle]="{'min-width': '150rem'}"-->
           <p-table [value]="patients"
                    styleClass="p-datatable-striped p-datatable-sm"
                    [rows]="10" [scrollable]="true" scrollHeight="100%"
@@ -46,8 +43,16 @@
               </tr>
             </ng-template>
           </p-table>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<p-dialog header="{{formState}} Patient" [modal]="true" [(visible)]="modalVisible" [style]="{ width: '50rem'}" [maximizable]="true">
+  <patient-modal-component [modalState]="formState"
+                          [patientId]="patientId"
+                          [modalVisible]="modalVisible"
+                          (refreshAfterSaved)="refresh($event)">
+  </patient-modal-component>
+</p-dialog>

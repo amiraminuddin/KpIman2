@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
-using KPImanDental.Dto;
+using KPImanDental.Dto.LookupDto;
 using KPImanDental.Dto.PatientDto;
+using KPImanDental.Interfaces;
 using KPImanDental.Model.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,15 @@ namespace KPImanDental.Controllers
 
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepo;
+        private readonly IPatientRespository _patientRepo;
 
-        public PatientController(DataContext context, IMapper mapper) {
+        public PatientController(DataContext context, IMapper mapper, IUserRepository userRepository, IPatientRespository patientRespository) {
         
             _dataContext = context;
             _mapper = mapper;
+            _userRepo = userRepository;
+            _patientRepo = patientRespository;
         }
 
         #region Patient
@@ -72,63 +77,47 @@ namespace KPImanDental.Controllers
 
         #region Patient Treatment
         [HttpGet("GetAllPatientTreatment")]
-        public async Task<ActionResult<IEnumerable<PatientTreatmentDto>>> GetAllPatientTreament(long PatientId)
+        public async Task<ActionResult<IEnumerable<PatientTreatmentDtoExt>>> GetAllPatientTreament(long PatientId)
         {
             var patientTreaments = await _dataContext.PatientTreatments.Where(t => t.PatientId == PatientId).ToListAsync();
 
             if (patientTreaments == null) return BadRequest("No Treatment");
 
-            var patientTreatmentList = _mapper.Map<IEnumerable<PatientTreatmentDto>>(patientTreaments);
+            var patientTreatmentList = _mapper.Map<IEnumerable<PatientTreatmentDtoExt>>(patientTreaments);
             foreach (var item in patientTreatmentList)
             {
-                item.DoctorName = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == item.DrID);
-                item.DSAName = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == item.DSAId);
-                item.PatientName = await _dataContext.Patients.FirstOrDefaultAsync(p => p.Id == item.PatientId);
-                item.TreatmentName = await GetLookupTreatment(item.TreatmentType, "Name");
+                item.Doctor = await _userRepo.GetUserLookupDtoByIdAsync(item.PatientId);
+                item.DSA = await _userRepo.GetUserLookupDtoByIdAsync(item.DSAId);
+                item.Treatment = await GetLookupTreatment(item.TreatmentType);
             }
 
             return Ok(patientTreatmentList);
         }
 
         [HttpGet("GetPatientTreatmentFormById")]
-        public async Task<ActionResult<PatientTreamentFormDto>> GetPatientTreatmentFormById([FromQuery] long TreatmentId)
+        public async Task<ActionResult<PatientTreatmentDto>> GetPatientTreatmentFormById(long TreatmentId)
         {
-            var patientTreament = await _dataContext.PatientTreatments.FirstOrDefaultAsync(x => x.Id == TreatmentId);
+            var patientTreament = await _patientRepo.GetPatientTreatmentByIdAsync(TreatmentId);
             if (patientTreament == null) return BadRequest("No Treatment");
 
-            var patient = await _dataContext.Patients.FirstOrDefaultAsync(x => x.Id == patientTreament.PatientId);
-            if (patient == null) return BadRequest("No patient");
-
-            var dr = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == patientTreament.DrID);
-            var dsa = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == patientTreament.DSAId);
-
-            var patientTreatmentDto = _mapper.Map<PatientTreamentFormDto>(patientTreament);
-
-            patientTreatmentDto.Patient = _mapper.Map<PatientDto>(patient);
-            patientTreatmentDto.Dr = _mapper.Map<UserDto>(dr);
-            patientTreatmentDto.DSA = _mapper.Map<UserDto>(dsa);
+            var patientTreatmentDto = _mapper.Map<PatientTreatmentDto>(patientTreament);
 
             return Ok(patientTreatmentDto);
         }
 
-        [HttpPost("AddPatientTreatment")]
-        public async Task<ActionResult<PatientTreatment>> AddPatientTreatment(PatientTreamentFormDto patientTreatmentFormDto)
+        [HttpPost("CreateOrUpdatePatientTreatment")]
+        public async Task<ActionResult<PatientTreatment>> CreateOrUpdatePatientTreatment(PatientTreatmentDto patientTreatmentDto)
         {
-            var treatment = _mapper.Map<PatientTreatment>(patientTreatmentFormDto);
-            int totalTreatment = await _dataContext.PatientTreatments.CountAsync(w => w.TreatmentType == treatment.TreatmentType);
-
-            var dr = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == patientTreatmentFormDto.Dr.Id);
-            var dsa = await _dataContext.Users.FirstOrDefaultAsync(d => d.Id == patientTreatmentFormDto.DSA.Id);
-            var patient = await _dataContext.Patients.FirstOrDefaultAsync(d => d.Id == patientTreatmentFormDto.Patient.Id);
-
-            treatment.DrID = dr.Id;
-            treatment.DSAId = dsa.Id;
-            treatment.PatientId = patient.Id;
-            treatment.TreatmentNo = GenerateTreatmentNo(treatment.TreatmentType, totalTreatment).ToString();
-
-            _dataContext.PatientTreatments.Add(treatment);
-            await _dataContext.SaveChangesAsync();
-            return Ok("Data Saved");
+            if(patientTreatmentDto.Id.HasValue)
+            {
+                var updateData = await CreatePatientTreatment(patientTreatmentDto);
+                return Ok(updateData);
+            }
+            else
+            {
+                var createDate = await CreatePatientTreatment(patientTreatmentDto);
+                return Ok(createDate);
+            }
         }
         #endregion
 
@@ -182,44 +171,22 @@ namespace KPImanDental.Controllers
         #endregion
 
         #region Private Method
-        private async Task<string> GetLookupUser(long Id)
+        private async Task<TreatmentLookupDto> GetLookupTreatment(long TreatmentId)
         {
-            var result = await _dataContext.Users.FirstOrDefaultAsync(u => u.Id == Id);
-            if (result == null) return "";
-            return result.UserName.ToString();
+            var treatmentLookup = await _dataContext.TreatmentLookup.FirstOrDefaultAsync(t => t.Id == TreatmentId);
+            
+            var treatmentLookupDto = _mapper.Map<TreatmentLookupDto>(treatmentLookup);
+
+            return treatmentLookupDto;
         }
 
-        private async Task<string> GetLookupTreatment(long TreatmentType, string type)
-        {
-            var result = "";
-            var treatment = await _dataContext.TreatmentLookup.FirstOrDefaultAsync(t => t.Id == TreatmentType);
-            if (treatment == null) return "";
-            if(type == "Name")
-            {
-                result = treatment.TreatmentName.ToString();
-            }
-            if(type == "Code")
-            {
-                result = treatment.TreatmentCode.ToString();
-            }
+        //private async Task<string> GenerateTreatmentNo(long treatmentType, int rowNum)
+        //{
+        //    var treatmentCode = await GetLookupTreatment(treatmentType, "Code");
+        //    int year = DateTime.Now.Year;
 
-            return result;
-        }
-
-        private async Task<string> GenerateTreatmentNo(long treatmentType, int rowNum)
-        {
-            var treatmentCode = await GetLookupTreatment(treatmentType, "Code");
-            int year = DateTime.Now.Year;
-
-            return $"{treatmentCode}-{year}-{rowNum+1}";
-        }
-
-        private async Task<string> GetPatientName(long Id)
-        {
-            var result = await _dataContext.Patients.FirstOrDefaultAsync(p => p.Id == Id);
-            if (result == null) return "";
-            return result.FirstName.ToString() + ' ' + result.LastName.ToString();
-        }
+        //    return $"{treatmentCode}-{year}-{rowNum+1}";
+        //}
 
         private async Task<long> CreatePatient(PatientDto patientDto)
         {
@@ -247,6 +214,34 @@ namespace KPImanDental.Controllers
             await _dataContext.SaveChangesAsync();
 
             return patient.Id;
+        }
+
+        private async Task<long> CreatePatientTreatment(PatientTreatmentDto patientTreatmentDto)
+        {
+            var patientTreatment = _mapper.Map<PatientTreatment>(patientTreatmentDto);
+
+            patientTreatment.CreatedBy = "System";
+            patientTreatment.CreatedOn = DateTime.Now;
+            patientTreatment.UpdatedBy = "System";
+            patientTreatment.UpdatedOn = DateTime.Now;
+
+            _dataContext.PatientTreatments.Add(patientTreatment);
+            await _dataContext.SaveChangesAsync();
+            return patientTreatment.Id;
+        }
+
+        private async Task<long> UpdatePatientTreatment(PatientTreatmentDto patientTreatmentDto)
+        {
+            var patientTreatment = await _patientRepo.GetPatientTreatmentByIdAsync((long)patientTreatmentDto.Id);
+            if (patientTreatment == null) return -1;
+
+            patientTreatment.UpdatedBy = "System";
+            patientTreatment.UpdatedOn = DateTime.Now;
+
+            _mapper.Map(patientTreatmentDto, patientTreatment);
+            await _dataContext.SaveChangesAsync();
+
+            return patientTreatment.Id;
         }
         #endregion
     }

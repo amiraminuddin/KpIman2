@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { PatientDto, PatientTreamentFormDto } from "../model/AppModel";
+import { PatientDto, PatientTreamentFormDto, PatientTreatmentDto, PatientTreatmentDtoExt } from "../model/AppModel";
 
 @Injectable({
   providedIn: 'root'
@@ -34,9 +34,13 @@ export class PatientService {
     return this.http.delete(`${this.apiUrl}/DeletePatient?${params}`).pipe();
   }
 
-  getPatientTreatmentFormById(treatmentId : number): Observable<PatientTreamentFormDto> {
-    return this.http.get<PatientTreamentFormDto>(this.apiUrl + 'GetPatientTreatmentFormById?TreatmentId=' + treatmentId ).pipe();
+  getPatientTreatmentFormById(treatmentId: number): Observable<PatientTreatmentDto> {
+    return this.http.get<PatientTreatmentDto>(this.apiUrl + 'GetPatientTreatmentFormById?TreatmentId=' + treatmentId ).pipe();
   }
 
+  getAllPatientTreatment(id: number): Observable<PatientTreatmentDtoExt[]> {
+    const params = `PatientId=${id}`;
+    return this.http.get<PatientTreatmentDtoExt[]>(`${this.apiUrl}GetAllPatientTreatment?${params}`).pipe();
+  }
 
 }

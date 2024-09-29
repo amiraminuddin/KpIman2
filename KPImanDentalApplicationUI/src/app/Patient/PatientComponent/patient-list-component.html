@@ -1,13 +1,42 @@
+<style>
+  .action-button {
+    border: 2px solid grey;
+    border-radius: 25px;
+    padding: 5px;
+  }
+
+  .div-border {
+    border: 1px solid #D3D3D3;
+    border-radius: 8px;
+    padding: 5px;
+  }
+
+  .section-header {
+    margin: 6px 6px 6px 0px;
+  }
+
+  .section-action-button {
+    margin-bottom: 5px;
+    /*border: 2px solid red;
+    border-radius: 5px;*/
+    padding: 5px 5px 5px 0px;
+  }
+</style>
+
 <div>
   <!--<div>
     <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
   </div>-->
   <div class="container-fluid">
     <p-toast position="bottom-right" life="100"></p-toast>
-    <div class="row">
+    <div class="row div-border">
       <div id="userListId">
-        <div class="button-user" style="margin-bottom : 5px">
-          <input class="btn btn-primary" type="button" value="Register Patient" (click)="addPatient()" style="border-radius: 5px">
+        <div class="section-header">
+          Patient List
+          <p-badge value="2" styleClass="p-mr-2"></p-badge>
+        </div>
+        <div class="section-action-button">
+          <input class="btn btn-outline-secondary btn-sm" type="button" value="Register Patient" (click)="addPatient()" style="border-radius: 5px">
         </div>
         <div class="full-height-table-container">
           <p-table [value]="patients"
@@ -29,7 +58,7 @@
               <tr>
                 <td style="max-width: 100px;">
                   <p-menu #menu [model]="getAction(patient)" [popup]="true" appendTo="body"></p-menu>
-                  <p-button (click)="menu.toggle($event); $event.stopPropagation()" icon="pi pi-ellipsis-v"></p-button>
+                  <i (click)="menu.toggle($event); $event.stopPropagation()" class="pi pi-ellipsis-h action-button"></i>
                 </td>
                 <td style="min-width: 100px;">{{ patient.firstName }} {{patient.lastName}}</td>
                 <td style="min-width: 100px;">{{ patient.email }}</td>

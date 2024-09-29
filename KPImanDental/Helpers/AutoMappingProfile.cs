@@ -56,13 +56,16 @@ namespace KPImanDental.Helpers
 
             CreateMap<PatientTreatmentDto, PatientTreatment>();
             CreateMap<PatientTreatment, PatientTreatmentDto>();
-            CreateMap<PatientTreatment, PatientTreamentFormDto>();
-            CreateMap<PatientTreamentFormDto, PatientTreatment>();
+
+            CreateMap<PatientTreatment, PatientTreatmentDtoExt>();
             #endregion
 
             #region Lookup
             CreateMap<TreatmentLookupDto, TreatmentLookup>();
             CreateMap<TreatmentLookup, TreatmentLookupDto>();
+
+            CreateMap<Patient, PatientLookupDto>();
+            CreateMap<KpImanUser, StaffLookupDto>();
             #endregion
         }
     }

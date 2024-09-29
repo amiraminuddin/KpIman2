@@ -93,6 +93,30 @@ export class PatientTreamentFormDto {
   updatedOn: Date | undefined;
 }
 
+export class PatientTreatmentDto {
+  id: number | undefined;
+  patientId: number | undefined;
+  drID: number | undefined;
+  dSAId: number | undefined;
+  treatmentNo: string | undefined;
+  condition: string | undefined;
+  description: string | undefined;
+  treatmentType: number | undefined;
+  treatmentCost: number | undefined;
+  treatmentDate: string | undefined;
+  prescribedMedical: string | undefined;
+  treatmentNotes: string | undefined;
+  followUpReq: boolean | undefined;
+  followUpDate: string | undefined;
+}
+
+export class PatientTreatmentDtoExt extends PatientTreatmentDto {
+  doctor: StaffLookupDto | undefined;
+  dSA: StaffLookupDto | undefined;
+  treatment: TreatmeantLookupDto | undefined;
+  treatmentDateDisplay: string | undefined
+}
+
 //END : Patient Model
 
 export class TreatmeantLookupDto {
@@ -103,10 +127,23 @@ export class TreatmeantLookupDto {
   treatmentDesc: string | undefined;
   isActive?: boolean;
   treatmentPrice: number | undefined;
-  createdBy: string | undefined;
-  updatedBy: string | undefined;
 }
 
+export class PatientLookupDto {
+  id: number | undefined;
+  firstName: string | undefined;
+  lastName: string | undefined;
+  email: string | undefined;
+  contactNo: string | undefined;
+}
+
+export class StaffLookupDto {
+  id: number | undefined;
+  userName: string | undefined;
+  email: string | undefined;
+  position: string | undefined;
+  department: string | undefined;
+}
 
 export class DeletionCondition<T> {
   entity: T | undefined;
@@ -121,4 +158,14 @@ export enum MessageType {
   Error,
   Warning,
   Information
+}
+
+export interface Column {
+  field: string;
+  header: string;
+}
+
+export interface SelectedLookup {
+  value: any;
+  displayValue: string;
 }

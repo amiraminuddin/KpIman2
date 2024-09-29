@@ -7,6 +7,10 @@
     width: 100% !important;
   }
 
+  :host ::ng-deep .p-inputtext {
+    width: 100% !important;
+  }
+
   .horizontal-layout {
     display: flex;
     gap: 20px; /* Space between each input-container */
@@ -58,7 +62,8 @@
 
       <div class="input-container">
         <label>Contact No</label>
-        <input id="disabled-input" type="text" pInputText formControlName="contactNo" />
+        <!--<input id="disabled-input" type="text" pInputText formControlName="contactNo" />-->
+        <p-inputMask mask="999-9999999" formControlName="contactNo"></p-inputMask>
       </div>
     </div>
 

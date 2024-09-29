@@ -43,6 +43,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
+import { InputMaskModule } from 'primeng/inputmask';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -57,8 +59,9 @@ import { TreatmentLookupModalComponent } from './Lookup/Treatment/treatmentL.mod
 import { DepartmentModal } from './users/Department/department-modal.component';
 import { PositionModalComponent } from './users/Department/position-modal-component';
 import { PatientModalComponent } from './Patient/PatientComponent/patient-modal-component';
-
-
+import { PatientTreatmentList } from './Patient/PatientTreatmentComponent/patient-treatment-list-component';
+import { PatientTreatmentModal } from './Patient/PatientTreatmentComponent/patient-treatment-modal';
+import { LookupComponent } from '../shared/component/lookup.component';
 
 @NgModule({
   declarations: [
@@ -81,11 +84,15 @@ import { PatientModalComponent } from './Patient/PatientComponent/patient-modal-
     //patient Component
     PatientListComponent,
     PatientTreatmentFormComponent,
+    PatientTreatmentModal,
     PatientModalComponent,
+    PatientTreatmentList,
 
     //lookup Component
     TreatmentListComponent,
     TreatmentLookupModalComponent,
+
+    LookupComponent,
 
     //Shared Component
     IconComponent,
@@ -121,8 +128,11 @@ import { PatientModalComponent } from './Patient/PatientComponent/patient-modal-
     ProgressSpinnerModule,
     TagModule,
     BadgeModule,
-
+    InputMaskModule,
+    TooltipModule,
     ReactiveFormsModule,
+
+
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

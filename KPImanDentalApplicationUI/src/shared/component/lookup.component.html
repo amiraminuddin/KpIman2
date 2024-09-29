@@ -1,0 +1,20 @@
+<p-table [columns]="columns" [value]="data" selectionMode="single" [(selection)]="selectedData"
+         (onRowClick)="onRowSelect($event)" 
+         styleClass="p-datatable-striped p-datatable-sm"
+         [rows]="10" [scrollable]="true" scrollHeight="100%"
+         [paginator]="true">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns">
+        {{ col.header }}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData" (dblclick)="onRowDoubleClick(rowData)">
+      <td *ngFor="let col of columns">
+        {{ rowData[col.field] }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

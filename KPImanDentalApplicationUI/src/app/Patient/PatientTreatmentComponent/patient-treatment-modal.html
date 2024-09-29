@@ -1,0 +1,128 @@
+<style>
+  :host ::ng-deep .p-dropdown {
+    width: 100% !important;
+  }
+
+  :host ::ng-deep .p-calendar {
+    width: 100% !important;
+  }
+
+  :host ::ng-deep .p-inputtext {
+    width: 100% !important;
+  }
+
+  .horizontal-layout {
+    display: flex;
+    gap: 20px; /* Space between each input-container */
+    padding-bottom: 5px;
+  }
+
+  .input-container {
+    flex: 1; /* Makes each input container take up an equal share of the space */
+    display: flex;
+    flex-direction: column; /* Label on top */
+  }
+</style>
+
+<form [formGroup]="patientTreatmentForm" (ngSubmit)="save()" autocomplete="off">
+  <div>
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Treatment No</label>
+        <input id="disabled-input" type="text" formControlName="treatmentNo" pInputText />
+      </div>
+
+      <div class="input-container">
+        <!--read only-->
+        <label>Patient Name</label>
+        <input id="disabled-input" type="text" pInputText formControlName="patientId" />
+      </div>
+
+      <div class="input-container">
+        <label>Doctor</label> <!--Selection Lookup-->
+        <input id="disabled-input" type="text" pInputText formControlName="drID" />
+      </div>
+
+      <div class="input-container">
+        <label>DSA</label> <!--Selection Lookup-->
+        <input id="disabled-input" type="text" pInputText formControlName="dsaId" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Treatment Date</label>
+        <input style="height: 100%;"
+               id="treatmentDate"
+               type="date"
+               class="form-control"
+               formControlName="treatmentDate" />
+      </div>
+
+      <div class="input-container">
+        <label>Treatment</label>
+        <span class="p-input-icon-right">
+          <i class="pi pi-external-link" (click)="loadLookupTreatment()"></i>
+          <input id="disabled-input" type="text" formControlName="treatmentDisplayValue" pInputText/>
+        </span>
+      </div>
+
+      <div class="input-container">
+        <label>Cost</label>
+        <input id="disabled-input" type="text" formControlName="treatmentCost" pInputText />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Description</label>
+        <input id="disabled-input" type="text" formControlName="description" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>condition</label>
+        <input id="disabled-input" type="text" formControlName="condition" pInputText />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>Prescribed Medical</label>
+        <input id="disabled-input" type="text" formControlName="prescribedMedical" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>Treatment Notes</label>
+        <input id="disabled-input" type="text" formControlName="treatmentNotes" pInputText />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label for="followUpReq">Follow Up ?</label>
+        <p-checkbox formControlName="followUpReq" [binary]="true" inputId="followUpReq"></p-checkbox>
+      </div>
+
+      <div class="input-container">
+        <label>Follow Up Date</label>
+        <input style="height: 100%;"
+               id="followUpDate"
+               type="date"
+               class="form-control"
+               formControlName="followUpDate" />
+      </div>
+    </div>
+
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+</form>
+
+
+<p-dialog header="{{lookupTitle}} List" [modal]="true" [(visible)]="lookupVisible" [maximizable]="false" [draggable]="false">
+  <app-lookup-component [data]="lookupData" [columns]="lookupColumn" (callbackRecordSelected)="getSelectedLookup($event)">
+  </app-lookup-component>
+</p-dialog>
+
+

@@ -104,26 +104,26 @@ export class PatientTreatmentFormComponent implements OnInit {
   }
 
   getData() {
-    const id = this.activeRoute.snapshot.paramMap.get('id');
-    this.patientTreatmentForm.get('patient.dateOfBirth')?.enable();
-    this.service.getPatientTreatmentFormById(Number(id)).subscribe({
-      next: (result: PatientTreamentFormDto) => {
-        if (result) {
-          this.patientTreatmentForm.patchValue(result);
-          this.patientTreatmentForm.get('patient')?.patchValue({
-            dateOfBirth: new Date(result.patient.dateOfBirth)
-          });
-          this.patientTreatmentForm.patchValue({
-            treatmentDate: result.treatmentDate ? new Date(result.treatmentDate) : null
-          });
-          this.patientTreatmentForm.get('patient.dateOfBirth')?.disable();
-          this.patientTreatmentForm.get('treatmentDate')?.disable();
-        }
-      },
-      error: (error) => {
-        console.error('Error fetching patient treatment form:', error);
-      }
-    });
+    //const id = this.activeRoute.snapshot.paramMap.get('id');
+    //this.patientTreatmentForm.get('patient.dateOfBirth')?.enable();
+    //this.service.getPatientTreatmentFormById(Number(id)).subscribe({
+    //  next: (result: PatientTreamentFormDto) => {
+    //    if (result) {
+    //      this.patientTreatmentForm.patchValue(result);
+    //      this.patientTreatmentForm.get('patient')?.patchValue({
+    //        dateOfBirth: new Date(result.patient.dateOfBirth)
+    //      });
+    //      this.patientTreatmentForm.patchValue({
+    //        treatmentDate: result.treatmentDate ? new Date(result.treatmentDate) : null
+    //      });
+    //      this.patientTreatmentForm.get('patient.dateOfBirth')?.disable();
+    //      this.patientTreatmentForm.get('treatmentDate')?.disable();
+    //    }
+    //  },
+    //  error: (error) => {
+    //    console.error('Error fetching patient treatment form:', error);
+    //  }
+    //});
   }
 
   //TODO : Use API to add into table

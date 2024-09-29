@@ -6,6 +6,7 @@ import { TreatmentListComponent } from './app/Lookup/Treatment/treamentL.list.co
 import { ModuleComponent } from './app/Module/module.list.component';
 import { PatientListComponent } from './app/Patient/PatientComponent/patient-list-component';
 import { PatientTreatmentFormComponent } from './app/Patient/PatientTreatmentComponent/patient-treatment-form-component';
+import { PatientTreatmentList } from './app/Patient/PatientTreatmentComponent/patient-treatment-list-component';
 import { DepartmentListComponent } from './app/users/Department/department-list-component';
 import { UserDetailComponent } from './app/users/user-detail-component';
 import { userComponent } from './app/users/user-list-component';
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: 'UserManagement/department', component: DepartmentListComponent, data: { moduleName: 'User Management', pageName: '> Department List' } },
 
       { path: "Patient/PatientList", component: PatientListComponent, data: { moduleName: 'Patient Management', pageName: '> Patient List' } },
+      { path: "Patient/TreatmentList/:patientId", component: PatientTreatmentList, data: { moduleName: 'Patient Management', pageName: '> Treatment List' } },
       { path: "Patient/TreatmentForm/:id", component: PatientTreatmentFormComponent, data: { moduleName: 'Patient Management', pageName: '> Treatment Form' } },
       { path: "Patient/TreatmentForm", component: PatientTreatmentFormComponent, data: { moduleName: 'Patient Management', pageName: '> Treatment Form' } },
 

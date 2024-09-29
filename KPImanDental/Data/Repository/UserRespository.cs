@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KPImanDental.Dto;
+using KPImanDental.Dto.LookupDto;
 using KPImanDental.Interfaces;
 using KPImanDental.Model;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,14 @@ namespace KPImanDental.Data.Repository
             var departmentListDto = _mapper.Map<IEnumerable<DepartmentDto>>(departmentList);
 
             return departmentListDto;
+        }
+
+        public async Task<StaffLookupDto> GetUserLookupDtoByIdAsync(long id)
+        {
+            var user = await GetUserByIdAsync(id);
+            var userLookupDto = _mapper.Map<StaffLookupDto>(user);
+
+            return userLookupDto;
         }
     }
 }

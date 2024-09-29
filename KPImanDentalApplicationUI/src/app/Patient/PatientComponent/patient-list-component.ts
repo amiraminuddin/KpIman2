@@ -48,14 +48,15 @@ export class PatientListComponent implements OnInit {
         label: 'Register Medical Treatment',
         icon: 'pi pi-plus-circle',
         command: () => {
-          this.router.navigate(['/kpIman/Patient/TreatmentForm/', patient.id]);
+          //this.router.navigate(['/kpIman/Patient/TreatmentForm']);
+          window.open(this.router.serializeUrl(this.router.createUrlTree(['/kpIman/Patient/TreatmentForm'])), '_blank');
         }
       },
       {
         label: 'View Medical Treatment',
         icon: 'pi pi-folder-open',
         command: () => {
-          this.router.navigate(['/kpIman/Patient/TreatmentForm'])
+          window.open(this.router.serializeUrl(this.router.createUrlTree([`/kpIman/Patient/TreatmentList/${patient.id}`])), '_blank');
         }
       },
       {

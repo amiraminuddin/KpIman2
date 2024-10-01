@@ -111,13 +111,19 @@ export class PatientTreatmentDto {
 }
 
 export class PatientTreatmentDtoExt extends PatientTreatmentDto {
-  doctor: StaffLookupDto | undefined;
-  dSA: StaffLookupDto | undefined;
-  treatment: TreatmeantLookupDto | undefined;
+  patientName: string | undefined;
+  doctor: LookupTemplateDto | undefined;
+  dsa: LookupTemplateDto | undefined;
+  treatment: LookupTemplateDto | undefined;
   treatmentDateDisplay: string | undefined
 }
 
 //END : Patient Model
+
+export class LookupTemplateDto {
+  fieldValue: string | undefined;
+  fieldDisplay: string | undefined;
+}
 
 export class TreatmeantLookupDto {
 
@@ -159,6 +165,17 @@ export enum MessageType {
   Warning,
   Information
 }
+export enum ValidatorsType {
+  Error,
+  Warning,
+  Mandatory
+}
+
+export enum ValidatorTriggerType {
+  OnLoad,
+  OnChange,
+  OnSave  
+}
 
 export interface Column {
   field: string;
@@ -166,6 +183,18 @@ export interface Column {
 }
 
 export interface SelectedLookup {
-  value: any;
-  displayValue: string;
+  FieldValue: any;
+  FieldDisplay: string;
+}
+
+export class Validators {
+  field: string | undefined;
+  isValid: boolean | undefined;
+  message: string | undefined;
+  validatorsType: ValidatorsType | undefined;
+}
+
+export class DataValidator<T> {
+  data: T | undefined;
+  triggerType: ValidatorTriggerType | undefined;
 }

@@ -3,6 +3,7 @@ using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Interfaces;
 using KPImanDental.Model;
+using KPImanDental.Model.Validator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -199,6 +200,63 @@ namespace KPImanDental.Controllers
             return Ok(departmentDeletionCondition);
         }
 
+        [HttpPost("GetDepartmentValidator")]
+        public async Task<ActionResult<List<Validators>>> GetDepartmentValidator(DataValidators<DepartmentDto> request)
+        {
+            var validators = new List<Validators>();
+            var properties = typeof(DepartmentDto).GetProperties();
+            var departmentDto = request.Data;
+            var data = await _userRepo.GetAllDepartmentAsync();
+
+            foreach (var property in properties) { 
+                var value = property.GetValue(departmentDto);
+                string propertyName = property.Name;
+
+                if (propertyName == "Code" && (request.TriggerType == Enums.ValidatorTriggerType.OnLoad || request.TriggerType == Enums.ValidatorTriggerType.OnChange)) {
+                    
+                    if(value is null or (object)"")
+                    {
+                        validators.Add(new Validators
+                        {
+                            Field = "Code",
+                            IsValid = false,
+                            Message = "Department is Mandatory.",
+                            ValidatorsType = Enums.ValidatorsType.Mandatory,
+                        });
+                    }else
+                    {
+                        bool isCodeUnique = data.Where(x => x.Code.ToUpper() == departmentDto.Code.ToUpper()).Any();
+                        if (isCodeUnique && !departmentDto.Id.HasValue)
+                        {
+                            validators.Add(new Validators
+                            {
+                                Field = "Code",
+                                IsValid = false,
+                                Message = "Department code already exists.",
+                                ValidatorsType = Enums.ValidatorsType.Error,
+                            });
+                        }
+                    }
+                }
+
+                if (propertyName == "Name" && (value is not null) && request.TriggerType == Enums.ValidatorTriggerType.OnChange)
+                {
+                    bool isNameUnique = data.Where(x => x.Name.ToUpper() == departmentDto.Name.ToUpper()).Any();
+                    if(isNameUnique)
+                    {
+                        validators.Add(new Validators
+                        {
+                            Field = "Name",
+                            IsValid = true,
+                            Message = "Department Name already exists.",
+                            ValidatorsType = Enums.ValidatorsType.Warning,
+                        });
+                    }
+                }
+            }
+            return Ok(validators);
+        }
+
         #endregion CRUD For User Management Module - Department
 
         #region CRUD For User Management Module - Position
@@ -289,6 +347,8 @@ namespace KPImanDental.Controllers
 
 
         #region Private Method
+
+        #region Department
         private async Task<bool> CheckDepartment(string departmentCode)
         {
             return await _context.Departments.AnyAsync(x => x.Code.ToLower() == departmentCode.ToLower());
@@ -322,6 +382,22 @@ namespace KPImanDental.Controllers
             return department.Id;
         }
 
+        private async Task<string> GetDepartmentName(long Id)
+        {
+            var department = await _userRepo.GetDepartmentByIdAsync(Id);
+            return department.Name;
+        }
+
+        private async Task<bool> IsDepartmentCodeUnique(string input)
+        {
+            var data = await _userRepo.GetAllDepartmentAsync();
+            var codeExists = data.Where(x => x.Code.ToUpper() == input.ToUpper());
+            if(codeExists.Any()) return true;
+            return false;
+        }
+        #endregion
+
+        #region Position
         private async Task<long> CreatePosition(PositionDto positionDto)
         {
             var position = _mapper.Map<Position>(positionDto);
@@ -349,12 +425,7 @@ namespace KPImanDental.Controllers
 
             return position.Id;
         }
-
-        private async Task<string> GetDepartmentName(long Id)
-        {
-            var department = await _userRepo.GetDepartmentByIdAsync(Id);
-            return department.Name;
-        }
+        #endregion
         #endregion
     }
 }

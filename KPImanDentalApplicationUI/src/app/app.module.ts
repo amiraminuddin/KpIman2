@@ -62,6 +62,7 @@ import { PatientModalComponent } from './Patient/PatientComponent/patient-modal-
 import { PatientTreatmentList } from './Patient/PatientTreatmentComponent/patient-treatment-list-component';
 import { PatientTreatmentModal } from './Patient/PatientTreatmentComponent/patient-treatment-modal';
 import { LookupComponent } from '../shared/component/lookup.component';
+import { ValidationComponent } from '../shared/component/validation.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { LookupComponent } from '../shared/component/lookup.component';
     maintenanceComponent,
     SpinnerComponent,
     UserMenu,
+    ValidationComponent,
   ],
   imports: [
     BrowserModule,

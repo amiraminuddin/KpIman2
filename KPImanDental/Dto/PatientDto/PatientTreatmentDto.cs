@@ -15,6 +15,6 @@
         public string PrescribedMedical { get; set; }
         public string TreatmentNotes { get; set; }
         public Boolean FollowUpReq { get; set; }
-        public DateTime FollowUpDate { get; set; }
+        public DateTime? FollowUpDate { get; set; }
     }
 }

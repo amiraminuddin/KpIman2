@@ -5,6 +5,20 @@
     gap: 20px; /* Space between each input-container */
     padding-bottom: 5px;
   }
+
+  .input-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .input-container label {
+    width: 120px; /* Set a fixed width for labels */
+    margin-right: 1rem;
+  }
+
+  .input-container input {
+    flex: 1; /* Allows the input to expand and take up available space */
+  }
 </style>
 
 <form [formGroup]="positionForm" (ngSubmit)="save()" autocomplete="off">

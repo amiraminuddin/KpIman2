@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { DepartmentDto } from "../../../shared/model/AppModel";
+import { DataValidator, DepartmentDto, Validators, ValidatorTriggerType } from "../../../shared/model/AppModel";
 import { userServices } from "../../../shared/_services/user.service";
 
 @Component({
@@ -15,8 +15,18 @@ export class DepartmentModal implements OnInit {
 
   @Output() refreshAfterSaved = new EventEmitter<any>();
 
+  public ValidatorTriggerType = ValidatorTriggerType;
+
   departmentForm = new FormGroup({});
-  department: DepartmentDto = new DepartmentDto
+  department: DepartmentDto = new DepartmentDto;
+  validator: Validators[] = [];
+  codeErrorMessage: string | null = null;
+  dataValidator: DataValidator<DepartmentDto> = new DataValidator<DepartmentDto>()
+
+
+  onChange = ValidatorTriggerType.OnChange;
+  OnSave = ValidatorTriggerType.OnSave;
+  OnLoad = ValidatorTriggerType.OnLoad;
 
   constructor(private service: userServices) { }
 
@@ -30,6 +40,7 @@ export class DepartmentModal implements OnInit {
         this.getData();
       } else {
         this.resetForm();
+        this.validateCode(ValidatorTriggerType.OnLoad);
       }
     } else if (changes['modalVisible'] && !this.modalVisible) {
       this.resetForm();
@@ -48,6 +59,7 @@ export class DepartmentModal implements OnInit {
   private resetForm(): void {
     this.departmentForm.reset();
     this.departmentForm.get('code')?.enable();
+    this.validator = [];
   }
 
   getData(): void {
@@ -57,6 +69,7 @@ export class DepartmentModal implements OnInit {
           if (result) {
             this.departmentForm.patchValue(result);
             this.departmentForm.get('code')?.disable();
+            this.validateCode(ValidatorTriggerType.OnLoad);
           }
         },
         error: (error) => {
@@ -81,4 +94,27 @@ export class DepartmentModal implements OnInit {
       }
     })
   }
+
+
+  //START : Validation
+  validateCode(triggerType: ValidatorTriggerType): void {
+    const formData = { ...this.departmentForm.value };
+    const departmentCode = this.departmentForm.get('code')?.value;
+    formData.code = departmentCode;
+
+    this.dataValidator.data = formData;
+    this.dataValidator.triggerType = triggerType
+
+    this.service.getDepartmentValidator(this.dataValidator).subscribe({
+      next: (result: Validators[]) => {
+        this.validator = result;
+      }
+    });
+  }
+
+  isFormInvalid(): boolean {
+    // If any validator in the list has isValid as false, the form is considered invalid
+    return this.validator.some(x => !x.isValid);
+  }
+  //END : Validation
 }

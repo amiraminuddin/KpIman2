@@ -34,13 +34,22 @@ export class PatientService {
     return this.http.delete(`${this.apiUrl}/DeletePatient?${params}`).pipe();
   }
 
-  getPatientTreatmentFormById(treatmentId: number): Observable<PatientTreatmentDto> {
-    return this.http.get<PatientTreatmentDto>(this.apiUrl + 'GetPatientTreatmentFormById?TreatmentId=' + treatmentId ).pipe();
+  getPatientTreatmentFormById(treatmentId: number): Observable<PatientTreatmentDtoExt> {
+    return this.http.get<PatientTreatmentDtoExt>(this.apiUrl + 'GetPatientTreatmentFormById?TreatmentId=' + treatmentId ).pipe();
   }
 
   getAllPatientTreatment(id: number): Observable<PatientTreatmentDtoExt[]> {
     const params = `PatientId=${id}`;
     return this.http.get<PatientTreatmentDtoExt[]>(`${this.apiUrl}GetAllPatientTreatment?${params}`).pipe();
+  }
+
+  createOrUpdatePatientTreatment(data: PatientTreatmentDto) {
+    return this.http.post(`${this.apiUrl}CreateOrUpdatePatientTreatment`, data).pipe();
+  }
+
+  deletePatientTreatment(id: number) {
+    const params = `Id=${id}`;
+    return this.http.delete(`${this.apiUrl}DeletePatientTreatment?${params}`).pipe();
   }
 
 }

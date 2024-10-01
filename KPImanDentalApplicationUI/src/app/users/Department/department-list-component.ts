@@ -158,6 +158,4 @@ export class DepartmentListComponent {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
     }
   }
-
-
 }

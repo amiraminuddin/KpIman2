@@ -9,6 +9,7 @@ export class LookupComponent implements OnInit {
 
   @Input() data: any[] = [];
   @Input() columns: Column[] = [];
+  @Input() lookupTable: string = ''
 
   @Output('callbackRecordSelected') eventEmitRecordSelected = new EventEmitter<any>();
 
@@ -22,8 +23,8 @@ export class LookupComponent implements OnInit {
     //this.eventEmitRecordSelected.emit(event.data);
   }
 
-  onRowDoubleClick(product: any): void {
-    this.eventEmitRecordSelected.emit(product);
+  onRowDoubleClick(data: any): void {
+    this.eventEmitRecordSelected.emit({ data: data, lookupTable: this.lookupTable });
   }
 
 }

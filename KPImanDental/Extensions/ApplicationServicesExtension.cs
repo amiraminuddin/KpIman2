@@ -18,8 +18,9 @@ namespace KPImanDental.Extensions
             
             services.AddCors();
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRespository>();
-            services.AddScoped<IPatientRespository, PatientRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<ILookupRepository, LookupRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddControllersWithViews();
             services.AddDbContext<DataContext>(option =>

@@ -16,6 +16,8 @@ export class positionComponent implements OnChanges {
   positionId: number | null = null;
   positionCount: number | undefined;
 
+  selectedPosition!: any;
+
   formState: string | undefined;
   modalVisible: boolean = false;
 
@@ -43,12 +45,17 @@ export class positionComponent implements OnChanges {
             this.positionCount = 0;
           }
           else {
+            this.selectedPosition = this.positionData[0];
             this.positionCount = this.positionData.length;
           }
         },
         error: error => { console.log(error) }
       });
     }
+  }
+
+  onRowSelect(event: any) {
+    this.positionId = event.data.id;
   }
 
   getAction(position: any) {

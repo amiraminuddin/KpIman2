@@ -17,24 +17,28 @@ namespace KPImanDental.Controllers
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepo;
-        private readonly IPatientRespository _patientRepo;
+        private readonly IPatientRepository _patientRepo;
+        private readonly ILookupRepository _lookupRepo;
 
-        public PatientController(DataContext context, IMapper mapper, IUserRepository userRepository, IPatientRespository patientRespository) {
+        public PatientController(
+            DataContext context, 
+            IMapper mapper, 
+            IUserRepository userRepository, 
+            IPatientRepository patientRespository,
+            ILookupRepository lookupRepository) {
         
             _dataContext = context;
             _mapper = mapper;
             _userRepo = userRepository;
             _patientRepo = patientRespository;
+            _lookupRepo = lookupRepository;
         }
 
         #region Patient
         [HttpGet("GetAllPatients")]
         public async Task<ActionResult<IEnumerable<PatientDto>>> GetAllPatients()
         {
-            var patients = await _dataContext.Patients.ToListAsync();
-            if (patients == null) return BadRequest("No Record");
-
-            var patientList = _mapper.Map<IEnumerable<PatientDto>>(patients);
+            var patientList = await _patientRepo.GetAllPatientDtoAsync();
 
             return Ok(patientList);
         }
@@ -42,10 +46,7 @@ namespace KPImanDental.Controllers
         [HttpGet("GetPatientsById")]
         public async Task<ActionResult<PatientDto>> GetPatientById(long Id)
         {
-            var patient = await _dataContext.Patients.FindAsync(Id);
-            if (patient == null) return BadRequest("Patient Not Found");
-
-            var patientDto = _mapper.Map<PatientDto>(patient);
+            var patientDto = await _patientRepo.GetPatientDtoByIdAsync(Id);
             return Ok(patientDto);
         }
 
@@ -67,7 +68,7 @@ namespace KPImanDental.Controllers
         [HttpDelete("DeletePatient")]
         public async Task<ActionResult<string>> DeletePatient(long Id)
         {
-            var patient = await _dataContext.Patients.FirstOrDefaultAsync(p => p.Id == Id);
+            var patient = await _patientRepo.GetPatientByIdAsync(Id);
             if (patient == null) return BadRequest("Patient Not Found");
             _dataContext.Remove(patient);
             await _dataContext.SaveChangesAsync();
@@ -79,28 +80,34 @@ namespace KPImanDental.Controllers
         [HttpGet("GetAllPatientTreatment")]
         public async Task<ActionResult<IEnumerable<PatientTreatmentDtoExt>>> GetAllPatientTreament(long PatientId)
         {
-            var patientTreaments = await _dataContext.PatientTreatments.Where(t => t.PatientId == PatientId).ToListAsync();
+            var patientTreaments = await _patientRepo.GetPatientTreatmentAsync(PatientId);
 
             if (patientTreaments == null) return BadRequest("No Treatment");
 
             var patientTreatmentList = _mapper.Map<IEnumerable<PatientTreatmentDtoExt>>(patientTreaments);
             foreach (var item in patientTreatmentList)
             {
-                item.Doctor = await _userRepo.GetUserLookupDtoByIdAsync(item.PatientId);
-                item.DSA = await _userRepo.GetUserLookupDtoByIdAsync(item.DSAId);
-                item.Treatment = await GetLookupTreatment(item.TreatmentType);
+                item.Doctor = await _lookupRepo.GetKPImanUserLookup(item.DrID);
+                item.DSA = await _lookupRepo.GetKPImanUserLookup(item.DSAId);
+                item.Treatment = await _lookupRepo.GetTreatmentLookup(item.TreatmentType);
             }
 
             return Ok(patientTreatmentList);
         }
 
         [HttpGet("GetPatientTreatmentFormById")]
-        public async Task<ActionResult<PatientTreatmentDto>> GetPatientTreatmentFormById(long TreatmentId)
+        public async Task<ActionResult<PatientTreatmentDtoExt>> GetPatientTreatmentFormById(long TreatmentId)
         {
             var patientTreament = await _patientRepo.GetPatientTreatmentByIdAsync(TreatmentId);
             if (patientTreament == null) return BadRequest("No Treatment");
 
-            var patientTreatmentDto = _mapper.Map<PatientTreatmentDto>(patientTreament);
+            var patientTreatmentDto = _mapper.Map<PatientTreatmentDtoExt>(patientTreament);
+
+            var patientDto = await _patientRepo.GetPatientByIdAsync(patientTreatmentDto.PatientId);
+            patientTreatmentDto.PatientName = patientDto.FirstName;
+            patientTreatmentDto.Doctor = await _lookupRepo.GetKPImanUserLookup(patientTreatmentDto.DrID);
+            patientTreatmentDto.DSA = await _lookupRepo.GetKPImanUserLookup(patientTreatmentDto.DSAId);
+            patientTreatmentDto.Treatment = await _lookupRepo.GetTreatmentLookup(patientTreatmentDto.TreatmentType);
 
             return Ok(patientTreatmentDto);
         }
@@ -110,7 +117,7 @@ namespace KPImanDental.Controllers
         {
             if(patientTreatmentDto.Id.HasValue)
             {
-                var updateData = await CreatePatientTreatment(patientTreatmentDto);
+                var updateData = await UpdatePatientTreatment(patientTreatmentDto);
                 return Ok(updateData);
             }
             else
@@ -118,6 +125,16 @@ namespace KPImanDental.Controllers
                 var createDate = await CreatePatientTreatment(patientTreatmentDto);
                 return Ok(createDate);
             }
+        }
+
+        [HttpDelete("DeletePatientTreatment")]
+        public async Task<ActionResult> DeletePatientTreatment(long Id)
+        {
+            var patientTreatment = await _patientRepo.GetPatientTreatmentByIdAsync(Id);
+            if (patientTreatment == null) return BadRequest("Record Not Found");
+            _dataContext.Remove(patientTreatment);
+            await _dataContext.SaveChangesAsync();
+            return Ok("Data Deleted");
         }
         #endregion
 
@@ -180,13 +197,27 @@ namespace KPImanDental.Controllers
             return treatmentLookupDto;
         }
 
-        //private async Task<string> GenerateTreatmentNo(long treatmentType, int rowNum)
-        //{
-        //    var treatmentCode = await GetLookupTreatment(treatmentType, "Code");
-        //    int year = DateTime.Now.Year;
+        private async Task<string> GenerateTreatmentNo(long treatmentType)
+        {
+            int nextNumber = 1; // Default value if no records exist
+            var treatmentCode = await GetLookupTreatment(treatmentType);
+            int year = DateTime.Now.Year;
+            var treatmentCount = await _dataContext.PatientTreatments.CountAsync(x => x.TreatmentType == treatmentType && x.TreatmentDate.Year == year);
+            var lastRecord = await _dataContext.PatientTreatments.Where(x => x.TreatmentType == treatmentType && x.TreatmentDate.Year == year)
+                .OrderByDescending(r => r.Id).FirstOrDefaultAsync();
 
-        //    return $"{treatmentCode}-{year}-{rowNum+1}";
-        //}
+            if (lastRecord != null) {
+                var lastNumber = lastRecord.TreatmentNo.Substring(lastRecord.TreatmentNo.Length - 4);
+                if (int.TryParse(lastNumber, out int lastCount))
+                {
+                    nextNumber = lastCount + 1; // Increment the number
+                }
+            }
+
+            var treatmentNo = nextNumber.ToString("D4");
+
+            return $"TRM-{treatmentCode.TreatmentCode}-{year}-{treatmentNo}";
+        }
 
         private async Task<long> CreatePatient(PatientDto patientDto)
         {
@@ -204,7 +235,7 @@ namespace KPImanDental.Controllers
 
         private async Task<long> UpdatePatient(PatientDto patientDto)
         {
-            var patient = await _dataContext.Patients.FindAsync(patientDto.Id);
+            var patient = await _patientRepo.GetPatientByIdAsync((long)patientDto.Id);
             if (patient == null) return -1;
 
             patient.UpdatedBy = "System";
@@ -220,6 +251,7 @@ namespace KPImanDental.Controllers
         {
             var patientTreatment = _mapper.Map<PatientTreatment>(patientTreatmentDto);
 
+            patientTreatment.TreatmentNo = await GenerateTreatmentNo(patientTreatmentDto.TreatmentType);
             patientTreatment.CreatedBy = "System";
             patientTreatment.CreatedOn = DateTime.Now;
             patientTreatment.UpdatedBy = "System";

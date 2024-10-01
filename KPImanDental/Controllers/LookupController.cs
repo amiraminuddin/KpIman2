@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto.LookupDto;
+using KPImanDental.Interfaces;
 using KPImanDental.Model.Lookup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,22 @@ namespace KPImanDental.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
-        public LookupController(DataContext dataContext, IMapper mapper) {
+        private readonly ILookupRepository _lookupRepository;
+        public LookupController(DataContext dataContext, IMapper mapper, ILookupRepository lookupRepository) {
             _dataContext = dataContext;
             _mapper = mapper;
+            _lookupRepository = lookupRepository;
         }
+
+        #region User Lookup
+        [HttpGet("GetUserLookup")]
+        public async Task<ActionResult<IEnumerable<StaffLookupDto>>> GetUserLookup(string position)
+        {
+            var user = await _dataContext.Users.Where(x => x.Position == position).ToListAsync();
+            var userDtoList = _mapper.Map<IEnumerable<StaffLookupDto>>(user);
+            return Ok(userDtoList);
+        }
+        #endregion
 
         #region Treatment Lookup
         [HttpPost("CreateOrUpdateTreatmentLookup")]

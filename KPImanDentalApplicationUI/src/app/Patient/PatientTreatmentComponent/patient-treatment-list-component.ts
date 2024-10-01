@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { MenuItem } from "primeng/api";
+import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { PatientDto, PatientTreatmentDtoExt } from "../../../shared/model/AppModel";
 import { PatientService } from "../../../shared/_services/patient.service";
 
@@ -14,7 +14,9 @@ export class PatientTreatmentList implements OnInit {
   constructor(
     private service: PatientService,
     private activeRoute: ActivatedRoute,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) { }
 
   patientId: number = -1
@@ -63,12 +65,38 @@ export class PatientTreatmentList implements OnInit {
         label: 'Delete',
         icon: 'pi pi-trash',
         command: () => {
-         /* this.deleteData(treatment.id);*/
+         this.deleteData(treatment.id);
         },
       }
     ];
 
     return this.actions;
+  }
+
+
+  deleteData(id: any) {
+    console.log('deleteService');
+    this.confirmationService.confirm({
+      message: 'Are sure to delete?',
+      header: 'Confirm Delete?',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      accept: () => {
+        //do deletion
+        this.service.deletePatientTreatment(id).subscribe({
+          next: _ => {
+            this.getData();
+            this.messageService.add({ severity: 'info', summary: 'Success', detail: 'Data Deleted!!' });
+          }
+        })
+      },
+      reject: () => {
+
+      }
+    })
   }
 
   showTreatmentModal(id?: number) {
@@ -83,8 +111,15 @@ export class PatientTreatmentList implements OnInit {
     }
   }
 
-  refresh(event: any) {
-
+  refresh(data: any) {
+    this.modalVisible = false;
+    this.getData();
+    if (data == 'Create') {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
+    } else {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
+    }
+    //this.getData();
   }
 
 }

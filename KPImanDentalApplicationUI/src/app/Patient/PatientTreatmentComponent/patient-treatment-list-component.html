@@ -47,6 +47,7 @@
   </div>-->
   <div class="container-fluid">
     <p-toast position="bottom-right" life="100"></p-toast>
+    <p-confirmDialog></p-confirmDialog>
     <div class="row div-border" style="margin-bottom: 5px">
       <div class="horizontal-layout">
         <div class="input-container">
@@ -98,10 +99,10 @@
                   <i (click)="menu.toggle($event); $event.stopPropagation()" class="pi pi-ellipsis-h action-button"></i>
                 </td>
                 <td style="min-width: 100px;" pTooltip="{{ patientTreatment.treatmentNo }}" tooltipPosition="right">{{ patientTreatment.treatmentNo }}</td>
-                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.treatment.treatmentName }}" tooltipPosition="right"><div class="ellipsis-text">{{ patientTreatment.treatment.treatmentName }}</div></td>
+                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.treatment.fieldDisplay }}" tooltipPosition="right"><div class="ellipsis-text">{{ patientTreatment.treatment.fieldDisplay }}</div></td>
                 <td style="min-width: 100px;" pTooltip="{{ patientTreatment.treatmentDateDisplay }}" tooltipPosition="right">{{ patientTreatment.treatmentDateDisplay }}</td>
-                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.doctor.userName  }}" tooltipPosition="right">{{ patientTreatment.doctor.userName }}</td>
-                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.dsa.userName  }}" tooltipPosition="right">{{ patientTreatment.dsa.userName }}</td>
+                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.doctor.fieldDisplay  }}" tooltipPosition="right">{{ patientTreatment.doctor.fieldDisplay }}</td>
+                <td style="min-width: 100px;" pTooltip="{{ patientTreatment.dsa.fieldDisplay  }}" tooltipPosition="right">{{ patientTreatment.dsa.fieldDisplay }}</td>
                 <td style="min-width: 100px;" pTooltip="{{ patientTreatment.condition }}" tooltipPosition="right">{{ patientTreatment.condition }}</td>
                 <td style="min-width: 100px;" pTooltip="{{ patientTreatment.description }}" tooltipPosition="right">{{ patientTreatment.description }}</td>
                 <td style="min-width: 100px;" pTooltip="{{ patientTreatment.treatmentCost }}" tooltipPosition="right">{{ patientTreatment.treatmentCost }}</td>
@@ -119,7 +120,8 @@
 <p-dialog header="{{modalState}} Treatment" [modal]="true" [(visible)]="modalVisible" [style]="{ width: '50rem'}" [maximizable]="true">
   <patient-treatment-modal [modalState]="modalState"
                            [treatmentId]="treatmentId"
+                           [patientId]="patientId"
                            [modalVisible]="modalVisible"
-                           (refreshAfterSaved)="refresh($event)">
+                           (callbackRecordSaved)="refresh($event)">
   </patient-treatment-modal>
 </p-dialog>

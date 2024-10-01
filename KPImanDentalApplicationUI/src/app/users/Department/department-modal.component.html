@@ -5,19 +5,42 @@
     gap: 20px; /* Space between each input-container */
     padding-bottom: 5px;
   }
+
+  .input-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .input-container label {
+    width: 120px; /* Set a fixed width for labels */
+    margin-right: 1rem;
+  }
+
+  .input-container input {
+    flex: 1; /* Allows the input to expand and take up available space */
+  }
+
+  .form-button {
+    padding-top: 10px;
+    text-align: right;
+  }
 </style>
 
 <form [formGroup]="departmentForm" (ngSubmit)="save()" autocomplete="off">
   <div>
     <div class="vertical-layout">
       <div class="input-container">
-        <label>Department Code</label>
-        <input id="disabled-input" type="text" formControlName="code" pInputText />
+        <label>Department Code
+          <validation-component [field]="'Code'" [validator]="validator"></validation-component>
+        </label>
+        <input id="disabled-input" type="text" formControlName="code" pInputText (focusout)="validateCode(ValidatorTriggerType.OnChange)"/>
       </div>
 
       <div class="input-container">
-        <label>Department Name</label>
-        <input id="disabled-input" type="text" pInputText formControlName="name" />
+        <label>Department Name
+          <validation-component [field]="'Name'" [validator]="validator"></validation-component>
+        </label>        
+        <input id="disabled-input" type="text" pInputText formControlName="name" (focusout)="validateCode(ValidatorTriggerType.OnChange)"/>
       </div>
 
       <div class="input-container">
@@ -26,8 +49,8 @@
       </div>
     </div>
   </div>
-  <div>
-    <button type="submit" class="btn btn-primary">Save</button>
+  <div class="form-button">
+    <button type="submit" class="btn btn-primary" [disabled]="isFormInvalid()">Save</button>
   </div>
 </form>
 

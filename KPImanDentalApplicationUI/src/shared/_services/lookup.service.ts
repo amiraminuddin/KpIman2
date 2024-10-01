@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { TreatmeantLookupDto } from "../model/AppModel";
+import { StaffLookupDto, TreatmeantLookupDto } from "../model/AppModel";
 
 @Injectable({
   providedIn : 'root'
@@ -31,4 +31,10 @@ export class LookupService {
     return this.http.delete(`${this.apiUrl}Lookup/DeleteTreatment?Id=${id}`).pipe();
   }
   //END : Treatment Lookup
+
+  //START : User Lookup
+  getUserLookup(position: string): Observable<StaffLookupDto[]> {
+    return this.http.get<StaffLookupDto[]>(`${this.apiUrl}Lookup/GetUserLookup?position=${position}`).pipe();
+  }
+  //END : User Lookup
 }

@@ -4,11 +4,16 @@ using KPImanDental.Model.Patient;
 
 namespace KPImanDental.Interfaces
 {
-    public interface IPatientRespository
+    public interface IPatientRepository
     {
-        Task<IEnumerable<PatientTreatmentDto>> GetPatientTreatmentAsync(long id);
-        Task<PatientDto> GetPatientByIdAsync(long id);
+        Task<IEnumerable<PatientDto>> GetAllPatientDtoAsync();
+        Task<PatientDto> GetPatientDtoByIdAsync(long id);
+
+        Task<Patient> GetPatientByIdAsync(long id);
+
+        Task<IEnumerable<PatientTreatment>> GetPatientTreatmentAsync(long id);
         Task<PatientTreatment> GetPatientTreatmentByIdAsync(long id);
+
         Task<PatientLookupDto> GetPatientLookupDtoByIdAsync(long id);
     }
 }

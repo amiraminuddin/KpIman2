@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KPImanDental.Data.Repository
 {
-    public class UserRespository : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
 
-        public UserRespository(DataContext context, IMapper mapper)
+        public UserRepository(DataContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

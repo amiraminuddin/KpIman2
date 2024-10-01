@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { DeletionCondition, DepartmentDto, PositionDto, UserDto } from "../model/AppModel";
+import { DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserDto, Validators } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -65,6 +65,10 @@ export class userServices {
   canDeleteDepartment<T>(id: number): Observable<DeletionCondition<T>> {
     const params = `DepartmentId=${id}`;
     return this.http.get<DeletionCondition<T>>(`${this.apiUrl}Users/CanDeleteDepartment?${params}`).pipe();
+  }
+
+  getDepartmentValidator(departmentDto: DataValidator<DepartmentDto>): Observable<Validators[]> {
+    return this.http.post<Validators[]>(`${this.apiUrl}Users/GetDepartmentValidator`, departmentDto).pipe();
   }
   //END : Department
 

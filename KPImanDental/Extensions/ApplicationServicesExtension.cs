@@ -1,7 +1,8 @@
 ﻿using KPImanDental.Data;
-using KPImanDental.Data.Repository;
 using KPImanDental.Helpers;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Repositories;
+using KPImanDental.Interfaces.Services;
+using KPImanDental.Repositories;
 using KPImanDental.Services;
 using Microsoft.EntityFrameworkCore;
 

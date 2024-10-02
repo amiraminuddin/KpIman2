@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using KPImanDental.Helpers;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Services;
 using Microsoft.Extensions.Options;
 
 namespace KPImanDental.Services

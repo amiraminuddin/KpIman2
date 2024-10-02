@@ -2,7 +2,7 @@
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Model;
 
-namespace KPImanDental.Interfaces
+namespace KPImanDental.Interfaces.Repositories
 {
     public interface IUserRepository
     {

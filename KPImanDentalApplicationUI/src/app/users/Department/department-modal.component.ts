@@ -40,7 +40,7 @@ export class DepartmentModal implements OnInit {
         this.getData();
       } else {
         this.resetForm();
-        this.validateCode(ValidatorTriggerType.OnLoad);
+        this.evaluateFieldFormula(ValidatorTriggerType.OnLoad);
       }
     } else if (changes['modalVisible'] && !this.modalVisible) {
       this.resetForm();
@@ -69,7 +69,7 @@ export class DepartmentModal implements OnInit {
           if (result) {
             this.departmentForm.patchValue(result);
             this.departmentForm.get('code')?.disable();
-            this.validateCode(ValidatorTriggerType.OnLoad);
+            this.evaluateFieldFormula(ValidatorTriggerType.OnLoad);
           }
         },
         error: (error) => {
@@ -97,7 +97,7 @@ export class DepartmentModal implements OnInit {
 
 
   //START : Validation
-  validateCode(triggerType: ValidatorTriggerType): void {
+  evaluateFieldFormula(triggerType: ValidatorTriggerType): void {
     const formData = { ...this.departmentForm.value };
     const departmentCode = this.departmentForm.get('code')?.value;
     formData.code = departmentCode;

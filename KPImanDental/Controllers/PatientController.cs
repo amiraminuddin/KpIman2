@@ -2,7 +2,7 @@
 using KPImanDental.Data;
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Dto.PatientDto;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Model.Patient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

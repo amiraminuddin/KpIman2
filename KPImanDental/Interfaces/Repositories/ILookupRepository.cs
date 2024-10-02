@@ -1,6 +1,6 @@
 ﻿using KPImanDental.Dto.LookupDto;
 
-namespace KPImanDental.Interfaces
+namespace KPImanDental.Interfaces.Repositories
 {
     public interface ILookupRepository
     {

@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
+import { Menu } from "primeng/menu";
 import Swal from "sweetalert2";
-import { DeletionCondition, DepartmentDto, MessageType, PositionDto } from "../../../shared/model/AppModel";
+import { ActionValidatorsInput, ActionValidatorsOutput, DepartmentDto } from "../../../shared/model/AppModel";
 import { userServices } from "../../../shared/_services/user.service";
 
 @Component({
@@ -12,10 +13,10 @@ import { userServices } from "../../../shared/_services/user.service";
 
 export class DepartmentListComponent {
 
+  @ViewChild('menu') menu!: Menu;
   constructor(
     private _service: userServices,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) { }
 
   departmentList: DepartmentDto[] = [];
@@ -23,7 +24,7 @@ export class DepartmentListComponent {
   selectedDepartment!: any;
   departmentCount: number | undefined;
 
-  deletionCondition: DeletionCondition<any> = new DeletionCondition;
+  actionValidatorInput: ActionValidatorsInput<DepartmentDto> = new ActionValidatorsInput;
 
   formState: string | undefined;
   modalVisible: boolean = false;
@@ -32,6 +33,8 @@ export class DepartmentListComponent {
   errorMessage: string = '';
 
   actions: MenuItem[] = [];
+
+  activeDepartment: any = null;
 
   ngOnInit(): void {
     this.getData();
@@ -60,64 +63,67 @@ export class DepartmentListComponent {
     })
   }
 
+  onMenuButtonClick(department: any, event: MouseEvent) {
+    this.getAction(department);
+    this.menu.toggle(event);
+  }
+
   getAction(department: any) {
-    this.actions = [
-      {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => {
-          this.departmentId = department.id
-          this.showEditModal();
-        }
-      },
-      {
-        label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          this.deleteData(department.id);
-        },
+    this.actionValidatorInput.data = department;
+    this.actionValidatorInput.actionCode = ['EDIT', 'DELETE'];
+
+    this._service.getDepartmentActionValidator(this.actionValidatorInput).subscribe({
+      next: (result: ActionValidatorsOutput[]) => {
+        this.actions = [
+          {
+            label: 'Edit',
+            icon: 'pi pi-pencil',
+            command: () => {
+              this.departmentId = department.id
+              this.showEditModal();
+            }
+          },
+          {
+            label: 'Delete',
+            icon: 'pi pi-trash',
+            disabled: result?.find(x => x.actionCode == 'DELETE')?.isDisabled,
+            visible: result?.find(x => x.actionCode == 'DELETE')?.isVisible,
+            command: () => {
+              let formula = result?.find(x => x.actionCode == 'DELETE');
+              this.deleteData(department.id, formula);
+            },
+          }
+        ];
       }
-    ];
+    });
 
     return this.actions;
+  }
+
+  toggleDropdown(department: any, event: MouseEvent) {
+    if (this.activeDepartment === department) {
+      this.activeDepartment = null;
+    } else {
+      this.activeDepartment = department;
+    }
+    event.stopPropagation();
   }
 
   onRowSelect(event: any) {
     this.departmentId = event.data.id;
   }
 
-  deleteData(id: number) {
-    this._service.canDeleteDepartment<DepartmentDto>(id).subscribe({
-      next: (result: DeletionCondition<DepartmentDto>) => {
-        if (result) {
-          this.deletionCondition = result;
-        }
-        //check deletionCondition
-        if (this.deletionCondition.canDelete || this.deletionCondition.messageType === MessageType.Warning) {
-          this.confirmationService.confirm({
-            message: this.deletionCondition.message.replace(/\n/g, '<br>'),
-            header: 'Confirm Delete?',
-            icon: 'pi pi-info-circle',
-            acceptButtonStyleClass: "p-button-danger p-button-text",
-            rejectButtonStyleClass: "p-button-text p-button-text",
-            acceptIcon: "none",
-            rejectIcon: "none",
-
-            accept: () => {
-              //do deletion
-              this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
-            },
-            reject: () => {
-              
-            }
-          });
-        }
-        else {
-          this.showErrorDialog = true;
-          this.errorMessage = this.deletionCondition.message;
-        }
-      }
-    });
+  deleteData(department: any, formula: any) {
+    if (formula) {
+      this.errorMessage = formula.lockedMessage;
+      this.showErrorDialog = true;
+    }
+    else {
+      //todo: delete data
+      let message = "Ok"
+      this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: message });
+    }
+    
   }
 
   setComponentHeight() {
@@ -144,7 +150,6 @@ export class DepartmentListComponent {
   }
 
   showEditModal() {
-    console.log(this.departmentId)
     this.formState = 'Edit';
     this.modalVisible = true;
   }

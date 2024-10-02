@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto.LookupDto;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Model.Lookup;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

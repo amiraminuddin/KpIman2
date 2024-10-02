@@ -1,7 +1,8 @@
-﻿using KPImanDental.Dto.LookupDto;
-using KPImanDental.Interfaces;
+﻿using KPImanDental.Data;
+using KPImanDental.Dto.LookupDto;
+using KPImanDental.Interfaces.Repositories;
 
-namespace KPImanDental.Data.Repository
+namespace KPImanDental.Repositories
 {
     public class LookupRepository : ILookupRepository
     {
@@ -9,7 +10,8 @@ namespace KPImanDental.Data.Repository
         private readonly IUserRepository userRespository;
         private readonly IPatientRepository patientRepository;
 
-        public LookupRepository(DataContext dataContext, IUserRepository userRespository, IPatientRepository patientRepository) { 
+        public LookupRepository(DataContext dataContext, IUserRepository userRespository, IPatientRepository patientRepository)
+        {
             this.dataContext = dataContext;
             this.userRespository = userRespository;
             this.patientRepository = patientRepository;
@@ -40,7 +42,7 @@ namespace KPImanDental.Data.Repository
         {
             var treatment = await dataContext.TreatmentLookup.FindAsync(Id);
 
-            return new LookupTemplateDto 
+            return new LookupTemplateDto
             {
                 FieldValue = treatment.Id.ToString(),
                 FieldDisplay = treatment.TreatmentName

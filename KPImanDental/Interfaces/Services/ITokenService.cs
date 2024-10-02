@@ -1,6 +1,6 @@
 ﻿using KPImanDental.Model;
 
-namespace KPImanDental.Interfaces
+namespace KPImanDental.Interfaces.Services
 {
     public interface ITokenService
     {

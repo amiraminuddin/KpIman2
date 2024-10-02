@@ -4,9 +4,9 @@ using KPImanDental.Authorization;
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using Microsoft.EntityFrameworkCore;
-using KPImanDental.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using KPImanDental.Interfaces.Services;
 
 namespace KPImanDental.Controllers
 {

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using KPImanDental.Data;
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Dto.PatientDto;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Model.Patient;
 using Microsoft.EntityFrameworkCore;
 
-namespace KPImanDental.Data.Repository
+namespace KPImanDental.Repositories
 {
     public class PatientRepository : IPatientRepository
     {

@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto;
-using KPImanDental.Interfaces;
+using KPImanDental.Interfaces.Repositories;
+using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
 using Microsoft.AspNetCore.Authorization;
@@ -157,7 +158,7 @@ namespace KPImanDental.Controllers
             return Ok("Data Deleted");
         }
 
-        [HttpGet("CanDeleteDepartment")]
+        [HttpGet("CanDeleteDepartment")] //change to action formula validation
         public async Task<ActionResult<DeletionCondition<DepartmentDto>>> CanDeleteDepartment(long DepartmentId)
         {
             var department = await _userRepo.GetDepartmentByIdAsync(DepartmentId);
@@ -198,6 +199,50 @@ namespace KPImanDental.Controllers
             }
 
             return Ok(departmentDeletionCondition);
+        }
+
+        [HttpPost("GetDepartmentActionValidator")]
+        public async Task<ActionResult<List<ActionValidatorsOutput>>> GetDepartmentActionValidator(ActionValidatorsInput<DepartmentDto> request)
+        {
+            var actionValidatorsOutput = new List<ActionValidatorsOutput>();
+            var properties = typeof(DepartmentDto).GetProperties();
+            var departmentDto = request.Data;
+
+            var department = await _userRepo.GetDepartmentByIdAsync((long)departmentDto.Id);
+            var position = _context.Posititon.Where(x => x.DepartmentId == departmentDto.Id);
+            var postionCount = await position.CountAsync();
+            var userCount = await _context.Users.CountAsync(x => x.Department == departmentDto.Code && x.IsActive == true);
+
+            foreach (var action in request.ActionCode)
+            {
+                if (action == "CREATE")
+                {
+                    //evaluate create
+                }
+
+                if (action == "EDIT")
+                {
+                    //evaluate edit
+                }
+
+                if (action == "DELETE")
+                {
+                    //evaluate delete
+                    if(userCount > 0)
+                    {
+                        actionValidatorsOutput.Add(new ActionValidatorsOutput
+                        {
+                            ActionCode = action,
+                            IsDisabled = false,
+                            IsLocked = true,
+                            IsVisible = true,
+                            LockedMessage = "Cannot Delete Record due to there are active user under department"
+                        });
+                    }                    
+                }
+            }
+
+            return Ok(actionValidatorsOutput);
         }
 
         [HttpPost("GetDepartmentValidator")]

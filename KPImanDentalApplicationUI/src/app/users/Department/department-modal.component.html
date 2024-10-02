@@ -33,14 +33,14 @@
         <label>Department Code
           <validation-component [field]="'Code'" [validator]="validator"></validation-component>
         </label>
-        <input id="disabled-input" type="text" formControlName="code" pInputText (focusout)="validateCode(ValidatorTriggerType.OnChange)"/>
+        <input id="disabled-input" type="text" formControlName="code" pInputText (focusout)="evaluateFieldFormula(ValidatorTriggerType.OnChange)"/>
       </div>
 
       <div class="input-container">
         <label>Department Name
           <validation-component [field]="'Name'" [validator]="validator"></validation-component>
         </label>        
-        <input id="disabled-input" type="text" pInputText formControlName="name" (focusout)="validateCode(ValidatorTriggerType.OnChange)"/>
+        <input id="disabled-input" type="text" pInputText formControlName="name" (focusout)="evaluateFieldFormula(ValidatorTriggerType.OnChange)"/>
       </div>
 
       <div class="input-container">

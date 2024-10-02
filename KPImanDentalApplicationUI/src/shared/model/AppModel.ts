@@ -198,3 +198,16 @@ export class DataValidator<T> {
   data: T | undefined;
   triggerType: ValidatorTriggerType | undefined;
 }
+
+export class ActionValidatorsInput<T>{
+  data: T | undefined;
+  actionCode: string[] | undefined;
+}
+
+export class ActionValidatorsOutput {
+  actionCode: string | undefined;
+  isDisabled: boolean | undefined;
+  isLocked: boolean | undefined;
+  isVisible: boolean | undefined;
+  lockedMessage: string | undefined;
+}

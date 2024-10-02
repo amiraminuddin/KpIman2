@@ -1,4 +1,4 @@
-﻿using KPImanDental.Interfaces;
+﻿using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

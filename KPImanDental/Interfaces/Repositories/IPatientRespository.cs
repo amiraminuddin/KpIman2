@@ -2,7 +2,7 @@
 using KPImanDental.Dto.PatientDto;
 using KPImanDental.Model.Patient;
 
-namespace KPImanDental.Interfaces
+namespace KPImanDental.Interfaces.Repositories
 {
     public interface IPatientRepository
     {

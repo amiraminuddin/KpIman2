@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 
-namespace KPImanDental.Interfaces
+namespace KPImanDental.Interfaces.Services
 {
     public interface IPhotoService
     {

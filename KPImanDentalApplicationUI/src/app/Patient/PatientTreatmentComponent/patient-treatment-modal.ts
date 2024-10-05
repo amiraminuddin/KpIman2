@@ -27,9 +27,12 @@ export class PatientTreatmentModal implements OnInit {
   lookupVisible: boolean = false;
   lookupTable: string = "";
 
-  /*selectedLookup!: SelectedLookup;*/
+  selectedLookupVal: any;
 
-
+  //for text Area
+  textVisible: boolean = false;
+  textInput: string = "";
+  textField: string = "";
   constructor(private patientService: PatientService, private lookupService: LookupService) {
 
   }
@@ -140,12 +143,16 @@ export class PatientTreatmentModal implements OnInit {
           this.lookupData = result;
         }
 
+        if (this.patientTreatmentForm.get('treatmentType')?.value) {
+          this.selectedLookupVal = this.lookupData.find(x => x.id == this.patientTreatmentForm.get('treatmentType')?.value)
+        }
+
         this.lookupColumn = [
-          { field: 'treatmentCode', header: 'Code' },
-          { field: 'treatmentName', header: 'Name' },
-          { field: 'treatmentDesc', header: 'Desc' },
-          { field: 'isActive', header: 'Is Active' },
-          { field: 'treatmentPrice', header: 'Price' }
+          { field: 'treatmentCode', header: 'Code', type: 'string' },
+          { field: 'treatmentName', header: 'Name', type: 'string' },
+          { field: 'treatmentDesc', header: 'Desc', type: 'string' },
+          { field: 'isActive', header: 'Is Active', type: 'bool' },
+          { field: 'treatmentPrice', header: 'Price', type: 'string' }
         ];
 
         this.lookupTitle = 'Treatment';
@@ -162,11 +169,21 @@ export class PatientTreatmentModal implements OnInit {
           this.lookupData = result
         }
 
+        if (position == 'Dr') {
+          let data = this.patientTreatmentForm.get('drID')?.value
+          if (data) { this.selectedLookupVal = this.lookupData.find(x => x.id == data) }
+        }
+
+        if (position == 'DSA') {
+          let data = this.patientTreatmentForm.get('dsaId')?.value
+          if (data) { this.selectedLookupVal = this.lookupData.find(x => x.id == data) }
+        }
+
         this.lookupColumn = [
-          { field: 'userName', header: 'Name' },
-          { field: 'email', header: 'Email' },
-          { field: 'position', header: 'Position' },
-          { field: 'department', header: 'Department' },
+          { field: 'userName', header: 'Name', type: 'string' },
+          { field: 'email', header: 'Email', type: 'string' },
+          { field: 'position', header: 'Position', type: 'string' },
+          { field: 'department', header: 'Department', type: 'string' },
         ];
 
         this.lookupTitle = position;
@@ -174,6 +191,16 @@ export class PatientTreatmentModal implements OnInit {
         this.lookupVisible = true;
       }
     })
+  }
+
+  loadTextArea(field: any) {
+    var input = "";
+    if (field = 'description') {
+      input = this.patientTreatmentForm.get('description')?.value;
+    }
+    this.textField = field;
+    this.textInput = input;
+    this.textVisible = true;
   }
 
   getSelectedLookup(event: any) {
@@ -195,6 +222,13 @@ export class PatientTreatmentModal implements OnInit {
     }
 
     this.lookupVisible = false;
+  }
+
+  getTextData(event: any) {
+    if (event.textField == 'description') {
+      this.patientTreatmentForm.get('description')?.patchValue(event.data);
+    }    
+    this.textVisible = false;
   }
 
   private formatDate(date: any) {

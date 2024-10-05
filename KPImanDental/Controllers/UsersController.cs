@@ -19,12 +19,21 @@ namespace KPImanDental.Controllers
         private readonly IUserRepository _userRepo;
         private readonly IPhotoService _photoService;
 
-        public UsersController(DataContext context, IMapper mapper, IUserRepository userRepo, IPhotoService photoService) 
+        private readonly IUserService _userService;
+
+        public UsersController(
+            DataContext context, 
+            IMapper mapper, 
+            IUserRepository userRepo, 
+            IPhotoService photoService,
+            IUserService userService
+            ) 
         {
             _context = context;
             _mapper = mapper;
             _userRepo = userRepo;
             _photoService = photoService;
+            _userService = userService;
         }
 
         #region CRUD For User Management Module - User
@@ -114,194 +123,46 @@ namespace KPImanDental.Controllers
         [HttpPost("CreateOrUpdateDepartment")]
         public async Task<ActionResult> CreateOrUpdateDepartment(DepartmentDto departmentDto)
         {
-            if (departmentDto.Id.HasValue)
-            {
-                var updateDepartment = await UpdateDepartment(departmentDto);
-                return Ok(updateDepartment);
-            }
-            else
-            {
-                if (await CheckDepartment(departmentDto.Code) == true)
-                {
-                    return BadRequest("Department Code already exist");
-                }
-                var createDepartment = await CreateDepartment(departmentDto);
-                return Ok(createDepartment);
-            }
+            var result = await _userService.CreateOrUpdateDepartment(departmentDto);
+            return Ok(result);
         }
 
         [HttpGet("GetAllDepartment")]
         public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
         {
-            var Departments = await _userRepo.GetAllDepartmentAsync();
+            var result = await _userService.GetDepartments();
 
-            return Ok(Departments);
+            return Ok(result);
         }
 
         [HttpGet("GetDepartmentById")]
         public async Task<ActionResult<DepartmentDto>> GetDepartmentById(long Id)
         {
-            var department = await _userRepo.GetDepartmentByIdAsync(Id);
-            if (department == null) { return BadRequest("No Record Found"); }
-
-            var departmentDto = _mapper.Map<DepartmentDto>(department);
-            
-            return Ok(departmentDto);
+            var result = await _userService.GetDepartmentById(Id);
+            if (result == null) { return BadRequest("No Record Found"); }
+            return Ok(result);
         }
 
         [HttpDelete("DeleteDepartment")]
         public async Task<ActionResult<string>> DeleteDepartment(long Id)
         {
-            var department = await _userRepo.GetDepartmentByIdAsync(Id);
-            _context.Departments.Remove(department);
-            await _context.SaveChangesAsync();
-            return Ok("Data Deleted");
-        }
-
-        [HttpGet("CanDeleteDepartment")] //change to action formula validation
-        public async Task<ActionResult<DeletionCondition<DepartmentDto>>> CanDeleteDepartment(long DepartmentId)
-        {
-            var department = await _userRepo.GetDepartmentByIdAsync(DepartmentId);
-
-            var position = _context.Posititon.Where(x => x.DepartmentId == DepartmentId);
-            var postionCount = await position.CountAsync();
-            var userCount = await _context.Users.CountAsync(x => x.Department == department.Code && x.IsActive == true);
-
-
-            var departmentDeletionCondition = new DeletionCondition<DepartmentDto>
-            {
-                Entity = _mapper.Map<DepartmentDto>(department)
-            };
-
-            if (userCount > 0)
-            {
-                departmentDeletionCondition.DependenciesCount = userCount;
-                departmentDeletionCondition.MessageType = Enums.MessageType.Error;
-                departmentDeletionCondition.Message = $"There are {userCount} active user with position under {department.Name} department";
-            }
-            else if (postionCount > 0) 
-            {
-                var positionList = await position.ToListAsync();
-                var message = "";
-                foreach(var x in positionList)
-                {
-                    message += $"{x.Name}\n";
-                }
-                departmentDeletionCondition.DependenciesCount = postionCount;
-                departmentDeletionCondition.MessageType = Enums.MessageType.Warning;
-                departmentDeletionCondition.Message = $"Below Position(s) will be deleted:\n {message}";
-            }
-            else
-            {
-                departmentDeletionCondition.DependenciesCount = 0;
-                departmentDeletionCondition.MessageType = Enums.MessageType.Information;
-                departmentDeletionCondition.Message = "";
-            }
-
-            return Ok(departmentDeletionCondition);
+            var result = await _userService.DeleteDepartment(Id);
+            return Ok(result);
         }
 
         [HttpPost("GetDepartmentActionValidator")]
         public async Task<ActionResult<List<ActionValidatorsOutput>>> GetDepartmentActionValidator(ActionValidatorsInput<DepartmentDto> request)
         {
-            var actionValidatorsOutput = new List<ActionValidatorsOutput>();
-            var properties = typeof(DepartmentDto).GetProperties();
-            var departmentDto = request.Data;
-
-            var department = await _userRepo.GetDepartmentByIdAsync((long)departmentDto.Id);
-            var position = _context.Posititon.Where(x => x.DepartmentId == departmentDto.Id);
-            var postionCount = await position.CountAsync();
-            var userCount = await _context.Users.CountAsync(x => x.Department == departmentDto.Code && x.IsActive == true);
-
-            foreach (var action in request.ActionCode)
-            {
-                if (action == "CREATE")
-                {
-                    //evaluate create
-                }
-
-                if (action == "EDIT")
-                {
-                    //evaluate edit
-                }
-
-                if (action == "DELETE")
-                {
-                    //evaluate delete
-                    if(userCount > 0)
-                    {
-                        actionValidatorsOutput.Add(new ActionValidatorsOutput
-                        {
-                            ActionCode = action,
-                            IsDisabled = false,
-                            IsLocked = true,
-                            IsVisible = true,
-                            LockedMessage = "Cannot Delete Record due to there are active user under department"
-                        });
-                    }                    
-                }
-            }
-
-            return Ok(actionValidatorsOutput);
+            var result = await _userService.GetDepartmentActionValidator(request);
+            return result;
         }
 
         [HttpPost("GetDepartmentValidator")]
         public async Task<ActionResult<List<Validators>>> GetDepartmentValidator(DataValidators<DepartmentDto> request)
         {
-            var validators = new List<Validators>();
-            var properties = typeof(DepartmentDto).GetProperties();
-            var departmentDto = request.Data;
-            var data = await _userRepo.GetAllDepartmentAsync();
-
-            foreach (var property in properties) { 
-                var value = property.GetValue(departmentDto);
-                string propertyName = property.Name;
-
-                if (propertyName == "Code" && (request.TriggerType == Enums.ValidatorTriggerType.OnLoad || request.TriggerType == Enums.ValidatorTriggerType.OnChange)) {
-                    
-                    if(value is null or (object)"")
-                    {
-                        validators.Add(new Validators
-                        {
-                            Field = "Code",
-                            IsValid = false,
-                            Message = "Department is Mandatory.",
-                            ValidatorsType = Enums.ValidatorsType.Mandatory,
-                        });
-                    }else
-                    {
-                        bool isCodeUnique = data.Where(x => x.Code.ToUpper() == departmentDto.Code.ToUpper()).Any();
-                        if (isCodeUnique && !departmentDto.Id.HasValue)
-                        {
-                            validators.Add(new Validators
-                            {
-                                Field = "Code",
-                                IsValid = false,
-                                Message = "Department code already exists.",
-                                ValidatorsType = Enums.ValidatorsType.Error,
-                            });
-                        }
-                    }
-                }
-
-                if (propertyName == "Name" && (value is not null) && request.TriggerType == Enums.ValidatorTriggerType.OnChange)
-                {
-                    bool isNameUnique = data.Where(x => x.Name.ToUpper() == departmentDto.Name.ToUpper()).Any();
-                    if(isNameUnique)
-                    {
-                        validators.Add(new Validators
-                        {
-                            Field = "Name",
-                            IsValid = true,
-                            Message = "Department Name already exists.",
-                            ValidatorsType = Enums.ValidatorsType.Warning,
-                        });
-                    }
-                }
-            }
-            return Ok(validators);
+            var result = await _userService.GetDepartmentValidator(request);
+            return Ok(result);
         }
-
         #endregion CRUD For User Management Module - Department
 
         #region CRUD For User Management Module - Position
@@ -394,51 +255,10 @@ namespace KPImanDental.Controllers
         #region Private Method
 
         #region Department
-        private async Task<bool> CheckDepartment(string departmentCode)
-        {
-            return await _context.Departments.AnyAsync(x => x.Code.ToLower() == departmentCode.ToLower());
-        }
-
-        private async Task<long> CreateDepartment(DepartmentDto departmentDto)
-        {
-            var department = _mapper.Map<Department>(departmentDto);
-
-            department.CreatedBy = "System";
-            department.CreatedOn = DateTime.Now;
-            department.UpdatedBy = "System";
-            department.UpdatedOn = DateTime.Now;
-
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
-            return department.Id;
-        }
-
-        private async Task<long> UpdateDepartment(DepartmentDto departmentDto)
-        {
-            var department = await _userRepo.GetDepartmentByIdAsync((long)departmentDto.Id);
-            if (department == null) return -1;
-
-            department.UpdatedBy = "Don";
-            department.UpdatedOn = DateTime.Now;
-
-            _mapper.Map(departmentDto, department);
-            await _context.SaveChangesAsync();
-
-            return department.Id;
-        }
-
         private async Task<string> GetDepartmentName(long Id)
         {
             var department = await _userRepo.GetDepartmentByIdAsync(Id);
             return department.Name;
-        }
-
-        private async Task<bool> IsDepartmentCodeUnique(string input)
-        {
-            var data = await _userRepo.GetAllDepartmentAsync();
-            var codeExists = data.Where(x => x.Code.ToUpper() == input.ToUpper());
-            if(codeExists.Any()) return true;
-            return false;
         }
         #endregion
 

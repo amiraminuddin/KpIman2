@@ -63,6 +63,7 @@ import { PatientTreatmentList } from './Patient/PatientTreatmentComponent/patien
 import { PatientTreatmentModal } from './Patient/PatientTreatmentComponent/patient-treatment-modal';
 import { LookupComponent } from '../shared/component/lookup.component';
 import { ValidationComponent } from '../shared/component/validation.component';
+import { TextAreaComponent } from '../shared/component/text.area.component';
 
 @NgModule({
   declarations: [
@@ -93,14 +94,14 @@ import { ValidationComponent } from '../shared/component/validation.component';
     TreatmentListComponent,
     TreatmentLookupModalComponent,
 
-    LookupComponent,
-
     //Shared Component
     IconComponent,
     maintenanceComponent,
     SpinnerComponent,
     UserMenu,
     ValidationComponent,
+    LookupComponent,
+    TextAreaComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,13 @@
+<style>
+  .vertical-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between each input-container */
+    padding-bottom: 5px;
+  }
+</style>
+<div class="vertical-layout">
+  <textarea [rows]="5" [cols]="30" pInputTextarea style="resize: none; overflow-y: auto;" [(ngModel)]="input"></textarea>
+  <input class="btn btn-outline-secondary btn-sm" type="button" value="Ok" (click)="closeModal(input)" style="border-radius: 5px">
+</div>
+

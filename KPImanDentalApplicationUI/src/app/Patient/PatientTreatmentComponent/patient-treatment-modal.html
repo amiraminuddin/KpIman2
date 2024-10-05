@@ -82,7 +82,10 @@
     <div class="horizontal-layout">
       <div class="input-container">
         <label>Description</label>
-        <input id="disabled-input" type="text" formControlName="description" pInputText />
+        <span class="p-input-icon-right">
+          <input id="disabled-input" type="text" formControlName="description" pInputText />
+          <i class="pi pi-file" (click)="loadTextArea('description')"></i>
+        </span>
       </div>
 
       <div class="input-container">
@@ -127,8 +130,18 @@
 
 
 <p-dialog header="{{lookupTitle}} List" [modal]="true" [(visible)]="lookupVisible" [maximizable]="false" [draggable]="false">
-  <app-lookup-component [data]="lookupData" [columns]="lookupColumn" [lookupTable]="lookupTable" (callbackRecordSelected)="getSelectedLookup($event)">
+  <app-lookup-component [data]="lookupData"
+                        [columns]="lookupColumn"
+                        [lookupTable]="lookupTable"
+                        [selectedData]="selectedLookupVal"
+                        (callbackRecordSelected)="getSelectedLookup($event)">
   </app-lookup-component>
+</p-dialog>
+
+
+<p-dialog header="{{textField}}" [modal]="true" [(visible)]="textVisible" [maximizable]="false" [draggable]="false">
+  <text-area-component [input]="textInput" [field]="textField" (callbackOutput)="getTextData($event)">
+  </text-area-component>
 </p-dialog>
 
 

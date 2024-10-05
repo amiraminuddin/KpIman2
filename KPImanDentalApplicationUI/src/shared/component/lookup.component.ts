@@ -9,13 +9,13 @@ export class LookupComponent implements OnInit {
 
   @Input() data: any[] = [];
   @Input() columns: Column[] = [];
-  @Input() lookupTable: string = ''
+  @Input() lookupTable: string = '';
+  @Input() selectedData: any;
 
   @Output('callbackRecordSelected') eventEmitRecordSelected = new EventEmitter<any>();
 
-  selectedData: any;
-
   ngOnInit(): void {
+    console.log(this.selectedData)
   }
 
 

@@ -1,99 +1,146 @@
-<!-- Modal -->
-<div  #userModal class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel"> {{_appConsts.getModeForm(currentMode)}} User</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form #userModalForm="ngForm" (ngSubmit)="save()" autocomplete="off">
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label for="UserName">User Name</label>
-              </div>
-              <div class="col-md-8">
-                <input class="form-control"
-                       id="userNameId"
-                       name="userNameId"
-                       type="text"
-                       [(ngModel)]="user.userName"
-                       [ngModelOptions]="{ standalone: true }" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label for="email">Email address</label>
-              </div>
-              <div class="col-md-8">
-                <input class="form-control"
-                       id="emailId"
-                       name="emailId"
-                       type="email"
-                       [(ngModel)]="user.email"
-                       placeholder="name@example.com" required>
-              </div>
-            </div>
-            <div *ngIf="currentMode == _appConsts.getActionCreateMode()" class="row mb-3">
-              <div class="col-md-4">
-                <label for="Password">Password</label>
-              </div>
-              <div class="col-md-8">
-                <input class="form-control"
-                       id="passwordId"
-                       name="passwordId"
-                       type="password"
-                       [(ngModel)]="user.password"
-                       [ngModelOptions]="{ standalone: true }"
-                       [required]="currentMode == _appConsts.getActionCreateMode()">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label for="department">Department</label>
-              </div>
-              <div class="col-md-8">
-                <input class="form-control"
-                       id="departmentId"
-                       name="departmentId"
-                       type="text"
-                       [(ngModel)]="user.department"
-                       [ngModelOptions]="{ standalone: true }">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label for="position">Position</label>
-              </div>
-              <div class="col-md-8">
-                <input class="form-control"
-                       id="PositionId"
-                       name="PositionId"
-                       type="text"
-                       [(ngModel)]="user.position"
-                       [ngModelOptions]="{ standalone: true }">
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-4">
-                <label for="icondisplay">Date of Birth</label>
-              </div>
-              <div class="col-md-8">
-                <p-calendar inputId="basic"
-                            dateFormat="dd-mm-yy"
-                            [(ngModel)]="user.birthDate"
-                            [showButtonBar]="true"
-                            [ngModelOptions]="{ standalone: true }"></p-calendar>
-              </div>
-            </div>
-          </div>
+<style>
+  :host ::ng-deep .p-card .p-card-content {
+    padding: 0px !important;
+  }
+  .horizontal-layout {
+    display: flex;
+    gap: 20px; /* Space between each input-container */
+    padding-bottom: 5px;
+  }
+
+  .vertical-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between each input-container */
+    padding-bottom: 5px;
+  }
+
+  .input-container {
+    flex: 1; /* Makes each input container take up an equal share of the space */
+    display: flex;
+    flex-direction: column; /* Label on top */
+  }
+
+  .form-button {
+    padding-top: 10px;
+    text-align: right;
+  }
+
+  .img-input {
+
+  }
+</style>
+
+<form [formGroup]="userForm" (ngSubmit)="save()" autocomplete="off">
+  <div>
+    <div>
+      <p-card header="" [style]="{'width': '10rem', 'margin-bottom': '2em'}">
+        <img [src]="userForm.get('userPhoto')?.value ? userForm.get('userPhoto')?.value : 'assets/user.png'"
+             alt="Image" [style]="{'width': '100%', 'height': '100%', 'object-fit': 'cover'}" />
+        <div class="img-input">
+          <p-fileUpload #fileUpload mode="basic"
+                        chooseLabel="Choose"
+                        chooseIcon="pi pi-upload"
+                        name="demo[]"
+                        url="https://www.primefaces.org/cdn/api/upload.php" 
+                        accept="image/*"
+                        [auto]="true" 
+                        [style]="{'width': '100%', 'margin-top': '10px', 'font-size':'10px'}"
+                        (onSelect)="onSelect($event)">
+          </p-fileUpload>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="userModalForm.invalid">Save</button>
-        </div>
-      </form>
+      </p-card>
+      
     </div>
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>
+          User Name
+        </label>
+        <input id="userName" type="text" formControlName="userName" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Email
+        </label>
+        <input id="email" type="text" pInputText formControlName="email" />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Password
+        </label>
+        <input id="password" type="text" pInputText formControlName="password" />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>
+          Department
+        </label>
+        <input id="department" type="text" formControlName="department" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Position
+        </label>
+        <input id="position" type="text" formControlName="position" pInputText />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>
+          Birth of Date
+        </label>
+        <input id="birthDate" type="text" formControlName="birthDate" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Address
+        </label>
+        <input id="address" type="text" formControlName="address" pInputText />
+      </div>
+    </div>
+
+    <div class="horizontal-layout">
+      <div class="input-container">
+        <label>
+          Gender
+        </label>
+        <input id="gender" type="text" formControlName="gender" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Supervisor ?
+        </label>
+        <input id="isSupervisor" type="text" formControlName="isSupervisor" pInputText />
+      </div>
+
+      <div class="input-container" *ngIf="userForm.get('isSupervisor')?.value">
+        <label>
+          Supervisor Name
+        </label>
+        <input id="supervisorId" type="text" formControlName="supervisorId" pInputText />
+      </div>
+
+      <div class="input-container">
+        <label>
+          Active ?
+        </label>
+        <input id="isActive" type="text" formControlName="isActive" pInputText />
+      </div>
+    </div>
+
   </div>
-</div>
+  <div class="form-button">
+    <button type="submit" class="btn btn-primary" [disabled]="isFormInvalid()">Save</button>
+  </div>
+</form>
+
+

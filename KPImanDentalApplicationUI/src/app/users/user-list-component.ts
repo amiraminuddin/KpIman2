@@ -16,11 +16,12 @@ import { userModal } from "./user-modal/user-modal-component";
 
 export class userComponent implements OnInit {
 
-  @ViewChild('appUserModal') userModal!: userModal;
-
-  private apiUrl = environment.apiUrl
+  private apiUrl = environment.apiUrl //todo take from services
   users: any;
   isLoad: boolean = false;
+
+  formState: string | undefined;
+  modalVisible: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -51,6 +52,11 @@ export class userComponent implements OnInit {
       complete: () => this.isLoad = false
     });
     return this.users
+  }
+
+  getAction(user: any) {
+
+
   }
 
   handleRegisterNewUser(data: any) {
@@ -87,11 +93,15 @@ export class userComponent implements OnInit {
   }
 
   EditUser(user: any) {
-    this.userModal.show(AppConsts.EditMode, user);
   }
 
   showModal() {
-    this.userModal.show(AppConsts.CreateMode, this.users);
+    this.formState = "Create";
+    this.modalVisible = true;
+  }
+
+  refresh(event: any) {
+
   }
 
   setComponentHeight() {

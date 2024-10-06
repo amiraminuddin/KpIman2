@@ -54,7 +54,13 @@
       </div>
     </div>
   </div>
-  <app-user-modal #appUserModal
-                  (callbackRecordCreate)="handleRegisterNewUser($event)">
-  </app-user-modal>
 </div>
+
+
+<p-dialog header="{{formState}} User" [modal]="true" [(visible)]="modalVisible" [maximizable]="true">
+  <app-user-modal [modalState]="formState"
+                              [userId]="12"
+                              [modalVisible]="modalVisible"
+                              (callbackRecordCreate)="refresh($event)">
+  </app-user-modal>
+</p-dialog>

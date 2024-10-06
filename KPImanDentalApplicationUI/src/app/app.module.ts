@@ -44,6 +44,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { BadgeModule } from 'primeng/badge';
 import { InputMaskModule } from 'primeng/inputmask';
+import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
@@ -133,6 +134,7 @@ import { TextAreaComponent } from '../shared/component/text.area.component';
     BadgeModule,
     InputMaskModule,
     TooltipModule,
+    CardModule,
     ReactiveFormsModule,
 
 

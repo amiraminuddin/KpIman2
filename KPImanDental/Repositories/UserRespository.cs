@@ -61,5 +61,17 @@ namespace KPImanDental.Repositories
 
             return userLookupDto;
         }
+
+        public async Task<Department> GetDepartmentByCodeAsync(string code)
+        {
+            var department = await _context.Departments.FirstOrDefaultAsync(x => x.Code == code);
+            return department;
+        }
+
+        public async Task<Position> GetPositionByCodeAsync(string code)
+        {
+            var position = await _context.Posititon.FirstOrDefaultAsync(x => x.Code == code);
+            return position;
+        }
     }
 }

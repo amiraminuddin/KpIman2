@@ -37,23 +37,30 @@ namespace KPImanDental.Controllers
         }
 
         #region CRUD For User Management Module - User
+        [HttpPost("CreateOrUpdateUser")]
+        public async Task<ActionResult<long>> CreateOrUpdateUser(UserDto input)
+        {
+            var result = await _userService.CreateOrUpdateUser(input);
+            return result;
+        }
+
         [HttpGet("getAllUser")]
         public async Task<ActionResult<IEnumerable<UserListDto>>> GetUsers()
         {
-            var usersListDto = await _userRepo.GetAllUsersAsync();
+            var usersListDto = await _userService.GetUsers();
 
             return Ok(usersListDto);
         }
 
         [HttpGet("getUserById")]
-        public async Task<ActionResult<UserDto>> GetUserFromId(long Id)
+        public async Task<ActionResult<UserDtoExt>> GetUserFromId(long Id)
         {
             try
             {
-                var user = await _userRepo.GetUserByIdAsync(Id);
+                var user = await _userService.GetUserFromId(Id);
                 if (user != null)
                 {
-                    return _mapper.Map<UserDto>(user);
+                    return user;
                 }
                 return NotFound("User Not Found!!");
 
@@ -61,19 +68,6 @@ namespace KPImanDental.Controllers
             {
                 return StatusCode(500, "Internal Error");
             }
-        }
-
-        [HttpPut("updateUser")]
-        public async Task<ActionResult<KpImanUser>> UpdateUser(UserDto user)
-        {
-            var User = await _context.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
-
-            if (User == null) return NotFound("User not Found!!");
-
-            _mapper.Map(user, User);
-
-            await _context.SaveChangesAsync();
-            return Ok(_mapper.Map<KpImanUser>(user));
         }
 
         [HttpPost("saveUserPhoto")]
@@ -88,7 +82,7 @@ namespace KPImanDental.Controllers
         [HttpPost("checkUserChange")]
         public async Task<ActionResult<bool>> CheckUserChange(UserDto userInput)
         {
-            var user = await _userRepo.GetUserDtoByIdAsync(userInput.Id);
+            var user = await _userRepo.GetUserDtoByIdAsync((long)userInput.Id);
 
             if (user == null) return NotFound("User Not Found!!");
 
@@ -115,6 +109,16 @@ namespace KPImanDental.Controllers
                 }                
             }            
             return Ok(true);
+        }
+
+        [HttpDelete("deleteUser")]
+        public async Task<ActionResult<bool>> Delete(long Id)
+        {
+            var User = await _context.Users.FirstOrDefaultAsync(x => x.Id == Id);
+            _context.Remove(User);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         #endregion CRUD For User Management Module - User

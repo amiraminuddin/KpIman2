@@ -1,5 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, Injectable, ViewChild, AfterViewInit, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MenuItem } from "primeng/api";
+import { Menu } from "primeng/menu";
 import { Observable, timeout } from "rxjs";
 import Swal from "sweetalert2";
 import { environment } from "../../environments/environment";
@@ -16,12 +18,16 @@ import { userModal } from "./user-modal/user-modal-component";
 
 export class userComponent implements OnInit {
 
+  @ViewChild('menu') menu!: Menu;
+
   private apiUrl = environment.apiUrl //todo take from services
   users: any;
   isLoad: boolean = false;
 
   formState: string | undefined;
   modalVisible: boolean = false;
+  actions: MenuItem[] = [];
+  userId: number | null | undefined;
 
   constructor(
     private http: HttpClient,
@@ -54,9 +60,31 @@ export class userComponent implements OnInit {
     return this.users
   }
 
+  onMenuButtonClick(user: any, event: MouseEvent) {
+    this.getAction(user);
+    this.menu.toggle(event);
+  }
+
   getAction(user: any) {
 
+    this.actions = [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => {
+          this.EditUser(user);
+        }
+      },
+      {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        command: () => {
 
+        }
+      }
+    ];
+
+    return this.actions;
   }
 
   handleRegisterNewUser(data: any) {
@@ -93,9 +121,13 @@ export class userComponent implements OnInit {
   }
 
   EditUser(user: any) {
+    this.formState = "Edit";
+    this.modalVisible = true;
+    this.userId = user.id;
   }
 
   showModal() {
+    this.userId = null;
     this.formState = "Create";
     this.modalVisible = true;
   }

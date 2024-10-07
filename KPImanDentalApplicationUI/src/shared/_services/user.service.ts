@@ -16,8 +16,8 @@ export class userServices {
   private apiUrl = environment.apiUrl;
 
   getUserById(id: number): Observable<UserDto>  {
-    const param = new HttpParams().set('Id', id.toString());
-    return this.http.get<UserDto>(`${this.apiUrl}Users/getUserById?${param}`).pipe();
+    const params = `Id=${id}`
+    return this.http.get<UserDto>(`${this.apiUrl}Users/getUserById?${params}`).pipe();
   }
 
 

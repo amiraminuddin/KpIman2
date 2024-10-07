@@ -7,6 +7,7 @@ namespace KPImanDental.Model
         public long Id { get; set; }
         [Required]
         public string UserName { get; set; }
+        public string FullName { get; set; }
         [Required]
         public string Password { get; set; } //This for references.
         [Required]
@@ -23,6 +24,7 @@ namespace KPImanDental.Model
         public bool IsActive { get; set; } = true;
         [Required]
         public bool IsSupervisor { get; set; } = false;
+        public long SupervisorId { get; set; } //Fo making organization chart
         public string UserPhoto { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;

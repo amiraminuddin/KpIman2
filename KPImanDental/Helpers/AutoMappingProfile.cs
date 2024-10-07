@@ -16,7 +16,7 @@ namespace KPImanDental.Helpers
         {
 
             #region Mapper Register
-            CreateMap<UserRegisterDto, KpImanUser>()
+            CreateMap<UserDto, KpImanUser>()
                 .ForMember(dest => dest.PasswordHash, option =>
                     option.MapFrom(src => AuthService.GetPasswordHasher(src.Password).PasswordHash))
                 .ForMember(dest => dest.PasswordSalt, option =>
@@ -32,6 +32,7 @@ namespace KPImanDental.Helpers
             CreateMap<KpImanUser, UserListDto>();
             CreateMap<KpImanUser, UserDto>();
             CreateMap<UserDto, KpImanUser>();
+            CreateMap<KpImanUser, UserDtoExt>();
             #endregion
 
             #region Mapper Module

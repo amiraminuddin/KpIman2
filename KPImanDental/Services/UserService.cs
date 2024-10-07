@@ -15,14 +15,50 @@ namespace KPImanDental.Services
         private readonly DataContext _context;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepo;
+        private readonly ILookupRepository _lookupRepo;
 
-        public UserService(DataContext context, IMapper mapper, IUserRepository userRepo)
+        public UserService(DataContext context, IMapper mapper, IUserRepository userRepo, ILookupRepository lookupRepo)
         {
             _context = context;
             _mapper = mapper;
             _userRepo = userRepo;
+            _lookupRepo = lookupRepo;
         }
 
+        #region User
+        public async Task<IEnumerable<UserListDto>> GetUsers()
+        {
+            var usersListDto = await _userRepo.GetAllUsersAsync();
+            return usersListDto;
+        }
+
+        public async Task<UserDtoExt> GetUserFromId(long Id)
+        {
+            var user = await _userRepo.GetUserByIdAsync(Id);
+            var userDto =  _mapper.Map<UserDtoExt>(user);
+            userDto.DepartmentL = await _lookupRepo.GetDepartmentLookup(userDto.Department);
+            userDto.PositionL = await _lookupRepo.GetPositionLookup(userDto.Position);
+            userDto.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(userDto.SupervisorId);
+
+            return userDto;
+        }
+
+        public async Task<long> CreateOrUpdateUser(UserDto userDto)
+        {
+            if (userDto.Id.HasValue) 
+            {
+                var updatedUser = await UpdateUser(userDto);
+                return updatedUser;
+            }
+            else
+            {
+                var createdUser = await CreateUser(userDto);
+                return createdUser;
+            }
+        }
+        #endregion
+
+        #region Department
         public async Task<long> CreateOrUpdateDepartment(DepartmentDto departmentDto)
         {
             if (departmentDto.Id.HasValue)
@@ -162,10 +198,45 @@ namespace KPImanDental.Services
             }
             return validators;
         }
+        #endregion
 
-        #region Private Method
+        #region Private Method User
+        private async Task<long> CreateUser(UserDto input)
+        {
+            var user = _mapper.Map<KpImanUser>(input);
 
-        #region Department
+            user.CreatedBy = "System";
+            user.CreatedOn = DateTime.Now;
+            user.UpdatedBy = "System";
+            user.UpdatedOn = DateTime.Now;
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user.Id;
+        }
+
+        private async Task<long> UpdateUser(UserDto input)
+        {
+            var user = await _userRepo.GetUserByIdAsync((long)input.Id);
+            if (user == null) { return -1; }
+
+            user.UpdatedBy = "Don";
+            user.UpdatedOn = DateTime.Now;
+
+            _mapper.Map(input, user);
+            await _context.SaveChangesAsync();
+
+            return user.Id;
+
+        }
+
+        private async Task<bool> CheckUserExists(string username)
+        {
+            return await _context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower());
+        }
+        #endregion
+
+        #region Private Method Department
         private async Task<long> CreateDepartment(DepartmentDto departmentDto)
         {
             var department = _mapper.Map<Department>(departmentDto);
@@ -193,8 +264,6 @@ namespace KPImanDental.Services
 
             return department.Id;
         }
-        #endregion
-
         #endregion
     }
 }

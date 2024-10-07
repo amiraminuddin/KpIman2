@@ -22,17 +22,22 @@ export class UserRegister {
 
 export class UserDto {
   id: number | undefined;
-  userName: string = '';
-  email: string = '';
-  position: string = '';
-  department: string = '';
+  userName: string | undefined;
+  fullName: string | undefined;
+  email: string | undefined;
+  position: string | undefined;
+  department: string | undefined;
   birthDate: Date = new Date;
-  address: string = '';
+  address: string | undefined;
   isActive: boolean = true;
   isSupervisor: boolean = false;
-  gender: string = '';
-  formattedBirthDate: string = '';
-  userPhoto: string = '';
+  supervisorId: number | undefined;
+  gender: string | undefined;
+  userPhoto: string | undefined;
+}
+
+export class UserDtoExt {
+  formattedBirthDate: string | undefined;
 }
 
 export class ModuleUpdateDto {

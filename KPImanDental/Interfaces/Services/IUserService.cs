@@ -7,6 +7,12 @@ namespace KPImanDental.Interfaces.Services
 {
     public interface IUserService
     {
+        #region User Interface
+        Task<long> CreateOrUpdateUser(UserDto userDto);
+        Task<IEnumerable<UserListDto>> GetUsers();
+        Task<UserDtoExt> GetUserFromId(long Id);
+        #endregion
+
         #region Department Interface
         Task<long> CreateOrUpdateDepartment(DepartmentDto departmentDto);
         Task<IEnumerable<DepartmentDto>> GetDepartments();

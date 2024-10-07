@@ -12,5 +12,9 @@ namespace KPImanDental.Interfaces.Repositories
         Task<StaffLookupDto> GetUserLookupDtoByIdAsync(long id);
         Task<Department> GetDepartmentByIdAsync(long id);
         Task<IEnumerable<DepartmentDto>> GetAllDepartmentAsync();
+
+        Task<Department> GetDepartmentByCodeAsync(string code);
+
+        Task<Position> GetPositionByCodeAsync(string code);
     }
 }

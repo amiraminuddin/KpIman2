@@ -1,5 +1,6 @@
 ﻿using KPImanDental.Data;
 using KPImanDental.Dto.LookupDto;
+using KPImanDental.Dto.PatientDto;
 using KPImanDental.Interfaces.Repositories;
 
 namespace KPImanDental.Repositories
@@ -21,11 +22,12 @@ namespace KPImanDental.Repositories
         {
             var department = await userRespository.GetDepartmentByCodeAsync(code);
 
-            return new LookupTemplateDto
+            return department != null ? new LookupTemplateDto
             {
                 FieldValue = department.Code,
                 FieldDisplay = department.Name,
-            };
+            }
+            : new LookupTemplateDto();
         }
 
         public async Task<LookupTemplateDto> GetKPImanUserLookup(long Id)
@@ -49,32 +51,35 @@ namespace KPImanDental.Repositories
         {
             var patient = await patientRepository.GetPatientByIdAsync(Id);
 
-            return new LookupTemplateDto
+            return patient != null ? new LookupTemplateDto
             {
                 FieldValue = patient.Id.ToString(),
                 FieldDisplay = patient.FirstName
-            };
+            } 
+            : new LookupTemplateDto();
         }
 
         public async Task<LookupTemplateDto> GetPositionLookup(string code)
         {
             var position = await userRespository.GetPositionByCodeAsync(code);
-            return new LookupTemplateDto
-            {
-                FieldValue = position.Code.ToString(),
-                FieldDisplay = position.Name.ToString()
-            };
+            return position != null ? new LookupTemplateDto
+            { 
+                FieldValue = position.Code,
+                FieldDisplay = position.Name,
+            } 
+            : new LookupTemplateDto();
         }
 
         public async Task<LookupTemplateDto> GetTreatmentLookup(long Id)
         {
             var treatment = await dataContext.TreatmentLookup.FindAsync(Id);
 
-            return new LookupTemplateDto
+            return treatment != null ? new LookupTemplateDto
             {
                 FieldValue = treatment.Id.ToString(),
                 FieldDisplay = treatment.TreatmentName
-            };
+            }
+            : new LookupTemplateDto();
         }
     }
 }

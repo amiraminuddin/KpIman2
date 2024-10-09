@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserDto, Validators } from "../model/AppModel";
+import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -20,6 +20,9 @@ export class userServices {
     return this.http.get<UserDto>(`${this.apiUrl}Users/getUserById?${params}`).pipe();
   }
 
+  getAllUser(): Observable<UserDtoExt[]> {
+    return this.http.get<UserDtoExt[]>(this.apiUrl + "Users/getAllUser").pipe();
+  }
 
   updateUser(user: any) {
     return this.http.put(this.apiUrl + "Users/updateUser", user).pipe();
@@ -54,12 +57,12 @@ export class userServices {
 
   deleteDepartment(id: number) {
     const params = `id=${id}`;
-    return this.http.delete(`${this.apiUrl}/DeleteDepartment?${params}`).pipe();
+    return this.http.delete(`${this.apiUrl}Users/DeleteDepartment?${params}`).pipe();
   }
 
   checkPositionExistByDepartment(id: number) {
     const params = `id=${id}`;
-    return this.http.get(`${this.apiUrl}/CheckPositionExistByDepartment?${params}`).pipe();
+    return this.http.get(`${this.apiUrl}Users/CheckPositionExistByDepartment?${params}`).pipe();
   }
 
   canDeleteDepartment<T>(id: number): Observable<DeletionCondition<T>> {
@@ -93,7 +96,7 @@ export class userServices {
 
   deletePosition(id: number) {
     const params = `id=${id}`;
-    return this.http.delete(`${this.apiUrl}DeletePosition?${params}`).pipe();
+    return this.http.delete(`${this.apiUrl}Users/DeletePosition?${params}`).pipe();
   }
 
   canDeletePosition<T>(id: number): Observable<DeletionCondition<T>> {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
@@ -26,9 +27,16 @@ namespace KPImanDental.Services
         }
 
         #region User
-        public async Task<IEnumerable<UserListDto>> GetUsers()
+        public async Task<IEnumerable<UserDtoExt>> GetUsers()
         {
             var usersListDto = await _userRepo.GetAllUsersAsync();
+            foreach(var data in usersListDto)
+            {
+                data.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(data.SupervisorId);
+                data.DepartmentL = await _lookupRepo.GetDepartmentLookup(data.Department);
+                data.PositionL = await _lookupRepo.GetPositionLookup(data.Position);
+            }
+            
             return usersListDto;
         }
 

@@ -1,12 +1,13 @@
 ﻿using KPImanDental.Dto;
 using KPImanDental.Dto.LookupDto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Model;
 
 namespace KPImanDental.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<UserListDto>> GetAllUsersAsync();
+        Task<IEnumerable<UserDtoExt>> GetAllUsersAsync();
         Task<KpImanUser> GetUserByIdAsync(long id);
         Task<UserDto> GetUserDtoByIdAsync(long id);
         Task<StaffLookupDto> GetUserLookupDtoByIdAsync(long id);

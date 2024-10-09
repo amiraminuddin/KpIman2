@@ -2,6 +2,7 @@
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Dto.LookupDto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Model;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,10 @@ namespace KPImanDental.Repositories
             _context = context;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<UserListDto>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDtoExt>> GetAllUsersAsync()
         {
             var users = await _context.Users.ToListAsync();
-            var usersListDto = _mapper.Map<IEnumerable<UserListDto>>(users).Select((user, index) =>
+            var usersListDto = _mapper.Map<IEnumerable<UserDtoExt>>(users).Select((user, index) =>
             {
                 user.RowNumber = index + 1;
                 return user;

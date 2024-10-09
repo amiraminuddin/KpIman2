@@ -72,7 +72,7 @@ export class UserDetailComponent implements OnInit {
       this.userService.getUserById(Number(userId)).subscribe(result => {
         this.user = result;
         if (this.user) {
-          this.user.birthDate = new Date(this.user.birthDate);
+          //this.user.birthDate = new Date(this.user.birthDate);
           this.getDepartmentList();
           this.getPositionList(1);
         }

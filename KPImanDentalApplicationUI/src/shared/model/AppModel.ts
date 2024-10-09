@@ -22,24 +22,27 @@ export class UserRegister {
 
 export class UserDto {
   id: number | undefined;
-  userName: string | undefined;
   fullName: string | undefined;
   email: string | undefined;
   position: string | undefined;
   department: string | undefined;
-  birthDate: Date = new Date;
+  birthDate: string | undefined;
   address: string | undefined;
-  isActive: boolean = true;
-  isSupervisor: boolean = false;
+  isActive: boolean | undefined;
+  isSupervisor: boolean | undefined;
   supervisorId: number | undefined;
   gender: string | undefined;
   userPhoto: string | undefined;
 }
 
-export class UserDtoExt {
-  formattedBirthDate: string | undefined;
-}
+export class UserDtoExt extends UserDto {
+  rowNumber: number | undefined;
+  departmentL: LookupTemplateDto | undefined;
+  positionL: LookupTemplateDto | undefined;
+  supervisorNameL: LookupTemplateDto | undefined;
+  convertDateTime: string | undefined;
 
+}
 export class ModuleUpdateDto {
   moduleDescription: string = '';
   isActive: boolean = true;

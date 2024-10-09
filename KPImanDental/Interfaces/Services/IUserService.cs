@@ -1,4 +1,5 @@
 ﻿using KPImanDental.Dto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace KPImanDental.Interfaces.Services
     {
         #region User Interface
         Task<long> CreateOrUpdateUser(UserDto userDto);
-        Task<IEnumerable<UserListDto>> GetUsers();
+        Task<IEnumerable<UserDtoExt>> GetUsers();
         Task<UserDtoExt> GetUserFromId(long Id);
         #endregion
 

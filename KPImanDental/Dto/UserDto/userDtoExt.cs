@@ -1,18 +1,19 @@
 ﻿using KPImanDental.Dto.LookupDto;
 
-namespace KPImanDental.Dto
+namespace KPImanDental.Dto.UserDto
 {
-    public class UserDtoExt : UserDto
+    public class UserDtoExt : UserDto //extend for display lookup
     {
-        public string ConfirmPassword {  get; set; }
+        public int RowNumber { get; set; }
         public LookupTemplateDto DepartmentL { get; set; }
         public LookupTemplateDto PositionL { get; set; }
         public LookupTemplateDto SupervisorNameL { get; set; }
-        public string FormattedBirthDate
+        public string ConvertDateTime
         {
             get
             {
-                return Helpers.DateConversion.ConvertDateTime(BirthDate, "yyyy-MM-dd");
+                return BirthDate.ToString("dd/MM/yyyy");
+
             }
         }
     }

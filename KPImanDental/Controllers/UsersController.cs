@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
@@ -45,7 +46,7 @@ namespace KPImanDental.Controllers
         }
 
         [HttpGet("getAllUser")]
-        public async Task<ActionResult<IEnumerable<UserListDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDtoExt>>> GetUsers()
         {
             var usersListDto = await _userService.GetUsers();
 

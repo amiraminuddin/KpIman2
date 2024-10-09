@@ -3,6 +3,7 @@ using KPImanDental.Authorization;
 using KPImanDental.Dto;
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Dto.PatientDto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Model;
 using KPImanDental.Model.Lookup;
 using KPImanDental.Model.Patient;
@@ -16,7 +17,8 @@ namespace KPImanDental.Helpers
         {
 
             #region Mapper Register
-            CreateMap<UserDto, KpImanUser>()
+            //for create new user
+            CreateMap<UserCreateDto, KpImanUser>()
                 .ForMember(dest => dest.PasswordHash, option =>
                     option.MapFrom(src => AuthService.GetPasswordHasher(src.Password).PasswordHash))
                 .ForMember(dest => dest.PasswordSalt, option =>
@@ -29,10 +31,13 @@ namespace KPImanDental.Helpers
 
 
             #region Mapper User
-            CreateMap<KpImanUser, UserListDto>();
-            CreateMap<KpImanUser, UserDto>();
-            CreateMap<UserDto, KpImanUser>();
+            //View in list and form
             CreateMap<KpImanUser, UserDtoExt>();
+            CreateMap<UserDto, KpImanUser>(); //mapper for save
+
+            //CreateMap<KpImanUser, UserDto>();
+            //CreateMap<UserDto, KpImanUser>();
+            //CreateMap<KpImanUser, UserDtoExt>();
             #endregion
 
             #region Mapper Module

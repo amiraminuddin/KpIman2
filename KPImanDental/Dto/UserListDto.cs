@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace KPImanDental.Dto
+﻿namespace KPImanDental.Dto
 {
     public class UserListDto
     {
@@ -14,7 +12,7 @@ namespace KPImanDental.Dto
         public string Address { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsSupervisor { get; set; } = false;
-        public string convertDateTime
+        public string ConvertDateTime
         {
             get
             {

@@ -86,10 +86,10 @@
             <ng-template pTemplate="header">
               <tr>
                 <th style="max-width: 100px;"></th>
-                <th style="min-width: 100px;">User Name</th>
+                <th style="min-width: 100px;">Full Name</th>
                 <th style="min-width: 100px;">Email</th>
-                <th style="min-width: 100px;">Position</th>
                 <th style="min-width: 100px;">Department</th>
+                <th style="min-width: 100px;">Position</th>
                 <th style="min-width: 100px;">Birth Date</th>
                 <th style="min-width: 100px;">Supervisor?</th>
                 <th style="min-width: 100px;">Active?</th>
@@ -101,10 +101,10 @@
                   <p-menu #menu [model]="actions" [popup]="true" appendTo="body"></p-menu>
                   <i (click)="onMenuButtonClick(user, $event)" class="pi pi-ellipsis-h action-button"></i>
                 </td>
-                <td style="min-width: 100px;">{{ user.userName }}</td>
+                <td style="min-width: 100px;">{{ user.fullName }}</td>
                 <td style="min-width: 100px;">{{ user.email }}</td>
-                <td style="min-width: 100px;">{{ user.position }}</td>
-                <td style="min-width: 100px;">{{ user.department }}</td>
+                <td style="min-width: 100px;">{{ user.departmentL.fieldDisplay }}</td>
+                <td style="min-width: 100px;">{{ user.positionL.fieldDisplay }}</td>
                 <td style="min-width: 100px;">{{ user.convertDateTime }}</td>
                 <td style="min-width: 100px;">
                   <input *ngIf="user.isSupervisor" class="form-check-input" type="checkbox" value="" id="'isSupervisor'+user.id" checked disabled>

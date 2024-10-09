@@ -6,8 +6,10 @@ import { Observable, timeout } from "rxjs";
 import Swal from "sweetalert2";
 import { environment } from "../../environments/environment";
 import { AppConsts } from "../../shared/AppConsts";
+import { UserDtoExt } from "../../shared/model/AppModel";
 import { AccountServices } from "../../shared/_services/account.service";
 import { ModuleService } from "../../shared/_services/module.service";
+import { userServices } from "../../shared/_services/user.service";
 import { userModal } from "./user-modal/user-modal-component";
 
 @Component({
@@ -20,8 +22,7 @@ export class userComponent implements OnInit {
 
   @ViewChild('menu') menu!: Menu;
 
-  private apiUrl = environment.apiUrl //todo take from services
-  users: any;
+  users: UserDtoExt[] = [];
   isLoad: boolean = false;
 
   formState: string | undefined;
@@ -33,6 +34,7 @@ export class userComponent implements OnInit {
     private http: HttpClient,
     private service: AccountServices,
     private module: ModuleService,
+    private userService: userServices,
   )
   { }
 
@@ -50,14 +52,20 @@ export class userComponent implements OnInit {
   ngAfterViewInit() {
   }
 
-  getData(): Observable<any> {
+  getData() {
     this.isLoad = true;
-    this.http.get<any>(this.apiUrl + "Users/getAllUser").subscribe({
-      next: response => this.users = response,
-      error: error => console.log(error),
-      complete: () => this.isLoad = false
-    });
-    return this.users
+    //this.http.get<any>(this.apiUrl + "Users/getAllUser").subscribe({
+    //  next: response => this.users = response,
+    //  error: error => console.log(error),
+    //  complete: () => this.isLoad = false
+    //});
+    this.userService.getAllUser().subscribe({
+      next: response => {
+        this.users = response;
+        this.isLoad = false
+      }
+    })
+    /*return this.users*/
   }
 
   onMenuButtonClick(user: any, event: MouseEvent) {

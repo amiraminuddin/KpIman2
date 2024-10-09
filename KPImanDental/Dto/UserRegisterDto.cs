@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KPImanDental.Dto
+namespace KPImanDental.Dto.UserDto
 {
     public class UserRegisterDto : UserDto
     {

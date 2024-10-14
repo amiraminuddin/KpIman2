@@ -33,7 +33,8 @@ namespace KPImanDental.Helpers
             #region Mapper User
             //View in list and form
             CreateMap<KpImanUser, UserDtoExt>();
-            CreateMap<UserDto, KpImanUser>(); //mapper for save
+            CreateMap<KpImanUser, UserCreateDto>();
+            CreateMap<UserDto, KpImanUser>();
 
             //CreateMap<KpImanUser, UserDto>();
             //CreateMap<UserDto, KpImanUser>();

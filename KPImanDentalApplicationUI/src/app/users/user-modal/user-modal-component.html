@@ -77,19 +77,19 @@
       </div>
     </div>
 
-    <div class="horizontal-layout">
-      <div class="input-container">
+    <div class="horizontal-layout" >
+      <div class="input-container" formGroupName="departmentL">
         <label>Department</label>
         <span class="p-input-icon-right">
-          <input id="department" type="text" formControlName="department" pInputText />
+          <input id="department" type="text" formControlName="fieldDisplay" pInputText />
           <i class="pi pi-external-link" (click)="loadDepartmentLookup()"></i>
         </span>
       </div>
 
-      <div class="input-container">
+      <div class="input-container" formGroupName="positionL">
         <label>Position</label>
         <span class="p-input-icon-right">
-          <input id="position" type="text" formControlName="position" pInputText />
+          <input id="position" type="text" formControlName="fieldDisplay" pInputText />
           <i class="pi pi-external-link" (click)="loadPositionLookup()"></i>
         </span>
       </div>

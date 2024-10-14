@@ -43,6 +43,13 @@ export class UserDtoExt extends UserDto {
   convertDateTime: string | undefined;
 
 }
+
+export class UserCreateDto extends UserDtoExt {
+  userName: string | undefined;;
+  Password: string | undefined;;
+  ConfirmPassword: string | undefined;;
+}
+
 export class ModuleUpdateDto {
   moduleDescription: string = '';
   isActive: boolean = true;

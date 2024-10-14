@@ -39,10 +39,18 @@ namespace KPImanDental.Controllers
 
         #region CRUD For User Management Module - User
         [HttpPost("CreateOrUpdateUser")]
-        public async Task<ActionResult<long>> CreateOrUpdateUser(UserDto input)
+        public async Task<ActionResult<long>> CreateOrUpdateUser(UserCreateDto input)
         {
             var result = await _userService.CreateOrUpdateUser(input);
             return result;
+        }
+
+        [HttpGet("GetUserForEdit")]
+        public async Task<ActionResult<UserCreateDto>> GetUserForEdit(long id)
+        {
+            var result = await _userService.GetUserForEdit(id);
+            if (result == null) { return BadRequest("No Record Found"); }
+            return Ok(result);
         }
 
         [HttpGet("getAllUser")]

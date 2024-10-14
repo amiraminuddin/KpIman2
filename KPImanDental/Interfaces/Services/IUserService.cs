@@ -9,7 +9,9 @@ namespace KPImanDental.Interfaces.Services
     public interface IUserService
     {
         #region User Interface
-        Task<long> CreateOrUpdateUser(UserDto userDto);
+        Task<long> CreateOrUpdateUser(UserCreateDto UserCreateDtoInput);
+
+        Task<UserCreateDto> GetUserForEdit(long Id);
         Task<IEnumerable<UserDtoExt>> GetUsers();
         Task<UserDtoExt> GetUserFromId(long Id);
         #endregion

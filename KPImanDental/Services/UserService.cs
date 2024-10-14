@@ -50,17 +50,31 @@ namespace KPImanDental.Services
 
             return userDto;
         }
-
-        public async Task<long> CreateOrUpdateUser(UserDto userDto)
+        public async Task<UserCreateDto> GetUserForEdit(long Id)
         {
-            if (userDto.Id.HasValue) 
+            var user = await _userRepo.GetUserByIdAsync(Id);
+            if( user == null)
             {
-                var updatedUser = await UpdateUser(userDto);
+                return null;
+            }
+            var result = _mapper.Map<UserCreateDto>(user);
+            result.DepartmentL = await _lookupRepo.GetDepartmentLookup(result.Department);
+            result.PositionL = await _lookupRepo.GetPositionLookup(result.Position);
+            result.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(result.SupervisorId);
+
+            return result;
+        }
+
+        public async Task<long> CreateOrUpdateUser(UserCreateDto UserCreateDtoInput)
+        {
+            if (UserCreateDtoInput.Id.HasValue)
+            {
+                var updatedUser = await UpdateUser(UserCreateDtoInput);
                 return updatedUser;
             }
             else
             {
-                var createdUser = await CreateUser(userDto);
+                var createdUser = await CreateUser(UserCreateDtoInput);
                 return createdUser;
             }
         }
@@ -209,7 +223,7 @@ namespace KPImanDental.Services
         #endregion
 
         #region Private Method User
-        private async Task<long> CreateUser(UserDto input)
+        private async Task<long> CreateUser(UserCreateDto input)
         {
             var user = _mapper.Map<KpImanUser>(input);
 
@@ -223,7 +237,7 @@ namespace KPImanDental.Services
             return user.Id;
         }
 
-        private async Task<long> UpdateUser(UserDto input)
+        private async Task<long> UpdateUser(UserCreateDto input)
         {
             var user = await _userRepo.GetUserByIdAsync((long)input.Id);
             if (user == null) { return -1; }
@@ -237,7 +251,6 @@ namespace KPImanDental.Services
             return user.Id;
 
         }
-
         private async Task<bool> CheckUserExists(string username)
         {
             return await _context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower());

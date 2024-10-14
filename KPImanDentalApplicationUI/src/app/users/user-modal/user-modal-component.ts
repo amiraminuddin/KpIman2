@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import * as bootstrap from 'bootstrap';
 import { FileUpload } from 'primeng/fileupload';
 import { AppConsts } from "../../../shared/AppConsts";
-import { Column, DepartmentDto, PositionDto, UserDto } from "../../../shared/model/AppModel";
+import { Column, DepartmentDto, PositionDto, UserDto, UserDtoExt } from "../../../shared/model/AppModel";
 import { UserRegister } from "../../../shared/model/user";
 import { userServices } from "../../../shared/_services/user.service";
 
@@ -24,7 +24,7 @@ export class userModal {
   @Input() modalVisible: boolean | undefined;
   @Input() modalState: string | undefined;
 
-  @Output('callbackRecordCreate') eventEmitRecordCreate = new EventEmitter<any>();
+  @Output('callbackRefreshAfterSaved') refreshAfterSaved = new EventEmitter<any>();
 
   userForm = new FormGroup({});
 
@@ -43,11 +43,13 @@ export class userModal {
 
   selectedLookupVal: any;
 
-  selectedDepartmentId: number = -1;
+  selectedDepartmentId: number | undefined;
   //for text Area
   textVisible: boolean = false;
   textInput: string = "";
   textField: string = "";
+
+  departmentList: DepartmentDto[] = [];
 
   constructor(private services: userServices, private appconst: AppConsts) {
     this.genderList = appconst.getGenderList();
@@ -88,17 +90,37 @@ export class userModal {
       isSupervisor: new FormControl(),
       supervisorId: new FormControl(),
       gender: new FormControl(),
-      userPhoto: new FormControl()
+      userPhoto: new FormControl(),
+      positionL: new FormGroup({
+        fieldValue: new FormControl(),
+        fieldDisplay: new FormControl(),
+      }),
+      departmentL: new FormGroup({
+        fieldValue: new FormControl(),
+        fieldDisplay: new FormControl(),
+      })
+
     })
   }
 
   getData(): void {
     if (this.userId != null) {
+
+      this.services.getAllDepartment().subscribe({
+        next: (result: DepartmentDto[]) => {
+          if (result) {
+            this.departmentList = result;
+          }
+        }
+      })
+
       this.services.getUserById(this.userId).subscribe({
-        next: (result: UserDto) => {
+        next: (result: UserDtoExt) => {
           if (result) {
             this.userForm.patchValue(result);
             this.userForm.get("birthDate")?.patchValue(this.formatDate(result.birthDate));
+            const department = this.departmentList.find(x => x.code == result.department);
+            this.selectedDepartmentId = department ? department.id : undefined;
           }
         }
       })
@@ -139,6 +161,7 @@ export class userModal {
   }
 
   loadPositionLookup() {
+    if (this.selectedDepartmentId != undefined)
     this.services.getPositionByDeprtmId(this.selectedDepartmentId).subscribe({
       next: (result: PositionDto[]) => {
         if (result) {
@@ -189,7 +212,16 @@ export class userModal {
   }
 
   save() {
+    const formData = { ...this.userForm.value };
 
+    formData.isActive = formData.isActive === 'true' || formData.isActive === true;
+    this.services.CreateOrUpdateUser(formData).subscribe({
+      next: (result) => {
+        console.log(result)
+        this.refreshAfterSaved.emit(this.modalState);
+      },
+      error: (error) => { console.log(error) }
+    });
   }
 
   getTextData(event: any) {
@@ -201,17 +233,24 @@ export class userModal {
 
   getSelectedLookup(event: any) {
     let selectedLookup = event.data;
+    let lookupData = { fieldValue: selectedLookup.code, fieldDisplay: selectedLookup.name }
     if (event.lookupTable == 'department') {
       let x = this.userForm.get('department')?.value;
       if (x != selectedLookup.code) {
         this.userForm.get('position')?.patchValue(null);
+        this.userForm.get('positionL')?.reset({
+          fieldValue: null,
+          fieldDisplay: null
+        });
       }
       this.userForm.get('department')?.patchValue(selectedLookup.code);
+      this.userForm.get('departmentL')?.patchValue(lookupData);
       this.selectedDepartmentId = selectedLookup.id;
     }
     if (event.lookupTable == 'position') {
       this.selectedDepartmentId = -1;
       this.userForm.get('position')?.patchValue(selectedLookup.code);
+      this.userForm.get('positionL')?.patchValue(lookupData);
     }
     this.lookupVisible = false;
   }

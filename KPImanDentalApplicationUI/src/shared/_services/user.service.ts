@@ -15,17 +15,17 @@ export class userServices {
 
   private apiUrl = environment.apiUrl;
 
-  getUserById(id: number): Observable<UserDto>  {
+  CreateOrUpdateUser(input: UserDto) {
+    return this.http.post(`${this.apiUrl}Users/CreateOrUpdateUser`, input).pipe();
+  }
+
+  getUserById(id: number): Observable<UserDtoExt>  {
     const params = `Id=${id}`
-    return this.http.get<UserDto>(`${this.apiUrl}Users/getUserById?${params}`).pipe();
+    return this.http.get<UserDtoExt>(`${this.apiUrl}Users/getUserById?${params}`).pipe();
   }
 
   getAllUser(): Observable<UserDtoExt[]> {
     return this.http.get<UserDtoExt[]>(this.apiUrl + "Users/getAllUser").pipe();
-  }
-
-  updateUser(user: any) {
-    return this.http.put(this.apiUrl + "Users/updateUser", user).pipe();
   }
 
   saveUserPhoto(file: any): Observable<string> {

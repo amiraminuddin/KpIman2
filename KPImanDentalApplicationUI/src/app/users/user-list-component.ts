@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { MenuItem } from "primeng/api";
+import { MenuItem, MessageService } from "primeng/api";
 import { Menu } from "primeng/menu";
 import { Observable, timeout } from "rxjs";
 import Swal from "sweetalert2";
@@ -35,6 +35,7 @@ export class userComponent implements OnInit {
     private service: AccountServices,
     private module: ModuleService,
     private userService: userServices,
+    private messageService: MessageService
   )
   { }
 
@@ -54,11 +55,6 @@ export class userComponent implements OnInit {
 
   getData() {
     this.isLoad = true;
-    //this.http.get<any>(this.apiUrl + "Users/getAllUser").subscribe({
-    //  next: response => this.users = response,
-    //  error: error => console.log(error),
-    //  complete: () => this.isLoad = false
-    //});
     this.userService.getAllUser().subscribe({
       next: response => {
         this.users = response;
@@ -140,8 +136,14 @@ export class userComponent implements OnInit {
     this.modalVisible = true;
   }
 
-  refresh(event: any) {
-
+  refresh(data: any) {
+    this.modalVisible = false;
+    this.getData();
+    if (data == 'Create') {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
+    } else {
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
+    }
   }
 
   setComponentHeight() {

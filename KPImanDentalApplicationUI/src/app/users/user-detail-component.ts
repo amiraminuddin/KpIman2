@@ -119,13 +119,13 @@ export class UserDetailComponent implements OnInit {
 
   save() {
     //this.user.gender;
-    this.userService.updateUser(this.user).subscribe({
-      next: user => {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
-        this.getData();
-      }
-    });
-    this.changeDetector.detectChanges(); // Force change detection
+    //this.userService.updateUser(this.user).subscribe({
+    //  next: user => {
+    //    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
+    //    this.getData();
+    //  }
+    //});
+    //this.changeDetector.detectChanges(); // Force change detection
   }
 
   setComponentHeight() {

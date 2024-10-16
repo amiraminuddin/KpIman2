@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from "@angular/forms";
 import * as bootstrap from 'bootstrap';
 import { FileUpload } from 'primeng/fileupload';
 import { AppConsts } from "../../../shared/AppConsts";
-import { Column, DepartmentDto, PositionDto, UserDto, UserDtoExt } from "../../../shared/model/AppModel";
+import { Column, DepartmentDto, PositionDto, UserCreateDto, UserDto, UserDtoExt } from "../../../shared/model/AppModel";
 import { UserRegister } from "../../../shared/model/user";
 import { userServices } from "../../../shared/_services/user.service";
 
@@ -65,6 +65,7 @@ export class userModal {
         this.getData();
       } else {
         this.resetForm();
+        this.userForm.get('isActive')?.patchValue(true);
       }
     } else {
       this.resetForm();
@@ -98,8 +99,13 @@ export class userModal {
       departmentL: new FormGroup({
         fieldValue: new FormControl(),
         fieldDisplay: new FormControl(),
-      })
-
+      }),
+      supervisorNameL: new FormGroup({
+        fieldValue: new FormControl(),
+        fieldDisplay: new FormControl(),
+      }),
+      confirmPassword: new FormControl(),
+      hierarchyLevel: new FormControl()
     })
   }
 
@@ -114,8 +120,8 @@ export class userModal {
         }
       })
 
-      this.services.getUserById(this.userId).subscribe({
-        next: (result: UserDtoExt) => {
+      this.services.GetUserForEdit(this.userId).subscribe({
+        next: (result: UserCreateDto) => {
           if (result) {
             this.userForm.patchValue(result);
             this.userForm.get("birthDate")?.patchValue(this.formatDate(result.birthDate));

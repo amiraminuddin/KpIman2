@@ -14,5 +14,6 @@
         public long SupervisorId { get; set; }
         public string Gender { get; set; }
         public string UserPhoto { get; set; }
+        public int HierarchyLevel { get; set; }
     }
 }

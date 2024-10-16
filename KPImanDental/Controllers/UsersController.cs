@@ -130,6 +130,13 @@ namespace KPImanDental.Controllers
             return true;
         }
 
+        [HttpPost("GetUserValidator")]
+        public async Task<ActionResult<List<Validators>>> GetUserValidator(DataValidators<UserCreateDto> request)
+        {
+            var result = await _userService.GetUserValidator(request);
+            return Ok(result);
+        }
+
         #endregion CRUD For User Management Module - User
 
         #region CRUD For User Management Module - Department

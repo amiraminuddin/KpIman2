@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using KPImanDental.Authorization;
 using KPImanDental.Dto;
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Dto.PatientDto;
@@ -12,21 +11,11 @@ namespace KPImanDental.Helpers
 {
     public class AutoMappingProfile: Profile
     {
-        public AuthService AuthService = new AuthService();
         public AutoMappingProfile() 
         {
 
-            #region Mapper Register
-            //for create new user
-            CreateMap<UserCreateDto, KpImanUser>()
-                .ForMember(dest => dest.PasswordHash, option =>
-                    option.MapFrom(src => AuthService.GetPasswordHasher(src.Password).PasswordHash))
-                .ForMember(dest => dest.PasswordSalt, option =>
-                    option.MapFrom(src => AuthService.GetPasswordHasher(src.Password).PasswordSalt))
-                .ForMember(dest => dest.CreatedBy, option =>
-                    option.MapFrom(src => src.UserName))
-                .ForMember(dest => dest.CreatedOn, option =>
-                    option.MapFrom(dest => DateTime.Now));
+            #region Mapper User Register
+            CreateMap<UserCreateDto, KpImanUser>();
             #endregion
 
 

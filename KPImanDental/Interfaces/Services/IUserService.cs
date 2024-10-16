@@ -14,6 +14,7 @@ namespace KPImanDental.Interfaces.Services
         Task<UserCreateDto> GetUserForEdit(long Id);
         Task<IEnumerable<UserDtoExt>> GetUsers();
         Task<UserDtoExt> GetUserFromId(long Id);
+        Task<List<Validators>> GetUserValidator(DataValidators<UserCreateDto> request);
         #endregion
 
         #region Department Interface

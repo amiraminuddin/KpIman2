@@ -16,7 +16,8 @@ export class DepartmentListComponent {
   @ViewChild('menu') menu!: Menu;
   constructor(
     private _service: userServices,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) { }
 
   departmentList: DepartmentDto[] = [];
@@ -120,8 +121,22 @@ export class DepartmentListComponent {
     }
     else {
       //todo: delete data
-      let message = "Ok"
-      this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: message });
+      this.confirmationService.confirm({
+        message: 'Do you want to delete this record?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        accept: () => {
+          this._service.deleteDepartment(department).subscribe({
+            next: _ => {
+              this.getData();
+              this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+            }
+          })
+        },
+        reject: () => {
+          //this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'okay' });
+        }
+      });
     }
     
   }

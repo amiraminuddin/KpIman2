@@ -23,7 +23,8 @@ namespace KPImanDental.Model
         [Required]
         public bool IsActive { get; set; } = true;
         [Required]
-        public bool IsSupervisor { get; set; } = false;
+        public bool IsSupervisor { get; set; } = false;  //will not used
+        public int HierarchyLevel { get; set; } //this for organization chart
         public long SupervisorId { get; set; } //Fo making organization chart
         public string UserPhoto { get; set; }
         public string CreatedBy { get; set; }

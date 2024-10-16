@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KPImanDental.Authorization;
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Dto.UserDto;
@@ -6,7 +7,6 @@ using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KPImanDental.Services
@@ -25,6 +25,8 @@ namespace KPImanDental.Services
             _userRepo = userRepo;
             _lookupRepo = lookupRepo;
         }
+
+        public AuthService AuthService = new AuthService();
 
         #region User
         public async Task<IEnumerable<UserDtoExt>> GetUsers()
@@ -77,6 +79,107 @@ namespace KPImanDental.Services
                 var createdUser = await CreateUser(UserCreateDtoInput);
                 return createdUser;
             }
+        }
+
+        public async Task<List<Validators>> GetUserValidator(DataValidators<UserCreateDto> request)
+        {
+            var validators = new List<Validators>();
+            var properties = typeof(UserCreateDto).GetProperties();
+            var userDto = request.Data;
+            var data = await _userRepo.GetAllKPImanUsersAsync();
+
+            foreach(var property in properties)
+            {
+                var value = property.GetValue(userDto);
+                string propertyName = property.Name;
+
+                if (propertyName == "UserName" && (request.TriggerType == Enums.ValidatorTriggerType.OnLoad || request.TriggerType == Enums.ValidatorTriggerType.OnChange))
+                {
+                    if (value is null or (object)"")
+                    {
+                        validators.Add(new Validators()
+                        {
+                            Field = propertyName,
+                            IsValid = false,
+                            Message = "User name is Mandatory",
+                            ValidatorsType = Enums.ValidatorsType.Mandatory
+                        });
+                    }else
+                    {
+                        bool isUserNameExist = data.Where(x => x.UserName.ToUpper() == userDto.UserName.ToUpper()).Any();
+                        if (isUserNameExist)
+                        {
+                            validators.Add(new Validators()
+                            {
+                                Field = propertyName,
+                                IsValid = false,
+                                Message = "User name already exists",
+                                ValidatorsType = Enums.ValidatorsType.Error
+                            });
+                        }
+                    }
+                }
+
+                if (propertyName == "Department" && (request.TriggerType == Enums.ValidatorTriggerType.OnLoad || request.TriggerType == Enums.ValidatorTriggerType.OnChange))
+                {
+                    if (value is null or (object)"")
+                    {
+                        validators.Add(new Validators()
+                        {
+                            Field = propertyName,
+                            IsValid = false,
+                            Message = "Department is Mandatory",
+                            ValidatorsType = Enums.ValidatorsType.Mandatory
+                        });
+                    }
+                }
+
+                if (propertyName == "Position" && (request.TriggerType == Enums.ValidatorTriggerType.OnLoad || request.TriggerType == Enums.ValidatorTriggerType.OnChange))
+                {
+                    if (value is null or (object)"")
+                    {
+                        validators.Add(new Validators()
+                        {
+                            Field = propertyName,
+                            IsValid = false,
+                            Message = "Position is Mandatory",
+                            ValidatorsType = Enums.ValidatorsType.Mandatory
+                        });
+                    }
+                }
+
+                if (propertyName == "HierarchyLevel" && request.TriggerType == Enums.ValidatorTriggerType.OnChange)
+                {
+                    bool isCEOExist = data.Where(x => x.HierarchyLevel == 1).Any();
+
+                    if (isCEOExist)
+                    {
+                        validators.Add(new Validators()
+                        {
+                            Field = propertyName,
+                            IsValid = false,
+                            Message = "Top Hierarchy Level already exist",
+                            ValidatorsType = Enums.ValidatorsType.Error
+                        });
+                    }
+                }
+
+                if (propertyName == "SupervisorId" && request.TriggerType == Enums.ValidatorTriggerType.OnChange)
+                {
+                    if (value is null or (object)"" && userDto.HierarchyLevel > 1)
+                    {
+                        validators.Add(new Validators()
+                        {
+                            Field = propertyName,
+                            IsValid = false,
+                            Message = "Reported to are required",
+                            ValidatorsType = Enums.ValidatorsType.Mandatory
+                        });
+                    }
+                }
+            }
+
+            return validators;
         }
         #endregion
 
@@ -226,7 +329,10 @@ namespace KPImanDental.Services
         private async Task<long> CreateUser(UserCreateDto input)
         {
             var user = _mapper.Map<KpImanUser>(input);
+            var passwordCrypt = AuthService.GetPasswordHasher(input.Password);
 
+            user.PasswordHash = passwordCrypt.PasswordHash;
+            user.PasswordSalt = passwordCrypt.PasswordSalt;
             user.CreatedBy = "System";
             user.CreatedOn = DateTime.Now;
             user.UpdatedBy = "System";
@@ -242,6 +348,10 @@ namespace KPImanDental.Services
             var user = await _userRepo.GetUserByIdAsync((long)input.Id);
             if (user == null) { return -1; }
 
+            var passwordCrypt = AuthService.GetPasswordHasher(input.Password);
+
+            user.PasswordHash = passwordCrypt.PasswordHash;
+            user.PasswordSalt = passwordCrypt.PasswordSalt;
             user.UpdatedBy = "Don";
             user.UpdatedOn = DateTime.Now;
 

@@ -71,6 +71,7 @@
     <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
   </div>
   <div class="container-fluid">
+    <p-toast position="bottom-right" life="100"></p-toast>
     <div class="row">
       <div id="userListId" class="col-lg-9 col-md-8 content">
         <div class="button-user">
@@ -117,7 +118,7 @@
               </tr>
             </ng-template>
           </p-table>
-        </div>        
+        </div>
       </div>
     </div>
   </div>
@@ -128,6 +129,6 @@
   <app-user-modal [modalState]="formState"
                               [userId]="userId"
                               [modalVisible]="modalVisible"
-                              (callbackRecordCreate)="refresh($event)">
+                              (callbackRefreshAfterSaved)="refresh($event)">
   </app-user-modal>
 </p-dialog>

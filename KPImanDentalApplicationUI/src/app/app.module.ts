@@ -46,6 +46,7 @@ import { BadgeModule } from 'primeng/badge';
 import { InputMaskModule } from 'primeng/inputmask';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+import { PasswordModule } from 'primeng/password';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -135,6 +136,7 @@ import { TextAreaComponent } from '../shared/component/text.area.component';
     InputMaskModule,
     TooltipModule,
     CardModule,
+    PasswordModule,
     ReactiveFormsModule,
 
 

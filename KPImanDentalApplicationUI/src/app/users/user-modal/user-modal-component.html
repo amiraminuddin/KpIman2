@@ -75,6 +75,11 @@
         <label>Email</label>
         <input id="email" type="text" pInputText formControlName="email" placeholder="someone@email.com" />
       </div>
+
+      <div class="input-container">
+        <label>Password</label>
+        <p-password formControlName="password" [feedback]="false" [toggleMask]="true"></p-password>
+      </div>
     </div>
 
     <div class="horizontal-layout" >
@@ -126,6 +131,11 @@
       </div>
 
       <div class="input-container">
+        <label>Hierarchy Level</label>
+        <p-inputNumber id="supervisorId" [min]="0" [max]="8" formControlName="hierarchyLevel" [showButtons]="true" ></p-inputNumber>
+      </div>
+
+      <div *ngIf="userForm.get('hierarchyLevel')?.value > 1" class="input-container">
         <label>Reported to</label>
         <input id="supervisorId" type="text" formControlName="supervisorId" pInputText />
       </div>

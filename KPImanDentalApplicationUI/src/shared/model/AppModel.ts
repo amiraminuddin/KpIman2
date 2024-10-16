@@ -33,6 +33,7 @@ export class UserDto {
   supervisorId: number | undefined;
   gender: string | undefined;
   userPhoto: string | undefined;
+  hierarchyLevel: number | undefined;
 }
 
 export class UserDtoExt extends UserDto {

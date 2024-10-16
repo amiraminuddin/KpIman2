@@ -74,5 +74,11 @@ namespace KPImanDental.Repositories
             var position = await _context.Posititon.FirstOrDefaultAsync(x => x.Code == code);
             return position;
         }
+
+        public async Task<IEnumerable<KpImanUser>> GetAllKPImanUsersAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+            return users;
+        }
     }
 }

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
+import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserCreateDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -15,13 +15,18 @@ export class userServices {
 
   private apiUrl = environment.apiUrl;
 
-  CreateOrUpdateUser(input: UserDto) {
+  CreateOrUpdateUser(input: UserCreateDto) {
     return this.http.post(`${this.apiUrl}Users/CreateOrUpdateUser`, input).pipe();
   }
 
   getUserById(id: number): Observable<UserDtoExt>  {
     const params = `Id=${id}`
     return this.http.get<UserDtoExt>(`${this.apiUrl}Users/getUserById?${params}`).pipe();
+  }
+
+  GetUserForEdit(id: number): Observable<UserCreateDto> {
+    const params = `Id=${id}`;
+    return this.http.get<UserCreateDto>(`${this.apiUrl}Users/GetUserForEdit?${params}`).pipe();
   }
 
   getAllUser(): Observable<UserDtoExt[]> {
@@ -38,6 +43,10 @@ export class userServices {
 
   checkUserChange(userInput: any) {
     return this.http.post(`${this.apiUrl}Users/checkUserChange`, userInput);
+  }
+
+  getUserValidator(request: DataValidator<UserCreateDto>) {
+    return this.http.post<Validators[]>(`${this.apiUrl}GetUserValidator`, request).pipe();
   }
 
   //START : Department

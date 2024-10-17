@@ -1,10 +1,11 @@
-import { Component, ElementRef, Injectable, Output, ViewChild, EventEmitter, Input, SimpleChanges } from "@angular/core";
+import { Component, Output, ViewChild, EventEmitter, Input, SimpleChanges } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import * as bootstrap from 'bootstrap';
 import { FileUpload } from 'primeng/fileupload';
 import { AppConsts } from "../../../shared/AppConsts";
-import { Column, DepartmentDto, PositionDto, UserCreateDto, UserDto, UserDtoExt } from "../../../shared/model/AppModel";
+import { Column, DataValidator, DepartmentDto, PositionDto, StaffLookupDto, UserCreateDto, UserDto, UserDtoExt, Validators, ValidatorTriggerType } from "../../../shared/model/AppModel";
 import { UserRegister } from "../../../shared/model/user";
+import { LookupService } from "../../../shared/_services/lookup.service";
 import { userServices } from "../../../shared/_services/user.service";
 
 interface UploadEvent {
@@ -42,8 +43,8 @@ export class userModal {
   lookupTable: string = "";
 
   selectedLookupVal: any;
-
   selectedDepartmentId: number | undefined;
+
   //for text Area
   textVisible: boolean = false;
   textInput: string = "";
@@ -51,7 +52,17 @@ export class userModal {
 
   departmentList: DepartmentDto[] = [];
 
-  constructor(private services: userServices, private appconst: AppConsts) {
+  //Validator
+  validator: Validators[] = [];
+  dataValidator: DataValidator<UserCreateDto> = new DataValidator<UserCreateDto>()
+  public ValidatorTriggerType = ValidatorTriggerType;
+  onChange = ValidatorTriggerType.OnChange;
+  OnSave = ValidatorTriggerType.OnSave;
+  OnLoad = ValidatorTriggerType.OnLoad;
+
+  showhierarchyLevelField: boolean = false;
+
+  constructor(private services: userServices, private appconst: AppConsts, private lookupServices: LookupService) {
     this.genderList = appconst.getGenderList();
   }
 
@@ -66,10 +77,13 @@ export class userModal {
       } else {
         this.resetForm();
         this.userForm.get('isActive')?.patchValue(true);
+        this.userForm.get('isSupervisor')?.patchValue(false);
+        this.evaluateFieldFormula(ValidatorTriggerType.OnLoad);
       }
     } else {
       this.resetForm();
     }
+    
   }
 
   private resetForm(): void {
@@ -118,7 +132,7 @@ export class userModal {
             this.departmentList = result;
           }
         }
-      })
+      });
 
       this.services.GetUserForEdit(this.userId).subscribe({
         next: (result: UserCreateDto) => {
@@ -127,9 +141,12 @@ export class userModal {
             this.userForm.get("birthDate")?.patchValue(this.formatDate(result.birthDate));
             const department = this.departmentList.find(x => x.code == result.department);
             this.selectedDepartmentId = department ? department.id : undefined;
+            this.evaluateFieldFormula(ValidatorTriggerType.OnLoad);
           }
         }
-      })
+      });
+
+
     }
   }
 
@@ -190,8 +207,28 @@ export class userModal {
     })
   }
 
-  isFormInvalid() {
+  loadSvUserLookup(hierachyLevel: number) {
+    this.lookupServices.getUserLookupByHierachyLevel(hierachyLevel).subscribe({
+      next: (result: StaffLookupDto[]) => {
+        if (result) {
+          this.lookupData = result;
+        }
 
+        let data = this.userForm.get('supervisorId')?.value;
+        if (data) { this.selectedLookupVal = this.lookupData.find(x => x.id == data) }
+
+        this.lookupColumn = [
+          { field: 'fullName', header: 'Name', type: 'string' },
+          { field: 'email', header: 'Email', type: 'string' },
+          { field: 'departmentL', header: 'Department', type: 'lookup' },
+          { field: 'positionL', header: 'Position', type: 'lookup' },
+        ];
+
+        this.lookupTitle = "User List";
+        this.lookupTable = "User";
+        this.lookupVisible = true;
+      }
+    })
   }
 
   onSelect(event: any) {
@@ -217,10 +254,19 @@ export class userModal {
     this.fileUpload.clear();
   }
 
+  onHierarchyLevelChange() {
+    this.userForm.get('supervisorId')?.patchValue(null);
+    this.userForm.get('supervisorNameL')?.reset({
+      fieldValue: null,
+      fieldDisplay: null
+    });
+  }
+
   save() {
     const formData = { ...this.userForm.value };
 
     formData.isActive = formData.isActive === 'true' || formData.isActive === true;
+
     this.services.CreateOrUpdateUser(formData).subscribe({
       next: (result) => {
         console.log(result)
@@ -239,8 +285,8 @@ export class userModal {
 
   getSelectedLookup(event: any) {
     let selectedLookup = event.data;
-    let lookupData = { fieldValue: selectedLookup.code, fieldDisplay: selectedLookup.name }
     if (event.lookupTable == 'department') {
+      let lookupData = { fieldValue: selectedLookup.code, fieldDisplay: selectedLookup.name }
       let x = this.userForm.get('department')?.value;
       if (x != selectedLookup.code) {
         this.userForm.get('position')?.patchValue(null);
@@ -254,11 +300,44 @@ export class userModal {
       this.selectedDepartmentId = selectedLookup.id;
     }
     if (event.lookupTable == 'position') {
+      let lookupData = { fieldValue: selectedLookup.code, fieldDisplay: selectedLookup.name }
       this.selectedDepartmentId = -1;
       this.userForm.get('position')?.patchValue(selectedLookup.code);
       this.userForm.get('positionL')?.patchValue(lookupData);
     }
+    if (event.lookupTable == 'User') {
+      let lookupData = { fieldValue: String(selectedLookup.id), fieldDisplay: selectedLookup.fullName }
+      this.userForm.get('supervisorId')?.patchValue(Number(selectedLookup.id));
+      this.userForm.get('supervisorNameL')?.patchValue(lookupData);
+    }
     this.lookupVisible = false;
+    this.evaluateFieldFormula(ValidatorTriggerType.OnChange);
+  }
+
+  checkHierarchyLevel() {
+    const hierarchyLevel = this.userForm.get('hierarchyLevel')?.value;
+    this.showhierarchyLevelField = hierarchyLevel > 1;
+  }
+
+  evaluateFieldFormula(triggerType: ValidatorTriggerType): void {
+    const formData = { ...this.userForm.value };
+    //const departmentCode = this.userForm.get('code')?.value;
+    formData.isActive = this.userForm.get('isActive')?.value;
+    formData.isSupervisor = this.userForm.get('isSupervisor')?.value;
+
+    this.dataValidator.data = formData;
+    this.dataValidator.triggerType = triggerType
+
+    this.services.getUserValidator(this.dataValidator).subscribe({
+      next: (result: Validators[]) => {
+        this.validator = result;
+      }
+    });
+  }
+
+  isFormInvalid(): boolean {
+    // If any validator in the list has isValid as false, the form is considered invalid
+    return this.validator.some(x => !x.isValid);
   }
 
   private formatDate(date: any) {

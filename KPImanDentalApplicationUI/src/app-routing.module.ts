@@ -1,6 +1,8 @@
 import { Injectable, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { OrganizationChart } from 'primeng/organizationchart';
 import { LoginComponent } from './app/Account/login.component';
+import { OrganizationComponent } from './app/chart/organization/organization.component';
 import { LandingComponent } from './app/Landing/landing.componet';
 import { TreatmentListComponent } from './app/Lookup/Treatment/treamentL.list.component';
 import { ModuleComponent } from './app/Module/module.list.component';
@@ -32,6 +34,7 @@ const routes: Routes = [
         data: { moduleName: 'User Management', pageName: '> User Details' }
       },
       { path: 'UserManagement/department', component: DepartmentListComponent, data: { moduleName: 'User Management', pageName: '> Department List' } },
+      { path: 'UserManagement/OrgChart', component: OrganizationComponent, data: { moduleName: 'User Management', pageName: '> Organization Chart' } },
 
       { path: "Patient/PatientList", component: PatientListComponent, data: { moduleName: 'Patient Management', pageName: '> Patient List' } },
       { path: "Patient/TreatmentList/:patientId", component: PatientTreatmentList, data: { moduleName: 'Patient Management', pageName: '> Treatment List' } },

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
 using KPImanDental.Dto;
+using KPImanDental.Dto.ChartDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
@@ -134,6 +135,13 @@ namespace KPImanDental.Controllers
         public async Task<ActionResult<List<Validators>>> GetUserValidator(DataValidators<UserCreateDto> request)
         {
             var result = await _userService.GetUserValidator(request);
+            return Ok(result);
+        }
+
+        [HttpGet("GetOrganizationChart")]
+        public async Task<ActionResult<List<OrganizationChartDto>>> GetOrganizationChart()
+        {
+            var result = await _userService.GetOrganizationChart();
             return Ok(result);
         }
 

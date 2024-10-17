@@ -12,7 +12,7 @@ namespace KPImanDental.Dto.UserDto
         {
             get
             {
-                return BirthDate.ToString("dd/MM/yyyy");
+                return BirthDate?.ToString("dd/MM/yyyy");
 
             }
         }

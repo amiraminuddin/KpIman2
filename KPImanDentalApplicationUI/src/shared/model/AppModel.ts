@@ -228,3 +228,17 @@ export class ActionValidatorsOutput {
   isVisible: boolean | undefined;
   lockedMessage: string | undefined;
 }
+
+export class OrganizationChartDto {
+  label: string | undefined;
+  type: string | undefined;
+  styleClass: string | undefined;
+  expanded: boolean | undefined;
+  data: OrganizationChartDataDto | undefined;
+  children: OrganizationChartDto[] | undefined;
+}
+
+export class OrganizationChartDataDto {
+  name: string | undefined;
+  profilePicture: string | undefined;
+}

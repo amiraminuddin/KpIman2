@@ -1,4 +1,5 @@
 ﻿using KPImanDental.Dto;
+using KPImanDental.Dto.ChartDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
@@ -15,6 +16,8 @@ namespace KPImanDental.Interfaces.Services
         Task<IEnumerable<UserDtoExt>> GetUsers();
         Task<UserDtoExt> GetUserFromId(long Id);
         Task<List<Validators>> GetUserValidator(DataValidators<UserCreateDto> request);
+
+        Task<List<OrganizationChartDto>> GetOrganizationChart();
         #endregion
 
         #region Department Interface

@@ -62,8 +62,11 @@
     </div>
     <div class="horizontal-layout">
       <div class="input-container">
-        <label>User Name</label>
-        <input id="userName" type="text" formControlName="userName" pInputText />
+        <label>
+          User Name
+          <validation-component [field]="'UserName'" [validator]="validator"></validation-component>
+        </label>
+        <input id="userName" type="text" formControlName="userName" pInputText (focusout)="evaluateFieldFormula(ValidatorTriggerType.OnChange)"/>
       </div>
 
       <div class="input-container">
@@ -84,17 +87,23 @@
 
     <div class="horizontal-layout" >
       <div class="input-container" formGroupName="departmentL">
-        <label>Department</label>
+        <label>
+          Department
+          <validation-component [field]="'Department'" [validator]="validator"></validation-component>
+        </label>
         <span class="p-input-icon-right">
-          <input id="department" type="text" formControlName="fieldDisplay" pInputText />
+          <input id="department" type="text" formControlName="fieldDisplay" pInputText/>
           <i class="pi pi-external-link" (click)="loadDepartmentLookup()"></i>
         </span>
       </div>
 
       <div class="input-container" formGroupName="positionL">
-        <label>Position</label>
+        <label>
+          Position
+          <validation-component [field]="'Position'" [validator]="validator"></validation-component>
+        </label>
         <span class="p-input-icon-right">
-          <input id="position" type="text" formControlName="fieldDisplay" pInputText />
+          <input id="position" type="text" formControlName="fieldDisplay" pInputText/>
           <i class="pi pi-external-link" (click)="loadPositionLookup()"></i>
         </span>
       </div>
@@ -131,13 +140,29 @@
       </div>
 
       <div class="input-container">
-        <label>Hierarchy Level</label>
-        <p-inputNumber id="supervisorId" [min]="0" [max]="8" formControlName="hierarchyLevel" [showButtons]="true" ></p-inputNumber>
+        <label>
+          Hierarchy Level
+          <validation-component [field]="'HierarchyLevel'" [validator]="validator"></validation-component>
+        </label>
+        <p-inputNumber
+                       id="hierarchyLevel" [min]="0" [max]="8"
+                       formControlName="hierarchyLevel"
+                       [showButtons]="true"
+                       (focusout)="evaluateFieldFormula(ValidatorTriggerType.OnChange)"
+                       (change)="onHierarchyLevelChange()"
+                       ></p-inputNumber>
       </div>
 
-      <div *ngIf="userForm.get('hierarchyLevel')?.value > 1" class="input-container">
-        <label>Reported to</label>
-        <input id="supervisorId" type="text" formControlName="supervisorId" pInputText />
+      <div *ngIf="userForm.get('hierarchyLevel')?.value > 1" class="input-container" formGroupName="supervisorNameL">
+        <label>
+          Reported to
+          <validation-component [field]="'SupervisorId'" [validator]="validator"></validation-component>
+        </label>
+        <span class="p-input-icon-right">
+          <input id="SupervisorId" type="text" formControlName="fieldDisplay" pInputText />
+          <i class="pi pi-external-link" (click)="loadSvUserLookup(userForm.get('hierarchyLevel')?.value)"></i>
+        </span>
+        <!--<input id="supervisorId" type="text" formControlName="supervisorId" pInputText (focusout)="evaluateFieldFormula(ValidatorTriggerType.OnChange)" />-->
       </div>
 
       <div class="input-container">

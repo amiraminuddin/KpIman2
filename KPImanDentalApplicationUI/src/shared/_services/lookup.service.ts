@@ -36,5 +36,9 @@ export class LookupService {
   getUserLookup(position: string): Observable<StaffLookupDto[]> {
     return this.http.get<StaffLookupDto[]>(`${this.apiUrl}Lookup/GetUserLookup?position=${position}`).pipe();
   }
+
+  getUserLookupByHierachyLevel(hierachyLevel: number): Observable<StaffLookupDto[]> {
+    return this.http.get<StaffLookupDto[]>(`${this.apiUrl}Lookup/GetUserLookupByHierachyLevel?hierachyLevel=${hierachyLevel}`).pipe();
+  }
   //END : User Lookup
 }

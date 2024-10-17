@@ -99,6 +99,13 @@ export class HeaderComponent {
           command: () => {
             this.router.navigate(['/kpIman/UserManagement/department']);
           },
+        },
+        {
+          label: 'Organization Chart',
+          icon: 'pi pi-user',
+          command: () => {
+            this.router.navigate(['/kpIman/UserManagement/OrgChart']);
+          }
         }
       ];
     }

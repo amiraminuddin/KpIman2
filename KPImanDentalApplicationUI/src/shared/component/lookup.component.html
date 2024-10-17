@@ -27,6 +27,7 @@
         <div *ngIf="col.type == 'bool'">
           <p-checkbox [(ngModel)]="rowData[col.field]" [binary]="true" [disabled]="true"></p-checkbox>
         </div>
+        <div *ngIf="col.type == 'lookup'" class="ellipsis-text">{{ rowData[col.field]?.fieldDisplay }}</div>
       </td>
     </tr>
   </ng-template>

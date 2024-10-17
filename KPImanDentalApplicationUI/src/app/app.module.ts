@@ -47,6 +47,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { PasswordModule } from 'primeng/password';
+import { OrganizationChartModule } from 'primeng/organizationchart';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -66,6 +67,7 @@ import { PatientTreatmentModal } from './Patient/PatientTreatmentComponent/patie
 import { LookupComponent } from '../shared/component/lookup.component';
 import { ValidationComponent } from '../shared/component/validation.component';
 import { TextAreaComponent } from '../shared/component/text.area.component';
+import { OrganizationComponent } from './chart/organization/organization.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +106,7 @@ import { TextAreaComponent } from '../shared/component/text.area.component';
     ValidationComponent,
     LookupComponent,
     TextAreaComponent,
+    OrganizationComponent
   ],
   imports: [
     BrowserModule,
@@ -138,7 +141,7 @@ import { TextAreaComponent } from '../shared/component/text.area.component';
     CardModule,
     PasswordModule,
     ReactiveFormsModule,
-
+    OrganizationChartModule,
 
   ],
   providers: [

@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, PositionDto, UserCreateDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
+import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, OrganizationChartDto, PositionDto, UserCreateDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -46,7 +46,11 @@ export class userServices {
   }
 
   getUserValidator(request: DataValidator<UserCreateDto>) {
-    return this.http.post<Validators[]>(`${this.apiUrl}GetUserValidator`, request).pipe();
+    return this.http.post<Validators[]>(`${this.apiUrl}Users/GetUserValidator`, request).pipe();
+  }
+
+  getOrganizationChart() {
+    return this.http.get<OrganizationChartDto[]>(`${this.apiUrl}Users/GetOrganizationChart`).pipe();
   }
 
   //START : Department

@@ -2,12 +2,14 @@
 using KPImanDental.Authorization;
 using KPImanDental.Data;
 using KPImanDental.Dto;
+using KPImanDental.Dto.ChartDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace KPImanDental.Services
 {
@@ -34,7 +36,7 @@ namespace KPImanDental.Services
             var usersListDto = await _userRepo.GetAllUsersAsync();
             foreach(var data in usersListDto)
             {
-                data.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(data.SupervisorId);
+                data.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup((long)data.SupervisorId);
                 data.DepartmentL = await _lookupRepo.GetDepartmentLookup(data.Department);
                 data.PositionL = await _lookupRepo.GetPositionLookup(data.Position);
             }
@@ -48,7 +50,7 @@ namespace KPImanDental.Services
             var userDto =  _mapper.Map<UserDtoExt>(user);
             userDto.DepartmentL = await _lookupRepo.GetDepartmentLookup(userDto.Department);
             userDto.PositionL = await _lookupRepo.GetPositionLookup(userDto.Position);
-            userDto.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(userDto.SupervisorId);
+            userDto.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup((long)userDto.SupervisorId);
 
             return userDto;
         }
@@ -62,7 +64,7 @@ namespace KPImanDental.Services
             var result = _mapper.Map<UserCreateDto>(user);
             result.DepartmentL = await _lookupRepo.GetDepartmentLookup(result.Department);
             result.PositionL = await _lookupRepo.GetPositionLookup(result.Position);
-            result.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup(result.SupervisorId);
+            result.SupervisorNameL = await _lookupRepo.GetKPImanUserLookup((long)result.SupervisorId);
 
             return result;
         }
@@ -107,7 +109,7 @@ namespace KPImanDental.Services
                     }else
                     {
                         bool isUserNameExist = data.Where(x => x.UserName.ToUpper() == userDto.UserName.ToUpper()).Any();
-                        if (isUserNameExist)
+                        if (isUserNameExist && !userDto.Id.HasValue)
                         {
                             validators.Add(new Validators()
                             {
@@ -152,7 +154,7 @@ namespace KPImanDental.Services
                 {
                     bool isCEOExist = data.Where(x => x.HierarchyLevel == 1).Any();
 
-                    if (isCEOExist)
+                    if (isCEOExist && userDto.HierarchyLevel == 1)
                     {
                         validators.Add(new Validators()
                         {
@@ -325,6 +327,28 @@ namespace KPImanDental.Services
         }
         #endregion
 
+        #region User Organization Chart
+        public async Task<List<OrganizationChartDto>> GetOrganizationChart()
+        {
+            var users = await _userRepo.GetAllUsersAsync();
+            var orgNodes = new List<OrganizationChartDto>();
+
+            var userList = users.Where(x => x.HierarchyLevel != 0).OrderBy(x => x.HierarchyLevel).ToList();
+            foreach (var x in userList) 
+            {
+                x.PositionL = await _lookupRepo.GetPositionLookup(x.Position);
+            }
+            var user = userList.Find(x => x.HierarchyLevel == 1);
+
+            var node = BuildOrgChartNode(user, userList);  // Build each node and its children
+            orgNodes.Add(node);
+
+
+            return orgNodes;
+
+        }
+        #endregion
+
         #region Private Method User
         private async Task<long> CreateUser(UserCreateDto input)
         {
@@ -361,9 +385,33 @@ namespace KPImanDental.Services
             return user.Id;
 
         }
-        private async Task<bool> CheckUserExists(string username)
+
+        private static OrganizationChartDto BuildOrgChartNode(UserDtoExt userDto, List<UserDtoExt> users)
         {
-            return await _context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower());
+            //TODO : spilt between insert department and user
+            var node = new OrganizationChartDto
+            {
+                Label = userDto.PositionL.FieldDisplay,
+                Type = "user",
+                StyleClass = "",
+                Expanded = true,
+                Data = new OrganizationChartDataDto
+                {
+                    Name = userDto.FullName,
+                    ProfilePicture = ""
+                },
+                Children = new List<OrganizationChartDto>()
+            };
+
+            var subordinates = users.Where(x => x.SupervisorId == userDto.Id).OrderBy(x => x.HierarchyLevel).ToList();
+
+            foreach (var subordinate in subordinates)
+            {
+                var childNode = BuildOrgChartNode(subordinate, users);  // Recursive call to build children
+                node.Children.Add(childNode);
+            }
+
+            return node;
         }
         #endregion
 

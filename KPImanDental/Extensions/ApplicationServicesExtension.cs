@@ -24,6 +24,7 @@ namespace KPImanDental.Extensions
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<ILookupRepository, LookupRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<ILookupService, LookupService>();
             services.AddControllersWithViews();
             services.AddDbContext<DataContext>(option =>
                 option.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))); //Required EntityFramework.SqlServer

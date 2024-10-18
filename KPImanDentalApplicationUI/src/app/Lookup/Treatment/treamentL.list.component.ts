@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import Swal from "sweetalert2";
-import { TreatmeantLookupDto } from "../../../shared/model/AppModel";
+import { Column, TreatmeantLookupDto } from "../../../shared/model/AppModel";
 import { LookupService } from "../../../shared/_services/lookup.service";
 
 @Component({
@@ -20,38 +20,69 @@ export class TreatmentListComponent implements OnInit {
   treatmentId: number | null = null;
   formState: string | undefined;
 
+
+  //for grid
+  isLoad: boolean = true;
+  gridData: any[] = [];
+  gridColumn!: Column[];
+  gridDataKey: string = "";
+  gridAction: any;
   constructor(private service: LookupService, private messageService: MessageService) { }
 
 
   ngOnInit(): void {
-    this.getData();
+    setTimeout(() => {
+      this.isLoad = true;
+      this.getData();
+    },2000);      
   }
 
   getData() {
-    this.service.getAllTreatment().subscribe(x => {
-      this.treatmeantList = x;
-    });
+    this.service.getAllTreatment().subscribe({
+      next: (result: any[]) => {
+        if (result) {
+          this.gridData = result;
+        }
+
+        this.gridColumn = [
+          { field: 'action', header: 'Action', type: 'action' },
+          { field: 'treatmentCode', header: 'Code', type: 'string' },
+          { field: 'treatmentName', header: 'Name', type: 'string' },
+          { field: 'treatmentDesc', header: 'Description', type: 'string' },
+          { field: 'isActive', header: 'Active?', type: 'bool' },
+          { field: 'treatmentPrice', header: 'Price (RM)', type: 'currency' },
+        ];
+
+        this.gridDataKey = "treatmentCode"
+        this.gridAction = this.getAction();
+      },
+      complete: () => {
+        this.isLoad = false;
+      }
+    });   
   }
 
-  getAction(treatment: any) {
-    this.actions = [
+  handleAction(event: any) {
+    console.log(event);
+    if (event.action.label == "Edit") {
+      this.editData(event.rowData.id);
+    }
+    if (event.action.label == "Delete") {
+      this.deleteData(event.rowData.id);
+    }
+  }
+
+  getAction() {
+    return [
       {
         label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => {
-          this.editData(treatment.id);
-        }
+        icon: 'pi pi-pencil'
       },
       {
         label: 'Delete',
-        icon: 'pi pi-trash',
-        command: () => {
-          this.deleteData(treatment.id);
-        },
+        icon: 'pi pi-trash'
       }
     ];
-
-    return this.actions;
   }
 
   editData(id: any) {
@@ -92,13 +123,19 @@ export class TreatmentListComponent implements OnInit {
 
   refresh(data: any) {
     this.modalVisible = false;
-    this.getData();
+    this.isLoad = true;
+    setTimeout(() => {
+      this.getData();
+    }, 2000);
     if (data == 'Create') {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
     } else {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
     }
-    
+  }
+
+  selectedGrid(event: any) {
+    console.log(event);
   }
 
 }

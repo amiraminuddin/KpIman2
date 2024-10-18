@@ -7,6 +7,9 @@
 </style>
 
 <div>
+  <spinner-component [isSpinnerShow]="isLoad"></spinner-component>
+</div>
+<div>
   <div class="container-fluid">
     <p-toast position="bottom-right" life="100"></p-toast>
     <div class="row">
@@ -15,7 +18,7 @@
           <input class="btn btn-primary" type="button" value="Add Treatment" (click)="showModal()" style="border-radius: 5px">
         </div>
         <div class="full-height-table-container">
-          <p-table [value]="treatmeantList"
+          <!--<p-table [value]="treatmeantList"
                    styleClass="p-datatable-striped p-datatable-sm"
                    [rows]="10" [scrollable]="true" scrollHeight="100%"
                    [paginator]="true">
@@ -45,7 +48,16 @@
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </p-table>-->
+          <app-grid [columns]="gridColumn"
+                    [value]="gridData"
+                    [selectionMode]="'single'"
+                    [dataKey]="gridDataKey"
+                    [actionList]="gridAction"
+                    (callbackActionTrigger)="handleAction($event)"
+                    (callbackRecordSelected)="selectedGrid($event)">
+
+          </app-grid>
         </div>
       </div>
     </div>
@@ -53,11 +65,9 @@
 </div>
 
 <p-dialog header="{{formState}} Treatment" [modal]="true" [(visible)]="modalVisible" [style]="{ width: '50rem'}" [maximizable]="true">
-  <treatment-lookup-modal
-                          [modalState] ="formState"
+  <treatment-lookup-modal [modalState]="formState"
                           [treatmentId]="treatmentId"
                           [modalVisible]="modalVisible"
-                          (refreshAfterSaved)="refresh($event)"
-                          >
+                          (refreshAfterSaved)="refresh($event)">
   </treatment-lookup-modal>
 </p-dialog>

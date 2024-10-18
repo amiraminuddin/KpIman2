@@ -48,6 +48,7 @@ import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { PasswordModule } from 'primeng/password';
 import { OrganizationChartModule } from 'primeng/organizationchart';
+import { AvatarModule } from 'primeng/avatar';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -68,6 +69,7 @@ import { LookupComponent } from '../shared/component/lookup.component';
 import { ValidationComponent } from '../shared/component/validation.component';
 import { TextAreaComponent } from '../shared/component/text.area.component';
 import { OrganizationComponent } from './chart/organization/organization.component';
+import { GridComponent } from './shared/component/grid/grid.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +108,8 @@ import { OrganizationComponent } from './chart/organization/organization.compone
     ValidationComponent,
     LookupComponent,
     TextAreaComponent,
-    OrganizationComponent
+    OrganizationComponent,
+    GridComponent
   ],
   imports: [
     BrowserModule,
@@ -142,6 +145,7 @@ import { OrganizationComponent } from './chart/organization/organization.compone
     PasswordModule,
     ReactiveFormsModule,
     OrganizationChartModule,
+    AvatarModule,
 
   ],
   providers: [

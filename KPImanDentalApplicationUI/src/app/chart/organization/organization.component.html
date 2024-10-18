@@ -1,11 +1,18 @@
+<div>
+  <spinner-component [isSpinnerShow]="isSpinnerShow"></spinner-component>
+</div>
 <p-organizationChart [value]="data1" selectionMode="single"  styleClass="company">
   <ng-template let-node pTemplate="user">
     <div class="node-header">{{node.label}}</div>
     <div class="node-content">
+      <div>
+        <p-avatar [image]="node.data.profilePicture ? node.data.profilePicture : 'assets/user.png'"
+                  styleClass="p-mr-2"
+                  size="xlarge"
+                  shape="circle">
+        </p-avatar>
+      </div>
       <div>{{node.data.name}}</div>
     </div>
-  </ng-template>
-  <ng-template let-node pTemplate="department">
-    {{node.label}}
   </ng-template>
 </p-organizationChart>

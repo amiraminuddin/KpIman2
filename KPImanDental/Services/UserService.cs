@@ -340,9 +340,8 @@ namespace KPImanDental.Services
             }
             var user = userList.Find(x => x.HierarchyLevel == 1);
 
-            var node = BuildOrgChartNode(user, userList);  // Build each node and its children
-            orgNodes.Add(node);
-
+            var childNode = BuildOrgChartNode(user, userList);  // Build each node and its children
+            orgNodes.Add(childNode);
 
             return orgNodes;
 
@@ -398,7 +397,7 @@ namespace KPImanDental.Services
                 Data = new OrganizationChartDataDto
                 {
                     Name = userDto.FullName,
-                    ProfilePicture = ""
+                    ProfilePicture = userDto.UserPhoto != null ? userDto.UserPhoto.ToString() : ""
                 },
                 Children = new List<OrganizationChartDto>()
             };

@@ -12,14 +12,21 @@ export class OrganizationComponent implements OnInit {
 
   constructor(private service: userServices) { }
   data1: TreeNode[] = [];
+  isSpinnerShow: boolean = false;
 
   ngOnInit(): void {
-    this.service.getOrganizationChart().subscribe({
-      next: (result: TreeNode[]) => {
-        if (result) {
-          this.data1 = result;
-        }        
-      }
-    })
+    this.isSpinnerShow = true;
+    setTimeout(() => {
+      this.service.getOrganizationChart().subscribe({
+        next: (result: TreeNode[]) => {
+          if (result) {
+            this.data1 = result;
+          }
+        },
+        complete: () => {
+          this.isSpinnerShow = false;
+        }
+      })
+    }, 2000);
   }
 }

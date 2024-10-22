@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import { Menu } from "primeng/menu";
-import { Observable, timeout } from "rxjs";
+import { map, Observable, timeout } from "rxjs";
 import Swal from "sweetalert2";
 import { environment } from "../../environments/environment";
 import { AppConsts } from "../../shared/AppConsts";
@@ -23,6 +23,7 @@ export class userComponent implements OnInit {
   @ViewChild('menu') menu!: Menu;
 
   users: UserDtoExt[] = [];
+  userCount: number = 0;
   isLoad: boolean = false;
 
   formState: string | undefined;
@@ -55,10 +56,13 @@ export class userComponent implements OnInit {
 
   getData() {
     this.isLoad = true;
-    this.userService.getAllUser().subscribe({
+    this.userService.getUserGrid().subscribe({
       next: response => {
-        this.users = response;
-        this.isLoad = false
+        if (response) {
+          this.users = response.data || [];
+          this.userCount = response.totalData || 0;
+          this.isLoad = false
+        }         
       }
     })
     /*return this.users*/

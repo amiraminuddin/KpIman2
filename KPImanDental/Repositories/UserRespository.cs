@@ -80,5 +80,11 @@ namespace KPImanDental.Repositories
             var users = await _context.Users.ToListAsync();
             return users;
         }
+
+        public async Task<int> GetUserCountAsync()
+        {
+            var userCount = await _context.Users.CountAsync();
+            return userCount;
+        }
     }
 }

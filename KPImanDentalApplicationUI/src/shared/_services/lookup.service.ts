@@ -1,8 +1,8 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { StaffLookupDto, TreatmeantLookupDto } from "../model/AppModel";
+import { gridDto, GridInputDto, StaffLookupDto, TreatmeantLookupDto } from "../model/AppModel";
 
 @Injectable({
   providedIn : 'root'
@@ -29,6 +29,10 @@ export class LookupService {
 
   deleteTreatment(id: number) {
     return this.http.delete(`${this.apiUrl}Lookup/DeleteTreatment?Id=${id}`).pipe();
+  }
+
+  getGridTreatment(input: GridInputDto) {
+    return this.http.post<gridDto<TreatmeantLookupDto[]>>(`${this.apiUrl}Lookup/GetGridTreatment`, input).pipe();
   }
   //END : Treatment Lookup
 

@@ -8,6 +8,7 @@ namespace KPImanDental.Interfaces.Repositories
     public interface IUserRepository
     {
         Task<IEnumerable<UserDtoExt>> GetAllUsersAsync();
+        Task<int> GetUserCountAsync();
         Task<IEnumerable<KpImanUser>> GetAllKPImanUsersAsync();
         Task<KpImanUser> GetUserByIdAsync(long id);
         Task<UserDto> GetUserDtoByIdAsync(long id);

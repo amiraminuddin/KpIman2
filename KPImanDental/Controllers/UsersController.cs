@@ -2,6 +2,7 @@
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Dto.ChartDto;
+using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
@@ -60,6 +61,13 @@ namespace KPImanDental.Controllers
             var usersListDto = await _userService.GetUsers();
 
             return Ok(usersListDto);
+        }
+
+        [HttpGet("GetUserGrid")]
+        public async Task<ActionResult<GridDto<IEnumerable<UserDtoExt>>>> GetUserGrid()
+        {
+            var respond = await _userService.GetUserGrid();
+            return Ok(respond);
         }
 
         [HttpGet("getUserById")]

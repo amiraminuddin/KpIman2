@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import Swal from "sweetalert2";
-import { Column, TreatmeantLookupDto } from "../../../shared/model/AppModel";
+import { Column, GridInputDto, TreatmeantLookupDto } from "../../../shared/model/AppModel";
 import { LookupService } from "../../../shared/_services/lookup.service";
 
 @Component({
@@ -20,46 +20,50 @@ export class TreatmentListComponent implements OnInit {
   treatmentId: number | null = null;
   formState: string | undefined;
 
-
+  dataCount: number = 0;
   //for grid
   isLoad: boolean = true;
   gridData: any[] = [];
   gridColumn!: Column[];
   gridDataKey: string = "";
   gridAction: any;
+  gridInput: GridInputDto = new GridInputDto;
+
   constructor(private service: LookupService, private messageService: MessageService) { }
 
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.isLoad = true;
-      this.getData();
-    },2000);      
+    this.gridInput.currentPage = 1;
+    this.gridInput.pageSize = 5;
+    this.getData();      
   }
 
   getData() {
-    this.service.getAllTreatment().subscribe({
-      next: (result: any[]) => {
-        if (result) {
-          this.gridData = result;
+    this.isLoad = true;
+    setTimeout(() => {
+      this.service.getGridTreatment(this.gridInput).subscribe({
+        next: response => {
+          if (response) {
+            this.gridData = response.data || [];
+          }
+          this.gridColumn = [
+            { field: 'action', header: 'Action', type: 'action' },
+            { field: 'treatmentCode', header: 'Code', type: 'string' },
+            { field: 'treatmentName', header: 'Name', type: 'string' },
+            { field: 'treatmentDesc', header: 'Description', type: 'string' },
+            { field: 'isActive', header: 'Active?', type: 'bool' },
+            { field: 'treatmentPrice', header: 'Price (RM)', type: 'currency' },
+          ];
+
+          this.gridDataKey = "treatmentCode"
+          this.dataCount = response.totalData || 0;
+          this.gridAction = this.getAction();
+        },
+        complete: () => {
+          this.isLoad = false;
         }
-
-        this.gridColumn = [
-          { field: 'action', header: 'Action', type: 'action' },
-          { field: 'treatmentCode', header: 'Code', type: 'string' },
-          { field: 'treatmentName', header: 'Name', type: 'string' },
-          { field: 'treatmentDesc', header: 'Description', type: 'string' },
-          { field: 'isActive', header: 'Active?', type: 'bool' },
-          { field: 'treatmentPrice', header: 'Price (RM)', type: 'currency' },
-        ];
-
-        this.gridDataKey = "treatmentCode"
-        this.gridAction = this.getAction();
-      },
-      complete: () => {
-        this.isLoad = false;
-      }
-    });   
+      });
+    }, 1000);    
   }
 
   handleAction(event: any) {
@@ -70,6 +74,12 @@ export class TreatmentListComponent implements OnInit {
     if (event.action.label == "Delete") {
       this.deleteData(event.rowData.id);
     }
+  }
+
+  handlePageChange(event: any) {
+    this.gridInput.currentPage = event.page + 1;
+    this.gridInput.pageSize = event.rows;
+    this.getData();
   }
 
   getAction() {
@@ -123,15 +133,12 @@ export class TreatmentListComponent implements OnInit {
 
   refresh(data: any) {
     this.modalVisible = false;
-    this.isLoad = true;
-    setTimeout(() => {
-      this.getData();
-    }, 2000);
+    this.getData();
     if (data == 'Create') {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Saved!!' });
     } else {
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Data Updated!!' });
-    }
+    } 
   }
 
   selectedGrid(event: any) {

@@ -3,6 +3,7 @@ using KPImanDental.Authorization;
 using KPImanDental.Data;
 using KPImanDental.Dto;
 using KPImanDental.Dto.ChartDto;
+using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
@@ -183,6 +184,15 @@ namespace KPImanDental.Services
 
             return validators;
         }
+
+        public async Task<GridDto<IEnumerable<UserDtoExt>>> GetUserGrid()
+        {
+            var usersListDto = await GetUsers();
+            var userCount = await _userRepo.GetUserCountAsync();
+
+            return new GridDto<IEnumerable<UserDtoExt>> { Data = usersListDto, TotalData = userCount };
+        }
+
         #endregion
 
         #region Department
@@ -442,6 +452,7 @@ namespace KPImanDental.Services
 
             return department.Id;
         }
+
         #endregion
     }
 }

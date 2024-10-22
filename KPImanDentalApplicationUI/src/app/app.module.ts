@@ -49,6 +49,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PasswordModule } from 'primeng/password';
 import { OrganizationChartModule } from 'primeng/organizationchart';
 import { AvatarModule } from 'primeng/avatar';
+import { PaginatorModule } from 'primeng/paginator';
 
 import { ModuleModalComponent } from './Module/module.modal.component';
 import { IconComponent } from '../shared/component/icon.component';
@@ -146,6 +147,7 @@ import { GridComponent } from './shared/component/grid/grid.component';
     ReactiveFormsModule,
     OrganizationChartModule,
     AvatarModule,
+    PaginatorModule,
 
   ],
   providers: [

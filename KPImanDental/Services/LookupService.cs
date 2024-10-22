@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
+using KPImanDental.Dto;
+using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.LookupDto;
+using KPImanDental.Dto.UserDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model.Lookup;
@@ -48,6 +51,21 @@ namespace KPImanDental.Services
             var treatmentLookupList = await _dataContext.TreatmentLookup.ToListAsync();
             var treatmentLookupDtoList = _mapper.Map<IEnumerable<TreatmentLookupDto>>(treatmentLookupList);
             return treatmentLookupDtoList;
+        }
+
+        public async Task<GridDto<IEnumerable<TreatmentLookupDto>>> GetGridTreatment(GridInputDto gridInput)
+        {
+            var totalCount = await _dataContext.TreatmentLookup.CountAsync();
+
+            var query = _dataContext.TreatmentLookup
+                .Skip(((gridInput.CurrentPage - 1) * gridInput.PageSize))
+                .Take(gridInput.PageSize)                
+                .AsQueryable();
+
+            var treatmentLookupList = await query.ToListAsync();
+            var treatmentLookupDtoList = _mapper.Map<IEnumerable<TreatmentLookupDto>>(treatmentLookupList);
+
+            return new GridDto<IEnumerable<TreatmentLookupDto>> { Data = treatmentLookupDtoList, TotalData = totalCount, PageSize = gridInput.PageSize };
         }
 
         public async Task<TreatmentLookupDto> GetTreatmentById(long id)

@@ -14,9 +14,11 @@ export class GridComponent implements OnInit {
   @Input() selectionMode: string | undefined;
   @Input() dataKey: string | undefined;
   @Input() actionList: MenuItem[] = [];
+  @Input() totalRecord: number = 0;
 
   @Output('callbackRecordSelected') eventEmitRecordSelected = new EventEmitter<any>();
   @Output('callbackActionTrigger') actionTriggered = new EventEmitter<{ action: MenuItem; rowData: any }>();
+  @Output('callbackPageChange') eventEmitPageChange = new EventEmitter<any>();
 
   selection: any;
   constructor() { }
@@ -33,6 +35,12 @@ export class GridComponent implements OnInit {
       ...action,
       command: () => this.onActionTriggered(action, rowData)
     }));
+  }
+
+
+  paginate(event: any) {
+    console.log(event);
+    this.eventEmitPageChange.emit(event);
   }
 
   private onActionTriggered(action: MenuItem, rowData: any) {

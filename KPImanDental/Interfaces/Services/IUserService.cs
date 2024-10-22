@@ -1,5 +1,6 @@
 ﻿using KPImanDental.Dto;
 using KPImanDental.Dto.ChartDto;
+using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.UserDto;
 using KPImanDental.Model;
 using KPImanDental.Model.Validator;
@@ -11,12 +12,11 @@ namespace KPImanDental.Interfaces.Services
     {
         #region User Interface
         Task<long> CreateOrUpdateUser(UserCreateDto UserCreateDtoInput);
-
         Task<UserCreateDto> GetUserForEdit(long Id);
         Task<IEnumerable<UserDtoExt>> GetUsers();
         Task<UserDtoExt> GetUserFromId(long Id);
         Task<List<Validators>> GetUserValidator(DataValidators<UserCreateDto> request);
-
+        Task<GridDto<IEnumerable<UserDtoExt>>> GetUserGrid();
         Task<List<OrganizationChartDto>> GetOrganizationChart();
         #endregion
 

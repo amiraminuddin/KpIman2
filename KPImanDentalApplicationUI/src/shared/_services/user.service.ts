@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, OrganizationChartDto, PositionDto, UserCreateDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
+import { ActionValidatorsInput, ActionValidatorsOutput, DataValidator, DeletionCondition, DepartmentDto, gridDto, OrganizationChartDto, PositionDto, UserCreateDto, UserDto, UserDtoExt, Validators } from "../model/AppModel";
 
 @Injectable({
   providedIn : "root"
@@ -51,6 +51,10 @@ export class userServices {
 
   getOrganizationChart() {
     return this.http.get<OrganizationChartDto[]>(`${this.apiUrl}Users/GetOrganizationChart`).pipe();
+  }
+
+  getUserGrid() {
+    return this.http.get<gridDto<UserDtoExt[]>>(this.apiUrl + "Users/GetUserGrid").pipe();
   }
 
   //START : Department

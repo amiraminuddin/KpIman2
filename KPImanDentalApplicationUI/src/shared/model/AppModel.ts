@@ -242,3 +242,15 @@ export class OrganizationChartDataDto {
   name: string | undefined;
   profilePicture: string | undefined;
 }
+
+export class gridDto<T>{
+  totalData: number | undefined;
+  data: T | undefined;
+  pageSize: number | undefined;
+  totalPages: number | undefined;
+}
+
+export class GridInputDto {
+  currentPage: number | undefined;
+  pageSize: number | undefined;
+}

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
+using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.LookupDto;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
@@ -31,6 +32,13 @@ namespace KPImanDental.Controllers
         {
             var result = await _lookupService.GetUserLookupByHierachyLevel(hierachyLevel);
             return Ok(result);
+        }
+
+        [HttpPost("GetGridTreatment")]
+        public async Task<ActionResult<GridDto<IEnumerable<TreatmentLookupDto>>>> GetGridTreatment(GridInputDto gridInput)
+        {
+            var response = await _lookupService.GetGridTreatment(gridInput);
+            return Ok(response);
         }
         #endregion
 

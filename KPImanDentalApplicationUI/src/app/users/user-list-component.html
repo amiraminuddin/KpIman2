@@ -72,8 +72,12 @@
   </div>
   <div class="container-fluid">
     <p-toast position="bottom-right" life="100"></p-toast>
-    <div class="row">
+    <div class="row div-border">
       <div id="userListId" class="col-lg-9 col-md-8 content">
+        <div>
+          User List
+          <p-badge value="{{userCount}}" styleClass="p-mr-2"></p-badge>
+        </div>
         <div class="button-user">
           <input class="btn btn-primary custom-button" type="button" value="Create User" (click)="showModal()">
         </div>

@@ -7,11 +7,13 @@
          [tableStyle]="{'min-width': '100%'}"
          (onRowSelect)="onRowSelect($event)"
          (onRowUnselect)="onRowSelect($event)"
-         [scrollable]="true" scrollHeight="100%">
+         [scrollable]="true" scrollHeight="100%"
+         (sortFunction)="customSort($event)" [customSort]="true">
   <ng-template pTemplate="header">
     <tr>
-      <th style="min-width: 100px;" *ngFor="let col of columns">
+      <th style="min-width: 100px;" *ngFor="let col of columns" [pSortableColumn]="col.sortable ? col.field : ''">
         {{col.header}}
+        <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
       </th>
     </tr>
   </ng-template>

@@ -197,6 +197,7 @@ export interface Column {
   field: string;
   header: string;
   type: string;
+  sortable: boolean;
 }
 
 export interface SelectedLookup {
@@ -253,4 +254,6 @@ export class gridDto<T>{
 export class GridInputDto {
   currentPage: number | undefined;
   pageSize: number | undefined;
+  sortableInput: string | undefined;
+  sortableMode: string | undefined;
 }

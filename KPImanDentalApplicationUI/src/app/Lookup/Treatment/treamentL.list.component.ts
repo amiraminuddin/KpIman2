@@ -47,12 +47,12 @@ export class TreatmentListComponent implements OnInit {
             this.gridData = response.data || [];
           }
           this.gridColumn = [
-            { field: 'action', header: 'Action', type: 'action' },
-            { field: 'treatmentCode', header: 'Code', type: 'string' },
-            { field: 'treatmentName', header: 'Name', type: 'string' },
-            { field: 'treatmentDesc', header: 'Description', type: 'string' },
-            { field: 'isActive', header: 'Active?', type: 'bool' },
-            { field: 'treatmentPrice', header: 'Price (RM)', type: 'currency' },
+            { field: 'action', header: 'Action', type: 'action', sortable: false },
+            { field: 'treatmentCode', header: 'Code', type: 'string', sortable: true },
+            { field: 'treatmentName', header: 'Name', type: 'string', sortable: true },
+            { field: 'treatmentDesc', header: 'Description', type: 'string', sortable: false },
+            { field: 'isActive', header: 'Active ?', type: 'bool', sortable: false },
+            { field: 'treatmentPrice', header: 'Price (RM)', type: 'currency', sortable: true },
           ];
 
           this.gridDataKey = "treatmentCode"
@@ -80,6 +80,14 @@ export class TreatmentListComponent implements OnInit {
     this.gridInput.currentPage = event.page + 1;
     this.gridInput.pageSize = event.rows;
     this.getData();
+  }
+
+  handleSortData(event: any) {
+    if (this.gridInput.sortableInput !== event.field || this.gridInput.sortableMode !== event.orderByMode) {
+      this.gridInput.sortableMode = event.orderByMode;
+      this.gridInput.sortableInput = event.field;
+      this.getData();
+    }
   }
 
   getAction() {

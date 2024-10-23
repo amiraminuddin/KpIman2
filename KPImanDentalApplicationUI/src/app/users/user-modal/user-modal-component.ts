@@ -171,9 +171,9 @@ export class userModal {
         if (data) { this.selectedLookupVal = this.lookupData.find(x => x.code == data) }
 
         this.lookupColumn = [
-          { field: 'code', header: 'Code', type: 'string' },
-          { field: 'name', header: 'Name', type: 'string' },
-          { field: 'description', header: 'Description', type: 'string' }
+          { field: 'code', header: 'Code', type: 'string', sortable: false },
+          { field: 'name', header: 'Name', type: 'string', sortable: false },
+          { field: 'description', header: 'Description', type: 'string', sortable: false }
         ];
 
         this.lookupTitle = "department";
@@ -195,9 +195,9 @@ export class userModal {
         if (data) { this.selectedLookupVal = this.lookupData.find(x => x.code == data) }
 
         this.lookupColumn = [
-          { field: 'code', header: 'Code', type: 'string' },
-          { field: 'name', header: 'Name', type: 'string' },
-          { field: 'description', header: 'Description', type: 'string' }
+          { field: 'code', header: 'Code', type: 'string', sortable: false },
+          { field: 'name', header: 'Name', type: 'string', sortable: false },
+          { field: 'description', header: 'Description', type: 'string', sortable: false }
         ];
 
         this.lookupTitle = "position";
@@ -218,10 +218,10 @@ export class userModal {
         if (data) { this.selectedLookupVal = this.lookupData.find(x => x.id == data) }
 
         this.lookupColumn = [
-          { field: 'fullName', header: 'Name', type: 'string' },
-          { field: 'email', header: 'Email', type: 'string' },
-          { field: 'departmentL', header: 'Department', type: 'lookup' },
-          { field: 'positionL', header: 'Position', type: 'lookup' },
+          { field: 'fullName', header: 'Name', type: 'string', sortable: false },
+          { field: 'email', header: 'Email', type: 'string', sortable: false },
+          { field: 'departmentL', header: 'Department', type: 'lookup', sortable: false },
+          { field: 'positionL', header: 'Position', type: 'lookup', sortable: false },
         ];
 
         this.lookupTitle = "User List";

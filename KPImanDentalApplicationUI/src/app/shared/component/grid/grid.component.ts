@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LazyLoadEvent, MenuItem } from 'primeng/api';
+import { LazyLoadEvent, MenuItem, SortEvent } from 'primeng/api';
 import { Column } from '../../../../shared/model/AppModel';
 
 @Component({
@@ -19,6 +19,7 @@ export class GridComponent implements OnInit {
   @Output('callbackRecordSelected') eventEmitRecordSelected = new EventEmitter<any>();
   @Output('callbackActionTrigger') actionTriggered = new EventEmitter<{ action: MenuItem; rowData: any }>();
   @Output('callbackPageChange') eventEmitPageChange = new EventEmitter<any>();
+  @Output('callbackSort') eventEmitSort = new EventEmitter<any>();
 
   selection: any;
   constructor() { }
@@ -39,8 +40,15 @@ export class GridComponent implements OnInit {
 
 
   paginate(event: any) {
-    console.log(event);
     this.eventEmitPageChange.emit(event);
+  }
+
+  customSort(event: SortEvent) {
+    let orderMode = "asc";
+    if (event.order == -1) {
+      orderMode = "desc"
+    }
+    this.eventEmitSort.emit({ field: event.field, mode: event.mode, orderByMode: orderMode })
   }
 
   private onActionTriggered(action: MenuItem, rowData: any) {

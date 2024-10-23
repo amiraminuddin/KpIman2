@@ -148,11 +148,11 @@ export class PatientTreatmentModal implements OnInit {
         }
 
         this.lookupColumn = [
-          { field: 'treatmentCode', header: 'Code', type: 'string' },
-          { field: 'treatmentName', header: 'Name', type: 'string' },
-          { field: 'treatmentDesc', header: 'Desc', type: 'string' },
-          { field: 'isActive', header: 'Is Active', type: 'bool' },
-          { field: 'treatmentPrice', header: 'Price', type: 'string' }
+          { field: 'treatmentCode', header: 'Code', type: 'string', sortable: false },
+          { field: 'treatmentName', header: 'Name', type: 'string', sortable: false },
+          { field: 'treatmentDesc', header: 'Desc', type: 'string', sortable: false },
+          { field: 'isActive', header: 'Is Active', type: 'bool', sortable: false },
+          { field: 'treatmentPrice', header: 'Price', type: 'string', sortable: false }
         ];
 
         this.lookupTitle = 'Treatment';
@@ -180,10 +180,10 @@ export class PatientTreatmentModal implements OnInit {
         }
 
         this.lookupColumn = [
-          { field: 'userName', header: 'Name', type: 'string' },
-          { field: 'email', header: 'Email', type: 'string' },
-          { field: 'position', header: 'Position', type: 'string' },
-          { field: 'department', header: 'Department', type: 'string' },
+          { field: 'userName', header: 'Name', type: 'string', sortable: false },
+          { field: 'email', header: 'Email', type: 'string', sortable: false },
+          { field: 'position', header: 'Position', type: 'string', sortable: false },
+          { field: 'department', header: 'Department', type: 'string', sortable: false },
         ];
 
         this.lookupTitle = position;

@@ -36,6 +36,7 @@
                     [totalRecord]="dataCount"
                     (callbackActionTrigger)="handleAction($event)"
                     (callbackRecordSelected)="selectedGrid($event)"
+                    (callbackSort)="handleSortData($event)"
                     (callbackPageChange)="handlePageChange($event)">
 
           </app-grid>

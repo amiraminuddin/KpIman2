@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LazyLoadEvent, MenuItem, SortEvent } from 'primeng/api';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MenuItem, SortEvent } from 'primeng/api';
 import { Column } from '../../../../shared/model/AppModel';
 
 @Component({
@@ -22,7 +22,9 @@ export class GridComponent implements OnInit {
   @Output('callbackSort') eventEmitSort = new EventEmitter<any>();
 
   selection: any;
-  constructor() { }
+  private userTriggeredSort: boolean = false;
+
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
   }
@@ -44,11 +46,13 @@ export class GridComponent implements OnInit {
   }
 
   customSort(event: SortEvent) {
+
     let orderMode = "asc";
     if (event.order == -1) {
       orderMode = "desc"
     }
-    this.eventEmitSort.emit({ field: event.field, mode: event.mode, orderByMode: orderMode })
+    console.log(event);
+    this.eventEmitSort.emit({ gridSortMeta: event.multiSortMeta });  
   }
 
   private onActionTriggered(action: MenuItem, rowData: any) {

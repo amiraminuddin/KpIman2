@@ -254,6 +254,10 @@ export class gridDto<T>{
 export class GridInputDto {
   currentPage: number | undefined;
   pageSize: number | undefined;
-  sortableInput: string | undefined;
-  sortableMode: string | undefined;
+  sortMeta: SortMeta[] | undefined;
+}
+
+export class SortMeta {
+  field: string | undefined;
+  order: number | undefined
 }

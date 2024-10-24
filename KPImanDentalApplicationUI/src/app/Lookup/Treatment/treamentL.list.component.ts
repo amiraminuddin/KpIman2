@@ -1,15 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import Swal from "sweetalert2";
-import { Column, GridInputDto, TreatmeantLookupDto } from "../../../shared/model/AppModel";
+import { Column, GridInputDto, SortMeta, TreatmeantLookupDto } from "../../../shared/model/AppModel";
 import { LookupService } from "../../../shared/_services/lookup.service";
+import { GridServiceService } from "../../shared/services/grid/grid-service.service";
 
 @Component({
   selector: 'treatment-list-component',
   templateUrl: 'treatmentL.list.component.html',
   styleUrls: ['../../Patient/PatientComponent/patient-list-component.css']
-  //current location \Lookup\Treatment\treatmentL.list.component.html
-
 })
 
 export class TreatmentListComponent implements OnInit {
@@ -28,8 +27,15 @@ export class TreatmentListComponent implements OnInit {
   gridDataKey: string = "";
   gridAction: any;
   gridInput: GridInputDto = new GridInputDto;
+  sortMetaInput: SortMeta[] = [];
 
-  constructor(private service: LookupService, private messageService: MessageService) { }
+  private userTriggeredSort: boolean = false;
+
+  constructor(
+    private service: LookupService,
+    private messageService: MessageService,
+    private gridService: GridServiceService,
+  ) { }
 
 
   ngOnInit(): void {
@@ -61,6 +67,14 @@ export class TreatmentListComponent implements OnInit {
         },
         complete: () => {
           this.isLoad = false;
+        },
+        error: () => {
+          this.isLoad = false;
+          Swal.fire({
+            title: "Error",
+            text: "Internal Error",
+            icon: "error"
+          });
         }
       });
     }, 1000);    
@@ -83,11 +97,13 @@ export class TreatmentListComponent implements OnInit {
   }
 
   handleSortData(event: any) {
-    if (this.gridInput.sortableInput !== event.field || this.gridInput.sortableMode !== event.orderByMode) {
-      this.gridInput.sortableMode = event.orderByMode;
-      this.gridInput.sortableInput = event.field;
-      this.getData();
-    }
+
+    let gridSort = this.gridService.handleSortData(event, this.gridInput)
+
+    if (gridSort.hasChanges) {
+      this.gridInput.sortMeta = gridSort.newSortMeta;
+      this.getData(); // Call API only if sortMeta has changed
+    }    
   }
 
   getAction() {

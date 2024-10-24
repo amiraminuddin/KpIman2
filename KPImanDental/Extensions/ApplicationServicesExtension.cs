@@ -18,6 +18,8 @@ namespace KPImanDental.Extensions
             services.AddSwaggerGen();
             
             services.AddCors();
+            services.AddHttpContextAccessor();
+            services.AddScoped<GetUserSession>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();

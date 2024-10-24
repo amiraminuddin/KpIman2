@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using KPImanDental.Data;
-using KPImanDental.Dto;
 using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.LookupDto;
-using KPImanDental.Dto.UserDto;
 using KPImanDental.Helpers;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
@@ -17,12 +15,14 @@ namespace KPImanDental.Services
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
         private readonly ILookupRepository _lookupRepository;
+        private readonly GetUserSession _getUserSession; //helper
 
-        public LookupService(DataContext dataContext, IMapper mapper, ILookupRepository lookupRepository)
+        public LookupService(DataContext dataContext, IMapper mapper, ILookupRepository lookupRepository, GetUserSession getUserSession)
         {
             _dataContext = dataContext;
             _mapper = mapper;
             _lookupRepository = lookupRepository;
+            _getUserSession = getUserSession;
         }
 
         public async Task<long> CreateOrUpdateTreatmentLookup(TreatmentLookupDto treatmentLookupDto)
@@ -99,9 +99,9 @@ namespace KPImanDental.Services
         {
             var treatment = _mapper.Map<TreatmentLookup>(treatmentLookupDto);
 
-            treatment.CreatedBy = "System";
+            treatment.CreatedBy = _getUserSession.GetUser();
             treatment.UpdatedOn = DateTime.Now;
-            treatment.UpdatedBy = "System";
+            treatment.UpdatedBy = _getUserSession.GetUser();
             treatment.UpdatedOn = DateTime.Now;
 
             _dataContext.TreatmentLookup.Add(treatment);
@@ -114,7 +114,7 @@ namespace KPImanDental.Services
             var treatment = await _dataContext.TreatmentLookup.FindAsync(treatmentLookupDto.Id);
             if (treatment == null) return -1;
 
-            treatment.UpdatedBy = "Don";
+            treatment.UpdatedBy = _getUserSession.GetUser();
             treatment.UpdatedOn = DateTime.Now;
 
             _mapper.Map(treatmentLookupDto, treatment);

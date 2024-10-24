@@ -1,3 +1,17 @@
+<style>
+  .disabled {
+    pointer-events: none; /* Prevents clicking on the column */
+  }
+
+  .action-column {
+    max-width: 80px !important; /* Smaller width for Action column */
+  }
+
+  .default-column {
+    min-width: 100px !important; /* Default width for other columns */
+  }
+</style>
+
 <p-table [columns]="columns"
          [value]="value"
          selectionMode="selectionMode"
@@ -8,10 +22,14 @@
          (onRowSelect)="onRowSelect($event)"
          (onRowUnselect)="onRowSelect($event)"
          [scrollable]="true" scrollHeight="100%"
-         (sortFunction)="customSort($event)" [customSort]="true">
+         (sortFunction)="customSort($event)" [customSort]="true" sortMode="multiple">
   <ng-template pTemplate="header">
     <tr>
-      <th style="min-width: 100px;" *ngFor="let col of columns" [pSortableColumn]="col.sortable ? col.field : ''">
+      <th *ngFor="let col of columns"
+          [pSortableColumn]="col.field"
+          [class.disabled]="!col.sortable"
+          [ngClass]="{'action-column': col.type === 'action', 'default-column': col.field !== 'action'}"
+          >
         {{col.header}}
         <p-sortIcon *ngIf="col.sortable" [field]="col.field"></p-sortIcon>
       </th>
@@ -20,7 +38,10 @@
   <ng-template pTemplate="body" let-rowData let-columns="columns">
 
     <tr [pSelectableRow]="columns">
-      <td style="min-width: 100px;" pTooltip="{{ rowData[col.field] }}" tooltipPosition="right" *ngFor="let col of columns">
+      <td [ngClass]="{'action-column': col.type === 'action', 'default-column': col.field !== 'action'}"
+          pTooltip="{{ rowData[col.field] }}"
+          tooltipPosition="right"
+          *ngFor="let col of columns">
         <div *ngIf="col.type == 'action'">
           <p-menu #menu [model]="getActions(rowData)" [popup]="true" appendTo="body"></p-menu>
           <i (click)="menu.toggle($event); $event.stopPropagation()" class="pi pi-ellipsis-h action-button"></i>

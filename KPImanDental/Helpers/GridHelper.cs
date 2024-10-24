@@ -16,9 +16,9 @@ namespace KPImanDental.Helpers
             var totalCount = await queryable.CountAsync();
             var query = queryable;
 
-            if (inputDto.SortableInput != null)
+            if (inputDto.SortMeta != null)
             {
-                query = OrderByProperty(query, inputDto.SortableInput, inputDto.SortableMode);
+                query = OrderByProperty(query, inputDto.SortMeta);
             }
 
             query = query
@@ -37,28 +37,71 @@ namespace KPImanDental.Helpers
             };
         }
 
-        private static IQueryable<T> OrderByProperty<T>(IQueryable<T> source, string propertyName, string orderMode)
-        {
-            var param = Expression.Parameter(typeof(T), "x");
-            var property = Expression.Property(param, propertyName);
-            var lambda = Expression.Lambda(property, param);
-            var orderBy = "";
+        //private static IQueryable<T> OrderByProperty<T>(IQueryable<T> source, List<SortMeta> sortMeta)
+        //{
+        //    var param = Expression.Parameter(typeof(T), "x");
+        //    var property = Expression.Property(param, sortMeta.field);
+        //    var lambda = Expression.Lambda(property, param);
+        //    var orderBy = "";
 
-            // Detect whether we are ordering in ascending or descending order
-            if(orderMode == "asc")
+        //    // Detect whether we are ordering in ascending or descending order
+        //    if (orderMode == "asc")
+        //    {
+        //        orderBy = "OrderBy";
+        //    }
+        //    else
+        //    {
+        //        orderBy = "OrderByDescending";
+        //    }
+
+        //    var orderByMethod = typeof(Queryable).GetMethods()
+        //        .First(m => m.Name == orderBy && m.GetParameters().Length == 2);
+
+        //    var genericMethod = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+
+        //    return (IQueryable<T>)genericMethod.Invoke(null, new object[] { source, lambda });
+        //}
+
+        private static IQueryable<T> OrderByProperty<T>(IQueryable<T> source, List<SortMeta> sortMeta)
+        {
+            if (sortMeta == null || !sortMeta.Any())
             {
-                orderBy = "OrderBy";
-            }else
-            {
-                orderBy = "OrderByDescending";
+                return source; // Return the original source if there are no sorting criteria
             }
 
-            var orderByMethod = typeof(Queryable).GetMethods()
-                .First(m => m.Name == orderBy && m.GetParameters().Length == 2);
+            IOrderedQueryable<T> orderedQuery = null; // To hold the ordered query
+            var param = Expression.Parameter(typeof(T), "x"); // Parameter for the lambda expression
 
-            var genericMethod = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+            foreach (var sort in sortMeta)
+            {
+                var property = Expression.Property(param, sort.Field); // Get property expression
+                var lambda = Expression.Lambda(property, param); // Create lambda expression
 
-            return (IQueryable<T>)genericMethod.Invoke(null, new object[] { source, lambda });
+                // Detect whether we are ordering in ascending or descending order
+                var orderByMethod = typeof(Queryable).GetMethods()
+                    .First(m => m.Name == (sort.Order == 1 ? "OrderBy" : "OrderByDescending") && m.GetParameters().Length == 2);
+
+                var genericMethod = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+
+                // Apply the ordering
+                if (orderedQuery == null)
+                {
+                    orderedQuery = (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { source, lambda });
+                }
+                else
+                {
+                    // Use ThenBy or ThenByDescending for subsequent sorting
+                    orderByMethod = typeof(Queryable).GetMethods()
+                        .First(m => m.Name == (sort.Order == 1 ? "ThenBy" : "ThenByDescending") && m.GetParameters().Length == 2);
+
+                    genericMethod = orderByMethod.MakeGenericMethod(typeof(T), property.Type);
+
+                    orderedQuery = (IOrderedQueryable<T>)genericMethod.Invoke(null, new object[] { orderedQuery, lambda });
+                }
+            }
+
+            return orderedQuery ?? source;
+
         }
     }
 }

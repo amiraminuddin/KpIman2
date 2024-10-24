@@ -5,6 +5,7 @@ using KPImanDental.Dto;
 using KPImanDental.Dto.ChartDto;
 using KPImanDental.Dto.GridDto;
 using KPImanDental.Dto.UserDto;
+using KPImanDental.Helpers;
 using KPImanDental.Interfaces.Repositories;
 using KPImanDental.Interfaces.Services;
 using KPImanDental.Model;
@@ -20,13 +21,15 @@ namespace KPImanDental.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepo;
         private readonly ILookupRepository _lookupRepo;
+        private readonly GetUserSession _getUserSession;
 
-        public UserService(DataContext context, IMapper mapper, IUserRepository userRepo, ILookupRepository lookupRepo)
+        public UserService(DataContext context, IMapper mapper, IUserRepository userRepo, ILookupRepository lookupRepo, GetUserSession getUserSession)
         {
             _context = context;
             _mapper = mapper;
             _userRepo = userRepo;
             _lookupRepo = lookupRepo;
+            _getUserSession = getUserSession;
         }
 
         public AuthService AuthService = new AuthService();
@@ -366,9 +369,9 @@ namespace KPImanDental.Services
 
             user.PasswordHash = passwordCrypt.PasswordHash;
             user.PasswordSalt = passwordCrypt.PasswordSalt;
-            user.CreatedBy = "System";
+            user.CreatedBy = _getUserSession.GetUser();
             user.CreatedOn = DateTime.Now;
-            user.UpdatedBy = "System";
+            user.UpdatedBy = _getUserSession.GetUser();
             user.UpdatedOn = DateTime.Now;
 
             _context.Users.Add(user);
@@ -385,7 +388,7 @@ namespace KPImanDental.Services
 
             user.PasswordHash = passwordCrypt.PasswordHash;
             user.PasswordSalt = passwordCrypt.PasswordSalt;
-            user.UpdatedBy = "Don";
+            user.UpdatedBy = _getUserSession.GetUser();
             user.UpdatedOn = DateTime.Now;
 
             _mapper.Map(input, user);
@@ -429,9 +432,9 @@ namespace KPImanDental.Services
         {
             var department = _mapper.Map<Department>(departmentDto);
 
-            department.CreatedBy = "System";
+            department.CreatedBy = _getUserSession.GetUser();
             department.CreatedOn = DateTime.Now;
-            department.UpdatedBy = "System";
+            department.UpdatedBy = _getUserSession.GetUser();
             department.UpdatedOn = DateTime.Now;
 
             _context.Departments.Add(department);
@@ -444,7 +447,7 @@ namespace KPImanDental.Services
             var department = await _userRepo.GetDepartmentByIdAsync((long)departmentDto.Id);
             if (department == null) return -1;
 
-            department.UpdatedBy = "Don";
+            department.UpdatedBy = _getUserSession.GetUser();
             department.UpdatedOn = DateTime.Now;
 
             _mapper.Map(departmentDto, department);

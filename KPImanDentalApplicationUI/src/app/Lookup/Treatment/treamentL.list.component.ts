@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { MenuItem, MessageService } from "primeng/api";
 import Swal from "sweetalert2";
-import { Column, GridInputDto, SortMeta, TreatmeantLookupDto } from "../../../shared/model/AppModel";
+import { Column, FilterColumn, GridInputDto, SortMeta, TreatmeantLookupDto, WhereClause } from "../../../shared/model/AppModel";
 import { LookupService } from "../../../shared/_services/lookup.service";
 import { GridServiceService } from "../../shared/services/grid/grid-service.service";
 
@@ -28,6 +28,9 @@ export class TreatmentListComponent implements OnInit {
   gridAction: any;
   gridInput: GridInputDto = new GridInputDto;
   sortMetaInput: SortMeta[] = [];
+  filterCol: FilterColumn[] = [];
+  filterLegend: string = "";
+  whereClause: WhereClause[] = [];
 
   private userTriggeredSort: boolean = false;
 
@@ -45,6 +48,8 @@ export class TreatmentListComponent implements OnInit {
   }
 
   getData() {
+    let whereC = this.getWhereClause();
+    this.gridInput.whereCondition = whereC;
     this.isLoad = true;
     setTimeout(() => {
       this.service.getGridTreatment(this.gridInput).subscribe({
@@ -64,6 +69,7 @@ export class TreatmentListComponent implements OnInit {
           this.gridDataKey = "treatmentCode"
           this.dataCount = response.totalData || 0;
           this.gridAction = this.getAction();
+          this.filterLegend = "Code, Name, Price";
         },
         complete: () => {
           this.isLoad = false;
@@ -104,6 +110,19 @@ export class TreatmentListComponent implements OnInit {
       this.gridInput.sortMeta = gridSort.newSortMeta;
       this.getData(); // Call API only if sortMeta has changed
     }    
+  }
+
+  handleGridFilter(event: any) {
+    this.filterCol = [
+      { field: "TreatmentCode" },
+      { field: "TreatmentName" },
+      { field: "TreatmentPrice" }
+    ];
+
+    this.gridInput.filterColumn = this.filterCol;
+    this.gridInput.filterValue = event
+    this.getData();
+    //console.log(event);
   }
 
   getAction() {
@@ -169,4 +188,12 @@ export class TreatmentListComponent implements OnInit {
     console.log(event);
   }
 
+  private getWhereClause() {
+    this.whereClause = [];
+    //this.whereClause.push({
+    //  field: "isActive",
+    //  value: "true"
+    //});
+    return this.whereClause;
+  }
 }

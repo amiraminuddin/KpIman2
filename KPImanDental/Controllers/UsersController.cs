@@ -287,6 +287,13 @@ namespace KPImanDental.Controllers
         }
         #endregion CRUD For User Management Module - Position
 
+        #region CRUD For User Management Module - User Role
+        [HttpPost("GetAllUserRole")]
+        public async Task<ActionResult> GetAllUserRole()
+        {
+            return Ok("sadasd");
+        }
+        #endregion
 
         #region Private Method
 

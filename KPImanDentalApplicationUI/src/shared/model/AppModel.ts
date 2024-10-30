@@ -255,9 +255,21 @@ export class GridInputDto {
   currentPage: number | undefined;
   pageSize: number | undefined;
   sortMeta: SortMeta[] | undefined;
+  filterValue: string | undefined;
+  filterColumn: FilterColumn[] | undefined;
+  whereCondition: WhereClause[] | undefined;
 }
 
 export class SortMeta {
   field: string | undefined;
   order: number | undefined
+}
+
+export class FilterColumn {
+  field: string | undefined;
+}
+
+export class WhereClause {
+  field: string | undefined;
+  value: string | undefined;
 }

@@ -10,6 +10,10 @@
     border-radius: 8px;
     padding: 5px;
   }
+
+  .section-action {
+    margin: 5px 5px 5px 0px;
+  }
 </style>
 
 <div>
@@ -24,7 +28,7 @@
           Treatment List
           <p-badge value="{{dataCount}}" styleClass="p-mr-2"></p-badge>
         </div>
-        <div class="button-user">
+        <div class="section-action">
           <input class="btn btn-primary" type="button" value="Add Treatment" (click)="showModal()" style="border-radius: 5px">
         </div>
         <div class="full-height-table-container">
@@ -34,10 +38,12 @@
                     [dataKey]="gridDataKey"
                     [actionList]="gridAction"
                     [totalRecord]="dataCount"
+                    [filterLegend]="filterLegend"
                     (callbackActionTrigger)="handleAction($event)"
                     (callbackRecordSelected)="selectedGrid($event)"
                     (callbackSort)="handleSortData($event)"
-                    (callbackPageChange)="handlePageChange($event)">
+                    (callbackPageChange)="handlePageChange($event)"
+                    (callbackFilter)="handleGridFilter($event)">
 
           </app-grid>
         </div>

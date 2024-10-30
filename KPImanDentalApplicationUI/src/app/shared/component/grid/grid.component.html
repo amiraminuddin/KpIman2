@@ -10,8 +10,18 @@
   .default-column {
     min-width: 100px !important; /* Default width for other columns */
   }
-</style>
 
+  .grid-filter{
+      text-align: right;
+      padding: 5px 0px 5px 0px;
+  }
+</style>
+<div class="grid-filter">
+  <span class="p-input-icon-left">
+    <i class="pi pi-search" (click)="search(filterVal)"></i>
+    <input type="text" pInputText [placeholder]="filterLegend" [(ngModel)]="filterVal" (keydown)="onKeyDownSearch($event, filterVal)"/>
+  </span>
+</div>
 <p-table [columns]="columns"
          [value]="value"
          selectionMode="selectionMode"

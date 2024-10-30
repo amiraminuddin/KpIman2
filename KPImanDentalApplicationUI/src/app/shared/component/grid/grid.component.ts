@@ -15,13 +15,16 @@ export class GridComponent implements OnInit {
   @Input() dataKey: string | undefined;
   @Input() actionList: MenuItem[] = [];
   @Input() totalRecord: number = 0;
+  @Input() filterLegend: string = "";
 
   @Output('callbackRecordSelected') eventEmitRecordSelected = new EventEmitter<any>();
   @Output('callbackActionTrigger') actionTriggered = new EventEmitter<{ action: MenuItem; rowData: any }>();
   @Output('callbackPageChange') eventEmitPageChange = new EventEmitter<any>();
   @Output('callbackSort') eventEmitSort = new EventEmitter<any>();
+  @Output('callbackFilter') eventEmitFilter = new EventEmitter<any>();
 
   selection: any;
+  filterVal: string | undefined;
   private userTriggeredSort: boolean = false;
 
   constructor(private cdr: ChangeDetectorRef) { }
@@ -40,7 +43,6 @@ export class GridComponent implements OnInit {
     }));
   }
 
-
   paginate(event: any) {
     this.eventEmitPageChange.emit(event);
   }
@@ -53,6 +55,16 @@ export class GridComponent implements OnInit {
     }
     console.log(event);
     this.eventEmitSort.emit({ gridSortMeta: event.multiSortMeta });  
+  }
+
+  search(event: any) {
+    this.eventEmitFilter.emit(event);
+  }
+
+  onKeyDownSearch(event: KeyboardEvent, input: any) {
+    if (event.key === "Enter") {
+      this.eventEmitFilter.emit(input);
+    }
   }
 
   private onActionTriggered(action: MenuItem, rowData: any) {
